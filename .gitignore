@@ -1,0 +1,66 @@
+# Arduino temporary files
+
+*.tmp
+*.bak
+*.old
+
+# Build folders
+
+build/
+dist/
+out/
+
+# Logs
+
+*.log
+
+# OS files
+
+.DS_Store
+Thumbs.db
+
+# Python cache
+
+**pycache**/
+*.pyc
+*.pyo
+
+# Python virtual environments
+
+.venv/
+venv/
+env/
+
+# Environment files
+
+.env
+.env.local
+
+# VS Code settings
+
+.vscode/
+
+# Arduino IDE generated folders
+
+.cache/
+arduino_build_*/
+arduino_cache_*/
+
+# PlatformIO folders
+
+.pio/
+.pioenvs/
+.piolibdeps/
+
+# Temporary files
+
+*.swp
+*.swo
+*~
+
+# Secrets and credentials
+
+secrets/
+credentials/
+*.key
+*.pem
