@@ -1,0 +1,7 @@
+If the folder names are changed, then the file path name must also be changed.
+--> IN map_utils.py
+    - Line 8, from "trial/maps" to "XXXXX/maps"
+
+For other maps, export from which ever website, as a .osm file.
+--> IN animate_route.py
+    - Line 20 and Line 41, from rnsit.osm to which ever map file .osm is there in the maps folder.
