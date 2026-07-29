@@ -17,7 +17,7 @@ def calculate_bearing(lat1, lon1, lat2, lon2):
     return dirs[idx]
 
 # --- Load map ---
-G = load_map("trial/maps/rnsit.osm")
+G = load_map(map_name="rnsit.osm")  # ✅ use the new load_map function
 
 # --- Define Home Base ---
 home_lat, home_lon = 12.8965, 77.5650
@@ -38,7 +38,7 @@ ax.scatter(hx, hy, c="blue", s=100, marker="*", zorder=5)
 ax.text(hx, hy, "Home Base", fontsize=10, color="blue")
 
 # --- Extract and plot buildings ---
-buildings = extract_buildings("trial/maps/rnsit.osm")   # ✅ pass file path, not graph
+buildings = extract_buildings("rnsit.osm")   # ✅ pass file path, not graph
 print("Extracted buildings:", buildings)     # Debug print
 plot_buildings(ax, buildings)
 

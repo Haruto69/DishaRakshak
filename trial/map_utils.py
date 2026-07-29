@@ -1,11 +1,18 @@
 import osmnx as ox
 import matplotlib.pyplot as plt
 import xml.etree.ElementTree as ET
+import os
 
-def load_map(osm_file="trial/maps/rnsit.osm"):
-    """Load the OSM file into a graph for routing."""
-    G = ox.graph_from_xml(osm_file)
-    return G
+def load_map(map_name):
+    # Get absolute path to project root (one level up from trial/)
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    maps_dir = os.path.join(project_root, "trial/maps")
+    full_path = os.path.join(maps_dir, map_name)
+
+    if not os.path.exists(full_path):
+        raise FileNotFoundError(f"Map file not found: {full_path}")
+
+    return ox.graph_from_xml(full_path)
 
 def plot_base_map(G, figsize=(10,10)):
     """Plot the base map with a lighter background."""
@@ -20,36 +27,24 @@ def plot_base_map(G, figsize=(10,10)):
     )
     return fig, ax
 
-def extract_buildings(osm_file="trial/maps/rnsit.osm"):
-    """
-    Parse the raw OSM XML and extract building centroids.
-    Returns a list of (name, lat, lon).
-    """
-    tree = ET.parse(osm_file)
-    root = tree.getroot()
+def extract_buildings(map_name):
+    # Resolve path relative to project root
+    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+    maps_dir = os.path.join(project_root, "trial/maps")
+    full_path = os.path.join(maps_dir, map_name)
 
-    # Build a dictionary of node_id -> (lat, lon)
-    node_coords = {}
-    for node in root.findall("node"):
-        node_id = node.attrib["id"]
-        lat = float(node.attrib["lat"])
-        lon = float(node.attrib["lon"])
-        node_coords[node_id] = (lat, lon)
+    if not os.path.exists(full_path):
+        raise FileNotFoundError(f"Map file not found: {full_path}")
+
+    tree = ET.parse(full_path)
+    root = tree.getroot()
 
     buildings = []
     for way in root.findall("way"):
-        tags = {tag.attrib["k"]: tag.attrib["v"] for tag in way.findall("tag")}
-        if tags.get("building") == "yes" and "name" in tags:
-            coords = []
-            for nd in way.findall("nd"):
-                ref = nd.attrib["ref"]
-                if ref in node_coords:
-                    coords.append(node_coords[ref])
-            if coords:
-                # centroid = average of all node coords
-                lat = sum(c[0] for c in coords) / len(coords)
-                lon = sum(c[1] for c in coords) / len(coords)
-                buildings.append((tags["name"], lat, lon))
+        tags = {tag.get("k"): tag.get("v") for tag in way.findall("tag")}
+        if tags.get("building"):
+            nodes = [nd.get("ref") for nd in way.findall("nd")]
+            buildings.append({"id": way.get("id"), "nodes": nodes, "tags": tags})
     return buildings
 
 def plot_buildings(ax, buildings):
