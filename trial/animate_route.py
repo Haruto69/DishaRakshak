@@ -2,7 +2,7 @@ import osmnx as ox
 import networkx as nx
 import matplotlib.pyplot as plt
 import random
-from DishaRakshak.trial.map_utils import load_map, plot_base_map, extract_buildings, plot_buildings
+from map_utils import load_map, plot_base_map, extract_buildings, plot_buildings
 
 def calculate_bearing(lat1, lon1, lat2, lon2):
     import math

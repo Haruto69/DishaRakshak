@@ -1,0 +1,123 @@
+/**
+ * wsn_config.h
+ * Shared configuration for the secure ESP32/MPU6050 WSN.
+ * Include this in BOTH sender and receiver projects.
+ *
+ * !! BEFORE FLASHING !!
+ *   1. Run the helper sketch below on each ESP32 to read its real MAC:
+ *        #include <WiFi.h>
+ *        void setup() { Serial.begin(115200); WiFi.mode(WIFI_STA); Serial.println(WiFi.macAddress()); }
+ *        void loop() {}
+ *   2. Fill in BASE_MAC, NODE1_MAC, NODE2_MAC with the real values.
+ *   3. Change all key material (PMK, LMK_*, HMAC_KEY) for production.
+ */
+
+#pragma once
+#include <stdint.h>
+
+// ─────────────────────────────────────────────────────────────
+// NETWORK TOPOLOGY
+// ─────────────────────────────────────────────────────────────
+
+// Fixed Wi-Fi channel (1–13). Must be identical on all nodes.
+#define WSN_WIFI_CHANNEL          6
+
+// !! REPLACE with your actual hardware MAC addresses !!
+// Read them with:  Serial.println(WiFi.macAddress());  in WIFI_STA mode.
+static const uint8_t BASE_MAC[6] = { 0x24, 0x6F, 0x28, 0xAB, 0xCD, 0xEF };
+static const uint8_t NODE1_MAC[6] = { 0xAA, 0xBB, 0xCC, 0x44, 0x55, 0x01 };
+static const uint8_t NODE2_MAC[6] = { 0xAA, 0xBB, 0xCC, 0x44, 0x55, 0x02 };
+
+// ─────────────────────────────────────────────────────────────
+// ESP-NOW ENCRYPTION  (AES-128 PMK + per-link LMK)
+// ─────────────────────────────────────────────────────────────
+
+// Primary Master Key – shared across the network.
+static const uint8_t ESP_NOW_PMK[16] = {
+    0x2B, 0x7E, 0x15, 0x16, 0x28, 0xAE, 0xD2, 0xA6,
+    0xAB, 0xF7, 0x15, 0x88, 0x09, 0xCF, 0x4F, 0x3C
+};
+
+// Local Master Key for Node 1 ↔ Base Station link.
+static const uint8_t LMK_NODE1[16] = {
+    0x60, 0x3D, 0xEB, 0x10, 0x15, 0xCA, 0x71, 0xBE,
+    0x2B, 0x73, 0xAE, 0xF0, 0x85, 0x7D, 0x77, 0x81
+};
+
+// Local Master Key for Node 2 ↔ Base Station link.
+static const uint8_t LMK_NODE2[16] = {
+    0x1F, 0x35, 0x2C, 0x07, 0x3B, 0x61, 0x08, 0xD7,
+    0x2D, 0x98, 0x10, 0xA3, 0x09, 0x14, 0xDF, 0xF4
+};
+
+// ─────────────────────────────────────────────────────────────
+// HMAC-SHA256 PRE-SHARED KEY  (32 bytes)
+// Must be identical on all nodes. Change for production.
+// ─────────────────────────────────────────────────────────────
+static const uint8_t HMAC_KEY[32] = {
+    0xDE, 0xAD, 0xBE, 0xEF, 0xCA, 0xFE, 0xBA, 0xBE,
+    0x01, 0x23, 0x45, 0x67, 0x89, 0xAB, 0xCD, 0xEF,
+    0xFE, 0xDC, 0xBA, 0x98, 0x76, 0x54, 0x32, 0x10,
+    0xA5, 0x5A, 0xC3, 0x3C, 0x6F, 0x9D, 0x12, 0xE7
+};
+
+// ─────────────────────────────────────────────────────────────
+// TIMING CONSTANTS
+// ─────────────────────────────────────────────────────────────
+
+#define SAMPLE_RATE_HZ            100          // MPU6050 sample rate
+#define SAMPLE_INTERVAL_US        10000UL      // 1 000 000 / SAMPLE_RATE_HZ
+
+#define TDMA_CYCLE_MS             10           // Full TDMA cycle length
+#define TDMA_SLOT_NODE1_MS        0            // Node 1 TX offset within cycle
+#define TDMA_SLOT_NODE2_MS        5            // Node 2 TX offset within cycle
+
+#define SYNC_INTERVAL_MS          1000         // Base-station sync beacon period
+#define ACK_TIMEOUT_MS            20           // Retransmit if no ACK within N ms
+#define MAX_RETRANSMIT            1            // Retransmit once, then drop
+
+#define MAX_TIMESTAMP_DRIFT_US    50000UL      // 50 ms tolerance
+#define WATCHDOG_TIMEOUT_MS       3000         // WDT reset threshold
+
+// ─────────────────────────────────────────────────────────────
+// PACKET TYPES
+// ─────────────────────────────────────────────────────────────
+#define PKT_TYPE_IMU              0x01
+#define PKT_TYPE_ACK              0x02
+#define PKT_TYPE_SYNC             0x03
+
+// ─────────────────────────────────────────────────────────────
+// PACKET STRUCTURES  (packed – no padding)
+// ─────────────────────────────────────────────────────────────
+#pragma pack(push, 1)
+
+// IMU data packet (sent by each node).
+typedef struct {
+    uint8_t  pkt_type;       // PKT_TYPE_IMU
+    uint8_t  node_id;        // 1 or 2
+    uint32_t seq;            // Strictly increasing sequence number
+    uint64_t timestamp_us;   // Synchronized timestamp (µs)
+    int16_t  accel[3];       // ax, ay, az  (raw ADC units)
+    int16_t  gyro[3];        // gx, gy, gz  (raw ADC units)
+    uint8_t  hmac[32];       // HMAC-SHA256 over all fields above
+} imu_packet_t;              // Total: 1+1+4+8+6*2+6*2+32 = 58 bytes
+
+// ACK packet (sent by base station).
+typedef struct {
+    uint8_t  pkt_type;       // PKT_TYPE_ACK
+    uint8_t  node_id;        // Which node this ACK is for
+    uint32_t ack_seq;        // Sequence number being acknowledged
+} ack_packet_t;              // 6 bytes
+
+// Sync packet (sent by base station every SYNC_INTERVAL_MS).
+typedef struct {
+    uint8_t  pkt_type;       // PKT_TYPE_SYNC
+    uint64_t base_time_us;   // Base station absolute time (µs)
+} sync_packet_t;             // 9 bytes
+
+#pragma pack(pop)
+
+// Compile-time size assertions.
+static_assert(sizeof(imu_packet_t)  == 58, "imu_packet_t size mismatch");
+static_assert(sizeof(ack_packet_t)  ==  6, "ack_packet_t size mismatch");
+static_assert(sizeof(sync_packet_t) ==  9, "sync_packet_t size mismatch");
