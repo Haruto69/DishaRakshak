@@ -3,15 +3,17 @@ import matplotlib.pyplot as plt
 import xml.etree.ElementTree as ET
 import os
 
-def load_map(map_name):
-    # Get absolute path to project root (one level up from trial/)
+def get_map_path(map_name):
     project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
     maps_dir = os.path.join(project_root, "trial/maps")
     full_path = os.path.join(maps_dir, map_name)
-
     if not os.path.exists(full_path):
         raise FileNotFoundError(f"Map file not found: {full_path}")
+    return full_path
 
+
+def load_map(map_name):
+    full_path = get_map_path(map_name)
     return ox.graph_from_xml(full_path)
 
 def plot_base_map(G, figsize=(10,10)):
@@ -28,14 +30,7 @@ def plot_base_map(G, figsize=(10,10)):
     return fig, ax
 
 def extract_buildings(map_name):
-    # Resolve path relative to project root
-    project_root = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-    maps_dir = os.path.join(project_root, "trial/maps")
-    full_path = os.path.join(maps_dir, map_name)
-
-    if not os.path.exists(full_path):
-        raise FileNotFoundError(f"Map file not found: {full_path}")
-
+    full_path = get_map_path(map_name)
     tree = ET.parse(full_path)
     root = tree.getroot()
 
