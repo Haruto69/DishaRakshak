@@ -2,7 +2,7 @@
 #include <WiFi.h>
 #include <esp_now.h>
 #include <esp_wifi.h>
-#include "wsn_config.h"   // our shared header
+#include "config.h"   // our shared header
 
 // ── State for each foot module ───────────────
 static volatile bool ack_pending_left = false;
@@ -35,9 +35,10 @@ static void onPacketRecv(const esp_now_recv_info_t* info,
 
 // ── Send ACK back to sender ──────────────────
 static void sendAck(const uint8_t* dest_mac, uint32_t seq) {
-    ack_packet_t ack;
-    ack.seq = seq;
-    esp_now_send(dest_mac, reinterpret_cast<uint8_t*>(&ack), sizeof(ack));
+ack_packet_t ack;
+ack.type = 2;
+ack.seq = seq;
+esp_now_send(dest_mac, reinterpret_cast<uint8_t*>(&ack), sizeof(ack));
 }
 
 // ── Setup ────────────────────────────────────
