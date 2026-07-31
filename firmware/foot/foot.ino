@@ -15,12 +15,26 @@ constexpr int SCL_PIN = 22;
 constexpr uint32_t I2C_CLOCK_HZ = 100000;
 
 constexpr uint8_t WIFI_CHANNEL = 6;
-constexpr uint32_t PACKET_MAGIC = 0x44524B32;  // "DRK2"
+constexpr uint32_t PACKET_MAGIC = 0x44524B34;  // "DRK4"
 constexpr uint32_t SAMPLE_INTERVAL_US = 20000; // 50 Hz
 constexpr uint32_t PRINT_INTERVAL_MS = 200;
 
 const uint8_t BROADCAST_ADDRESS[6] = {
     0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF
+};
+
+const uint8_t LEFT_FOOT_MAC[6] = {
+    0x70, 0x4B, 0xCA, 0x46, 0xE4, 0xC0
+};
+
+const uint8_t RIGHT_FOOT_MAC[6] = {
+    0x70, 0x4B, 0xCA, 0x47, 0x57, 0x14
+};
+
+enum FootId : uint8_t {
+    FOOT_UNKNOWN = 0,
+    FOOT_LEFT = 1,
+    FOOT_RIGHT = 2
 };
 
 // MPU-6050/6500 scales for +/-2 g and +/-250 dps.
@@ -88,12 +102,13 @@ struct MotionPacket {
     float velocityY;
     float velocityZ;
 
+    uint8_t footId;
     uint8_t isStill;
     uint8_t tiltDirection;
     uint8_t movementDirection;
     uint8_t rotationAxis;
     int8_t rotationSign;
-    uint8_t reserved[3];
+    uint8_t reserved[2];
 };
 
 static_assert(sizeof(MotionPacket) == 64, "Unexpected MotionPacket size");
@@ -133,6 +148,7 @@ int stillCounter = STILL_REQUIRED_SAMPLES;
 uint32_t sequenceNumber = 0;
 uint32_t lastSampleMicros = 0;
 uint32_t lastPrintMillis = 0;
+FootId localFootId = FOOT_UNKNOWN;
 
 // ==================================================
 // Utility functions
@@ -146,6 +162,18 @@ float normalizeAngle180(float angle) {
     while (angle > 180.0f) angle -= 360.0f;
     while (angle < -180.0f) angle += 360.0f;
     return angle;
+}
+
+bool macEqual(const uint8_t *a, const uint8_t *b) {
+    return memcmp(a, b, 6) == 0;
+}
+
+const char *footLabel(FootId footId) {
+    switch (footId) {
+        case FOOT_LEFT: return "LEFT";
+        case FOOT_RIGHT: return "RIGHT";
+        default: return "UNKNOWN";
+    }
 }
 
 bool writeImuRegister(uint8_t registerAddress, uint8_t value) {
@@ -351,8 +379,27 @@ bool initializeEspNow() {
     WiFi.disconnect();
     delay(100);
 
+    uint8_t localMac[6] = {};
+    esp_wifi_get_mac(WIFI_IF_STA, localMac);
+
     Serial.print("[ESP-NOW] Foot MAC: ");
     Serial.println(WiFi.macAddress());
+
+    if (macEqual(localMac, LEFT_FOOT_MAC)) {
+        localFootId = FOOT_LEFT;
+    } else if (macEqual(localMac, RIGHT_FOOT_MAC)) {
+        localFootId = FOOT_RIGHT;
+    } else {
+        localFootId = FOOT_UNKNOWN;
+    }
+
+    Serial.print("[ESP-NOW] Identified as: ");
+    Serial.println(footLabel(localFootId));
+
+    if (localFootId == FOOT_UNKNOWN) {
+        Serial.println("[ESP-NOW] MAC is not registered as LEFT or RIGHT");
+        return false;
+    }
 
     if (!setWiFiChannel()) return false;
     if (esp_now_init() != ESP_OK) return false;
@@ -610,6 +657,7 @@ bool buildMotionPacket(MotionPacket &packet, float dtSeconds) {
 
     packet.magic = PACKET_MAGIC;
     packet.sequence = ++sequenceNumber;
+    packet.footId = static_cast<uint8_t>(localFootId);
 
     packet.accelXG = axG;
     packet.accelYG = ayG;
@@ -640,13 +688,14 @@ bool buildMotionPacket(MotionPacket &packet, float dtSeconds) {
 
     packet.reserved[0] = 0;
     packet.reserved[1] = 0;
-    packet.reserved[2] = 0;
 
     return true;
 }
 
 void printLocalStatus(const MotionPacket &packet) {
-    Serial.print("[TX] #");
+    Serial.print("[TX ");
+    Serial.print(footLabel(static_cast<FootId>(packet.footId)));
+    Serial.print("] #");
     Serial.print(packet.sequence);
 
     Serial.print(" Still=");
@@ -680,7 +729,7 @@ void setup() {
 
     Serial.println();
     Serial.println("========================================");
-    Serial.println("Disha-Rakshak Foot Module - BUILD 3");
+    Serial.println("Disha-Rakshak Foot Module - BUILD 4");
     Serial.println("Calibration + Orientation + Basic ZUPT");
     Serial.println("========================================");
 
