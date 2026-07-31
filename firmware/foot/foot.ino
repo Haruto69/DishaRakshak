@@ -4,34 +4,18 @@
 #include <esp_now.h>
 #include <esp_wifi.h>
 
-// --------------------------------------------------
-// MPU6050 configuration
-// --------------------------------------------------
-
 constexpr uint8_t MPU6050_ADDRESS = 0x68;
-
 constexpr int SDA_PIN = 21;
 constexpr int SCL_PIN = 22;
-
-// --------------------------------------------------
-// ESP-NOW configuration
-// --------------------------------------------------
+constexpr uint32_t I2C_CLOCK_HZ = 100000;
 
 constexpr uint8_t WIFI_CHANNEL = 6;
+constexpr uint32_t PACKET_MAGIC = 0x44524B31;
+constexpr unsigned long SEND_INTERVAL_MS = 100;
 
 const uint8_t BROADCAST_ADDRESS[6] = {
     0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF
 };
-
-// Used to reject unrelated ESP-NOW packets.
-constexpr uint32_t PACKET_MAGIC = 0x44524B31;
-
-// Send one packet every 100 ms = 10 packets per second.
-constexpr unsigned long SEND_INTERVAL_MS = 100;
-
-// --------------------------------------------------
-// Packet shared with belt.ino
-// --------------------------------------------------
 
 struct ImuPacket {
     uint32_t magic;
@@ -46,23 +30,15 @@ struct ImuPacket {
     int16_t gyroZ;
 };
 
-static_assert(
-    sizeof(ImuPacket) == 20,
-    "Unexpected ImuPacket size"
-);
+static_assert(sizeof(ImuPacket) == 20, "Unexpected ImuPacket size");
 
 uint32_t sequenceNumber = 0;
 unsigned long previousSendTime = 0;
-
-// --------------------------------------------------
-// MPU6050 helper functions
-// --------------------------------------------------
 
 bool writeMpuRegister(uint8_t registerAddress, uint8_t value) {
     Wire.beginTransmission(MPU6050_ADDRESS);
     Wire.write(registerAddress);
     Wire.write(value);
-
     return Wire.endTransmission(true) == 0;
 }
 
@@ -74,7 +50,13 @@ bool readMpuRegister(uint8_t registerAddress, uint8_t &value) {
         return false;
     }
 
-    if (Wire.requestFrom(MPU6050_ADDRESS, static_cast<uint8_t>(1), true) != 1) {
+    size_t received = Wire.requestFrom(
+        static_cast<uint16_t>(MPU6050_ADDRESS),
+        static_cast<uint8_t>(1),
+        true
+    );
+
+    if (received != 1) {
         return false;
     }
 
@@ -83,22 +65,42 @@ bool readMpuRegister(uint8_t registerAddress, uint8_t &value) {
 }
 
 bool initializeMpu6050() {
+    Serial.println("[MPU] Initializing MPU6050...");
+
     uint8_t whoAmI = 0;
+    bool detected = false;
 
-    if (!readMpuRegister(0x75, whoAmI)) {
-        Serial.println("[MPU] Unable to read WHO_AM_I");
+    for (int attempt = 1; attempt <= 10; attempt++) {
+        if (readMpuRegister(0x75, whoAmI)) {
+            Serial.print("[MPU] WHO_AM_I attempt ");
+            Serial.print(attempt);
+            Serial.print(": 0x");
+            Serial.println(whoAmI, HEX);
+
+            if (whoAmI == 0x68 || whoAmI == 0x70) {
+                detected = true;
+                break;
+            }
+        } else {
+            Serial.print("[MPU] WHO_AM_I read failed on attempt ");
+            Serial.println(attempt);
+        }
+
+        delay(100);
+    }
+
+    if (!detected) {
+        Serial.print("[MPU] Unsupported WHO_AM_I value: 0x");
+        Serial.println(whoAmI, HEX);
         return false;
     }
 
-    Serial.print("[MPU] WHO_AM_I: 0x");
-    Serial.println(whoAmI, HEX);
-
-    if (whoAmI != 0x68) {
-        Serial.println("[MPU] Unexpected device address");
-        return false;
+    if (whoAmI == 0x68) {
+        Serial.println("[MPU] Detected MPU-6050");
+    } else {
+        Serial.println("[MPU] Detected MPU-6500-compatible sensor");
     }
 
-    // Wake the MPU6050.
     if (!writeMpuRegister(0x6B, 0x00)) {
         Serial.println("[MPU] Failed to wake MPU6050");
         return false;
@@ -106,30 +108,26 @@ bool initializeMpu6050() {
 
     delay(100);
 
-    // Accelerometer range: ±2 g.
     if (!writeMpuRegister(0x1C, 0x00)) {
         Serial.println("[MPU] Failed to configure accelerometer");
         return false;
     }
 
-    // Gyroscope range: ±250 degrees/second.
     if (!writeMpuRegister(0x1B, 0x00)) {
         Serial.println("[MPU] Failed to configure gyroscope");
         return false;
     }
 
-    // Digital low-pass filter configuration.
     if (!writeMpuRegister(0x1A, 0x03)) {
         Serial.println("[MPU] Failed to configure low-pass filter");
         return false;
     }
 
-    Serial.println("[MPU] MPU6050 initialized");
+    Serial.println("[MPU] IMU initialized successfully");
     return true;
 }
 
 bool readMpu6050(ImuPacket &packet) {
-    // Start reading from ACCEL_XOUT_H.
     Wire.beginTransmission(MPU6050_ADDRESS);
     Wire.write(0x3B);
 
@@ -137,49 +135,31 @@ bool readMpu6050(ImuPacket &packet) {
         return false;
     }
 
-    // 6 accelerometer bytes
-    // 2 temperature bytes
-    // 6 gyroscope bytes
     constexpr uint8_t BYTES_TO_READ = 14;
 
-    if (
-        Wire.requestFrom(
-            MPU6050_ADDRESS,
-            BYTES_TO_READ,
-            true
-        ) != BYTES_TO_READ
-    ) {
+    size_t received = Wire.requestFrom(
+        static_cast<uint16_t>(MPU6050_ADDRESS),
+        BYTES_TO_READ,
+        true
+    );
+
+    if (received != BYTES_TO_READ) {
         return false;
     }
 
-    packet.accelX =
-        static_cast<int16_t>((Wire.read() << 8) | Wire.read());
+    packet.accelX = static_cast<int16_t>((Wire.read() << 8) | Wire.read());
+    packet.accelY = static_cast<int16_t>((Wire.read() << 8) | Wire.read());
+    packet.accelZ = static_cast<int16_t>((Wire.read() << 8) | Wire.read());
 
-    packet.accelY =
-        static_cast<int16_t>((Wire.read() << 8) | Wire.read());
-
-    packet.accelZ =
-        static_cast<int16_t>((Wire.read() << 8) | Wire.read());
-
-    // Ignore temperature.
     Wire.read();
     Wire.read();
 
-    packet.gyroX =
-        static_cast<int16_t>((Wire.read() << 8) | Wire.read());
-
-    packet.gyroY =
-        static_cast<int16_t>((Wire.read() << 8) | Wire.read());
-
-    packet.gyroZ =
-        static_cast<int16_t>((Wire.read() << 8) | Wire.read());
+    packet.gyroX = static_cast<int16_t>((Wire.read() << 8) | Wire.read());
+    packet.gyroY = static_cast<int16_t>((Wire.read() << 8) | Wire.read());
+    packet.gyroZ = static_cast<int16_t>((Wire.read() << 8) | Wire.read());
 
     return true;
 }
-
-// --------------------------------------------------
-// ESP-NOW helper functions
-// --------------------------------------------------
 
 bool setWiFiChannel() {
     esp_wifi_set_promiscuous(true);
@@ -192,7 +172,7 @@ bool setWiFiChannel() {
     esp_wifi_set_promiscuous(false);
 
     if (result != ESP_OK) {
-        Serial.print("[ESP-NOW] Failed to set channel. Error: ");
+        Serial.print("[ESP-NOW] Failed to set Wi-Fi channel. Error: ");
         Serial.println(result);
         return false;
     }
@@ -203,7 +183,6 @@ bool setWiFiChannel() {
 bool initializeEspNow() {
     WiFi.mode(WIFI_STA);
     WiFi.disconnect();
-
     delay(100);
 
     Serial.print("[ESP-NOW] Foot ESP32 MAC: ");
@@ -219,7 +198,6 @@ bool initializeEspNow() {
     }
 
     esp_now_peer_info_t peerInfo = {};
-
     memcpy(
         peerInfo.peer_addr,
         BROADCAST_ADDRESS,
@@ -230,60 +208,52 @@ bool initializeEspNow() {
     peerInfo.encrypt = false;
     peerInfo.ifidx = WIFI_IF_STA;
 
-    if (esp_now_add_peer(&peerInfo) != ESP_OK) {
-        Serial.println("[ESP-NOW] Failed to add broadcast peer");
+    esp_err_t addPeerResult = esp_now_add_peer(&peerInfo);
+
+    if (addPeerResult != ESP_OK && addPeerResult != ESP_ERR_ESPNOW_EXIST) {
+        Serial.print("[ESP-NOW] Failed to add broadcast peer. Error: ");
+        Serial.println(addPeerResult);
         return false;
     }
 
     Serial.print("[ESP-NOW] Initialized on channel ");
     Serial.println(WIFI_CHANNEL);
-
     return true;
 }
-
-// --------------------------------------------------
-// Serial output
-// --------------------------------------------------
 
 void printPacket(const ImuPacket &packet) {
     Serial.print("[SENT] Sequence=");
     Serial.print(packet.sequence);
 
-    Serial.print(" | Accel: X=");
+    Serial.print(" | Accel X=");
     Serial.print(packet.accelX);
-
     Serial.print(" Y=");
     Serial.print(packet.accelY);
-
     Serial.print(" Z=");
     Serial.print(packet.accelZ);
 
-    Serial.print(" | Gyro: X=");
+    Serial.print(" | Gyro X=");
     Serial.print(packet.gyroX);
-
     Serial.print(" Y=");
     Serial.print(packet.gyroY);
-
     Serial.print(" Z=");
     Serial.println(packet.gyroZ);
 }
 
-// --------------------------------------------------
-// Arduino setup and loop
-// --------------------------------------------------
-
 void setup() {
     Serial.begin(115200);
+    Serial.println("FOOT FIRMWARE BUILD 2 LOADED");
     delay(1500);
 
     Serial.println();
     Serial.println("========================================");
     Serial.println("Disha-Rakshak Foot Module");
-    Serial.println("MPU6050 ESP-NOW Raw Data Sender");
+    Serial.println("IMU ESP-NOW Raw Data Sender - BUILD 2");
     Serial.println("========================================");
 
     Wire.begin(SDA_PIN, SCL_PIN);
-    Wire.setClock(400000);
+    Wire.setClock(I2C_CLOCK_HZ);
+    delay(250);
 
     if (!initializeMpu6050()) {
         Serial.println("[FATAL] MPU6050 initialization failed");
@@ -301,20 +271,20 @@ void setup() {
         }
     }
 
-    Serial.println("[READY] Foot module is ready");
+    Serial.println("[READY] Foot module is transmitting MPU data");
 }
 
 void loop() {
     unsigned long currentTime = millis();
 
     if (currentTime - previousSendTime < SEND_INTERVAL_MS) {
+        delay(1);
         return;
     }
 
     previousSendTime = currentTime;
 
     ImuPacket packet = {};
-
     packet.magic = PACKET_MAGIC;
     packet.sequence = ++sequenceNumber;
 
@@ -323,15 +293,15 @@ void loop() {
         return;
     }
 
-    esp_err_t result = esp_now_send(
+    esp_err_t sendResult = esp_now_send(
         BROADCAST_ADDRESS,
         reinterpret_cast<const uint8_t *>(&packet),
         sizeof(packet)
     );
 
-    if (result != ESP_OK) {
+    if (sendResult != ESP_OK) {
         Serial.print("[SEND ERROR] esp_now_send returned: ");
-        Serial.println(result);
+        Serial.println(sendResult);
         return;
     }
 
