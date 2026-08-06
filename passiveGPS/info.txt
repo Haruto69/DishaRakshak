@@ -1,0 +1,7 @@
+Requirements --> Python libs
+    pyserial
+    ahrs
+    gps
+    matplotlib
+    folium
+

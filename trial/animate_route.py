@@ -38,7 +38,7 @@ ax.scatter(hx, hy, c="blue", s=100, marker="*", zorder=5)
 ax.text(hx, hy, "Home Base", fontsize=10, color="blue")
 
 # --- Extract and plot buildings ---
-buildings = extract_buildings("rnsit.osm")   # ✅ pass file path, not graph
+buildings = extract_buildings("dummy.osm")   # ✅ pass file path, not graph
 print("Extracted buildings:", buildings)     # Debug print
 plot_buildings(ax, buildings)
 
