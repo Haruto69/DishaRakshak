@@ -8,7 +8,28 @@
 // ==================================================
 
 constexpr uint8_t WIFI_CHANNEL = 6;
-constexpr uint32_t PACKET_MAGIC = 0x44524B32; // Must match foot.ino
+constexpr uint32_t PACKET_MAGIC = 0x44524B34; // Must match foot.ino
+constexpr uint32_t DISPLAY_INTERVAL_MS = 250;
+constexpr uint32_t OFFLINE_TIMEOUT_MS = 1500;
+
+const uint8_t LEFT_FOOT_MAC[6] = {
+    0x70, 0x4B, 0xCA, 0x46, 0xE4, 0xC0
+};
+
+const uint8_t RIGHT_FOOT_MAC[6] = {
+    0x70, 0x4B, 0xCA, 0x47, 0x57, 0x14
+};
+
+// ==================================================
+// Shared packet definitions
+// These must exactly match foot.ino.
+// ==================================================
+
+enum FootId : uint8_t {
+    FOOT_UNKNOWN = 0,
+    FOOT_LEFT = 1,
+    FOOT_RIGHT = 2
+};
 
 enum TiltDirection : uint8_t {
     TILT_LEVEL = 0,
@@ -55,25 +76,46 @@ struct MotionPacket {
     float velocityY;
     float velocityZ;
 
+    uint8_t footId;
     uint8_t isStill;
     uint8_t tiltDirection;
     uint8_t movementDirection;
     uint8_t rotationAxis;
     int8_t rotationSign;
-    uint8_t reserved[3];
+    uint8_t reserved[2];
 };
 
 static_assert(sizeof(MotionPacket) == 64, "Unexpected MotionPacket size");
 
+struct FootState {
+    MotionPacket packet;
+    uint32_t lastReceivedMillis;
+    bool hasPacket;
+};
+
+// ==================================================
+// Runtime state
+// ==================================================
+
 portMUX_TYPE packetMux = portMUX_INITIALIZER_UNLOCKED;
 
-volatile bool newPacketAvailable = false;
-MotionPacket latestPacket = {};
-uint8_t latestSenderMac[6] = {};
+FootState leftState = {};
+FootState rightState = {};
+
+volatile uint32_t validPacketCount = 0;
+volatile uint32_t invalidLengthCount = 0;
+volatile uint32_t invalidMagicCount = 0;
+volatile uint32_t unknownSenderCount = 0;
+
+uint32_t lastDisplayMillis = 0;
 
 // ==================================================
-// Labels
+// Helpers
 // ==================================================
+
+bool macEqual(const uint8_t *a, const uint8_t *b) {
+    return memcmp(a, b, 6) == 0;
+}
 
 const char *tiltLabel(uint8_t value) {
     switch (value) {
@@ -101,24 +143,14 @@ const char *movementLabel(uint8_t value) {
 
 const char *rotationLabel(uint8_t axis, int8_t sign) {
     if (axis == ROTATION_NONE) return "NONE";
-
-    if (axis == ROTATION_X) {
-        return sign >= 0 ? "X+" : "X-";
-    }
-
-    if (axis == ROTATION_Y) {
-        return sign >= 0 ? "Y+" : "Y-";
-    }
-
-    if (axis == ROTATION_Z) {
-        return sign >= 0 ? "Z+" : "Z-";
-    }
-
+    if (axis == ROTATION_X) return sign >= 0 ? "X+" : "X-";
+    if (axis == ROTATION_Y) return sign >= 0 ? "Y+" : "Y-";
+    if (axis == ROTATION_Z) return sign >= 0 ? "Z+" : "Z-";
     return "UNKNOWN";
 }
 
 // ==================================================
-// ESP-NOW callback and setup
+// ESP-NOW callback
 // ==================================================
 
 void onDataReceived(
@@ -126,11 +158,12 @@ void onDataReceived(
     const uint8_t *incomingData,
     int dataLength
 ) {
-    if (
-        receiveInfo == nullptr ||
-        incomingData == nullptr ||
-        dataLength != sizeof(MotionPacket)
-    ) {
+    if (receiveInfo == nullptr || incomingData == nullptr) {
+        return;
+    }
+
+    if (dataLength != sizeof(MotionPacket)) {
+        invalidLengthCount++;
         return;
     }
 
@@ -138,17 +171,36 @@ void onDataReceived(
     memcpy(&received, incomingData, sizeof(received));
 
     if (received.magic != PACKET_MAGIC) {
+        invalidMagicCount++;
         return;
     }
 
+    const uint32_t receivedAt = millis();
+
     portENTER_CRITICAL(&packetMux);
 
-    latestPacket = received;
-    memcpy(latestSenderMac, receiveInfo->src_addr, 6);
-    newPacketAvailable = true;
+    if (macEqual(receiveInfo->src_addr, LEFT_FOOT_MAC)) {
+        received.footId = FOOT_LEFT;
+        leftState.packet = received;
+        leftState.lastReceivedMillis = receivedAt;
+        leftState.hasPacket = true;
+        validPacketCount++;
+    } else if (macEqual(receiveInfo->src_addr, RIGHT_FOOT_MAC)) {
+        received.footId = FOOT_RIGHT;
+        rightState.packet = received;
+        rightState.lastReceivedMillis = receivedAt;
+        rightState.hasPacket = true;
+        validPacketCount++;
+    } else {
+        unknownSenderCount++;
+    }
 
     portEXIT_CRITICAL(&packetMux);
 }
+
+// ==================================================
+// ESP-NOW setup
+// ==================================================
 
 bool setWiFiChannel() {
     esp_wifi_set_promiscuous(true);
@@ -170,18 +222,50 @@ bool initializeEspNow() {
     Serial.print("[ESP-NOW] Belt MAC: ");
     Serial.println(WiFi.macAddress());
 
-    if (!setWiFiChannel()) return false;
-    if (esp_now_init() != ESP_OK) return false;
+    if (!setWiFiChannel()) {
+        Serial.println("[ESP-NOW] Failed to set Wi-Fi channel");
+        return false;
+    }
 
-    return esp_now_register_recv_cb(onDataReceived) == ESP_OK;
+    if (esp_now_init() != ESP_OK) {
+        Serial.println("[ESP-NOW] Initialization failed");
+        return false;
+    }
+
+    if (esp_now_register_recv_cb(onDataReceived) != ESP_OK) {
+        Serial.println("[ESP-NOW] Receive callback registration failed");
+        return false;
+    }
+
+    Serial.print("[ESP-NOW] Listening on channel ");
+    Serial.println(WIFI_CHANNEL);
+
+    return true;
 }
 
 // ==================================================
 // Output
 // ==================================================
 
-void printPacket(const MotionPacket &packet) {
-    Serial.print("[RX] #");
+void printFootState(
+    const char *label,
+    const FootState &state,
+    uint32_t nowMillis
+) {
+    Serial.print(label);
+    Serial.print(" | ");
+
+    if (
+        !state.hasPacket ||
+        nowMillis - state.lastReceivedMillis > OFFLINE_TIMEOUT_MS
+    ) {
+        Serial.println("OFFLINE / NO RECENT PACKETS");
+        return;
+    }
+
+    const MotionPacket &packet = state.packet;
+
+    Serial.print("#");
     Serial.print(packet.sequence);
 
     Serial.print(" | ");
@@ -213,22 +297,6 @@ void printPacket(const MotionPacket &packet) {
     Serial.print(packet.velocityY, 2);
     Serial.print(",");
     Serial.print(packet.velocityZ, 2);
-    Serial.print(")");
-
-    Serial.print(" | Accel=(");
-    Serial.print(packet.accelXG, 2);
-    Serial.print(",");
-    Serial.print(packet.accelYG, 2);
-    Serial.print(",");
-    Serial.print(packet.accelZG, 2);
-    Serial.print(")");
-
-    Serial.print(" | Gyro=(");
-    Serial.print(packet.gyroXDps, 1);
-    Serial.print(",");
-    Serial.print(packet.gyroYDps, 1);
-    Serial.print(",");
-    Serial.print(packet.gyroZDps, 1);
     Serial.println(")");
 }
 
@@ -242,35 +310,60 @@ void setup() {
 
     Serial.println();
     Serial.println("========================================");
-    Serial.println("Disha-Rakshak Belt Module - BUILD 3");
-    Serial.println("Motion Packet Receiver");
+    Serial.println("Disha-Rakshak Belt Module - BUILD 4 FIXED");
+    Serial.println("Dual Foot Motion Receiver");
     Serial.println("========================================");
 
     if (!initializeEspNow()) {
         Serial.println("[FATAL] ESP-NOW initialization failed");
-        while (true) delay(1000);
+        while (true) {
+            delay(1000);
+        }
     }
 
-    Serial.println("[READY] Waiting for motion packets");
+    Serial.println("[READY] Waiting for LEFT and RIGHT foot packets");
 }
 
 void loop() {
-    MotionPacket packetCopy = {};
-    bool shouldPrint = false;
+    const uint32_t nowMillis = millis();
+
+    if (nowMillis - lastDisplayMillis < DISPLAY_INTERVAL_MS) {
+        delay(1);
+        return;
+    }
+
+    lastDisplayMillis = nowMillis;
+
+    FootState leftCopy = {};
+    FootState rightCopy = {};
+
+    uint32_t validCopy = 0;
+    uint32_t invalidLengthCopy = 0;
+    uint32_t invalidMagicCopy = 0;
+    uint32_t unknownSenderCopy = 0;
 
     portENTER_CRITICAL(&packetMux);
 
-    if (newPacketAvailable) {
-        packetCopy = latestPacket;
-        newPacketAvailable = false;
-        shouldPrint = true;
-    }
+    leftCopy = leftState;
+    rightCopy = rightState;
+
+    validCopy = validPacketCount;
+    invalidLengthCopy = invalidLengthCount;
+    invalidMagicCopy = invalidMagicCount;
+    unknownSenderCopy = unknownSenderCount;
 
     portEXIT_CRITICAL(&packetMux);
 
-    if (shouldPrint) {
-        printPacket(packetCopy);
-    }
+    Serial.println("----------------------------------------");
+    printFootState("LEFT ", leftCopy, nowMillis);
+    printFootState("RIGHT", rightCopy, nowMillis);
 
-    delay(1);
+    Serial.print("[DEBUG] valid=");
+    Serial.print(validCopy);
+    Serial.print(" badLength=");
+    Serial.print(invalidLengthCopy);
+    Serial.print(" badMagic=");
+    Serial.print(invalidMagicCopy);
+    Serial.print(" unknownSender=");
+    Serial.println(unknownSenderCopy);
 }
