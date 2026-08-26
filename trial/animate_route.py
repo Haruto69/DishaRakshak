@@ -17,7 +17,7 @@ def calculate_bearing(lat1, lon1, lat2, lon2):
     return dirs[idx]
 
 # --- Load map ---
-G = load_map(map_name="rnsit.osm")  # ✅ use the new load_map function
+G = load_map(map_name="dummy.osm")  # ✅ use the new load_map function
 
 # --- Define Home Base ---
 home_lat, home_lon = 12.8965, 77.5650
