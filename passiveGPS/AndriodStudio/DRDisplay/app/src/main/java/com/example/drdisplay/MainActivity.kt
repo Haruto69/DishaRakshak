@@ -1,68 +1,66 @@
 package com.example.drdisplay
 
-import android.Manifest
 import android.os.Bundle
-import android.os.Looper
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Menu
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import com.example.drdisplay.ui.theme.DRDisplayTheme
-
-// ✅ GPS imports
-import androidx.core.app.ActivityCompat
-import com.google.android.gms.location.*
+import kotlinx.coroutines.launch
 
 class MainActivity : ComponentActivity() {
-
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
-        // ✅ Ask for GPS permission at runtime
-        ActivityCompat.requestPermissions(
-            this,
-            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-            1
-        )
-
-        // ✅ Initialize GPS client
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-
-        enableEdgeToEdge()
         setContent {
-            var locationText by remember { mutableStateOf("Waiting for GPS...") }
+            DRDisplayTheme {
+                // Drawer state + coroutine scope
+                val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
+                val scope = rememberCoroutineScope()
 
-            // ✅ Start GPS logging and update UI
-            val locationRequest = LocationRequest.Builder(
-                Priority.PRIORITY_HIGH_ACCURACY, 5000 // every 5 seconds
-            ).build()
-
-            fusedLocationClient.requestLocationUpdates(
-                locationRequest,
-                object : LocationCallback() {
-                    override fun onLocationResult(locationResult: LocationResult) {
-                        for (location in locationResult.locations) {
-                            locationText =
-                                "Latitude: ${location.latitude} \n Longitude: ${location.longitude} \n Accuracy: ${location.accuracy}m"
+                // Drawer + Scaffold
+                ModalNavigationDrawer(
+                    drawerState = drawerState,
+                    drawerContent = {
+                        ModalDrawerSheet {
+                            Text(
+                                "Menu",
+                                style = MaterialTheme.typography.titleMedium,
+                                modifier = Modifier.padding(16.dp)
+                            )
+                            Divider()
+                            DrawerItem("GPS Monitor")
+                            DrawerItem("Download OSM")
+                            DrawerItem("Set Home Base")
+                            DrawerItem("Animation Screen")
                         }
                     }
-                },
-                Looper.getMainLooper()
-            )
-
-            DRDisplayTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Text(
-                        text = locationText,
-                        modifier = Modifier.padding(innerPadding)
+                ) {
+                    Scaffold(
+                        topBar = {
+                            TopAppBar(
+                                title = { Text("DR Display") },
+                                navigationIcon = {
+                                    IconButton(onClick = { scope.launch { drawerState.open() } }) {
+                                        Icon(Icons.Filled.Menu, contentDescription = "Menu")
+                                    }
+                                }
+                            )
+                        },
+                        content = { innerPadding ->
+                            Column(
+                                modifier = Modifier
+                                    .padding(innerPadding)
+                                    .fillMaxSize(),
+                                verticalArrangement = Arrangement.Center
+                            ) {
+                                Text("Main content goes here")
+                            }
+                        }
                     )
                 }
             }
@@ -70,10 +68,12 @@ class MainActivity : ComponentActivity() {
     }
 }
 
-@Preview(showBackground = true)
+// Helper composable for drawer items
 @Composable
-fun GreetingPreview() {
-    DRDisplayTheme {
-        Text("Preview GPS")
-    }
+fun DrawerItem(text: String) {
+    Text(
+        text,
+        style = MaterialTheme.typography.bodyLarge,
+        modifier = Modifier.padding(16.dp)
+    )
 }

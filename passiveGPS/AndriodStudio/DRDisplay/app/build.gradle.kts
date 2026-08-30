@@ -52,4 +52,6 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
     implementation("com.google.android.gms:play-services-location:21.0.1")
+    implementation("com.squareup.okhttp3:okhttp:4.11.0")
+    implementation("org.osmdroid:osmdroid-android:6.1.18")
 }
