@@ -51,7 +51,19 @@ dependencies {
     androidTestImplementation(libs.androidx.junit)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
     debugImplementation(libs.androidx.compose.ui.tooling)
-    implementation("com.google.android.gms:play-services-location:21.0.1")
-    implementation("com.squareup.okhttp3:okhttp:4.11.0")
-    implementation("org.osmdroid:osmdroid-android:6.1.18")
+    // Google Play Services (GPS)
+    implementation("com.google.android.gms:play-services-location:21.4.0")
+    // OkHttp (network requests)
+    implementation("com.squareup.okhttp3:okhttp:5.5.0")
+    // OSMdroid (map rendering)
+    implementation("org.osmdroid:osmdroid-android:6.1.20")
+    // Jetpack Compose icons
+    implementation("androidx.compose.material:material-icons-extended:1.7.8")
+    // Compose BOM (keeps versions consistent)
+    implementation(platform("androidx.compose:compose-bom:2024.09.00"))
+    // Material3
+    implementation("androidx.compose.material3:material3")
+    // Icons
+    implementation("androidx.compose.material:material-icons-extended:1.7.8")
+
 }
