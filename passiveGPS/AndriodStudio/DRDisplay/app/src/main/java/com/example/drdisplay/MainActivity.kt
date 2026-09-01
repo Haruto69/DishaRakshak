@@ -29,11 +29,9 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import android.provider.OpenableColumns
 import androidx.compose.ui.text.style.TextAlign
-import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflect.TypeToken
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import java.util.prefs.Preferences
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
@@ -188,6 +186,15 @@ fun SearchOSMScreen(gpsText: String) {
 
     var errorText by remember { mutableStateOf<String?>(null) }
 
+    // Home base state
+    var homeBases by remember { mutableStateOf(listOf<HomeBase>()) }
+    var activeIndex by remember { mutableStateOf(-1) }
+
+    // Load persisted bases on startup
+    LaunchedEffect(Unit) {
+        homeBases = loadHomeBases(context)
+    }
+
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument(),
         onResult = { uri -> if (uri != null) activeOsmUri = uri }
@@ -216,14 +223,12 @@ fun SearchOSMScreen(gpsText: String) {
         Spacer(Modifier.height(8.dp))
         if (activeOsmUri != null) {
             val fileName = getFileName(context, activeOsmUri!!)
-            Text(
-                text = "Custom map selected: $fileName",
+            Text("Custom map selected: $fileName",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.primary
             )
         } else {
-            Text(
-                text = "Using default map (tighter_around_rns.osm)",
+            Text("Using default map (tighter_around_rns.osm)",
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.secondary
             )
@@ -269,16 +274,21 @@ fun SearchOSMScreen(gpsText: String) {
 
         Spacer(Modifier.height(16.dp))
         Button(onClick = {
-            errorText = when (mode) {
-                "name" -> if (areaName.isNotEmpty() && availableNames.contains(areaName)) null else "Area does not exist"
-                "coords" -> if (lat.isNotEmpty() && lon.isNotEmpty()
-                    && availableLats.contains(lat)
-                    && availableLons.contains(lon)) null
-                else "Coordinates not valid"
-                else -> "Invalid mode"
+            if (mode == "name" && selectedName != null) {
+                val hb = HomeBase(
+                    name = selectedName!!,
+                    lat = lat.toDoubleOrNull() ?: 0.0,
+                    lon = lon.toDoubleOrNull() ?: 0.0,
+                    mapId = activeOsmUri?.let { getFileName(context, it) } ?: "default"
+                )
+                val updated = homeBases + hb
+                homeBases = updated
+                CoroutineScope(Dispatchers.IO).launch {
+                    saveHomeBases(context, updated)
+                }
             }
         }) {
-            Text("Search")
+            Text("Select Home Base")
         }
 
         if (errorText != null) {
@@ -286,7 +296,39 @@ fun SearchOSMScreen(gpsText: String) {
             Text(errorText!!, color = MaterialTheme.colorScheme.error)
         }
 
-        Spacer(Modifier.height(16.dp))
+        Spacer(Modifier.height(8.dp))
+        Text("Saved Home Bases:")
+
+        homeBases.filter { it.mapId == (activeOsmUri?.let { getFileName(context, it) } ?: "default") }
+            .forEachIndexed { index, hb ->
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    RadioButton(
+                        selected = index == activeIndex,
+                        onClick = { activeIndex = index }
+                    )
+                    Text("${hb.name} (${hb.lat}, ${hb.lon})")
+
+                    Spacer(Modifier.width(4.dp))
+                    Button(onClick = {
+                        val renamed = homeBases.toMutableList()
+                        renamed[index] = renamed[index].copy(name = "Custom Name")
+                        homeBases = renamed
+                        CoroutineScope(Dispatchers.IO).launch {
+                            saveHomeBases(context, renamed)
+                        }
+                    }) { Text("Rename") }
+
+                    Spacer(Modifier.width(4.dp))
+                    Button(onClick = {
+                        val updated = homeBases.toMutableList()
+                        updated.removeAt(index)
+                        homeBases = updated
+                        CoroutineScope(Dispatchers.IO).launch {
+                            saveHomeBases(context, updated)
+                        }
+                    }) { Text("Delete") }
+                }
+            }
     }
 }
 
@@ -470,51 +512,6 @@ suspend fun loadHomeBases(context: Context): List<HomeBase> {
     val prefs = context.homeBaseDataStore.data.first()
     val json = prefs[HomeBasePrefs.HOME_BASES] ?: "[]"
     return Gson().fromJson(json, object : TypeToken<List<HomeBase>>() {}.type)
-}
-
-// Compose UI
-@Composable
-fun HomeBaseScreen(selectedLocation: HomeBase?, mapId: String, context: Context) {
-    var homeBases by remember { mutableStateOf(listOf<HomeBase>()) }
-
-    // Load persisted bases on startup
-    LaunchedEffect(Unit) {
-        homeBases = loadHomeBases(context)
-    }
-
-    Column(modifier = Modifier.padding(16.dp)) {
-        Button(onClick = {
-            if (selectedLocation != null) {
-                val updated = homeBases + selectedLocation.copy(mapId = mapId)
-                homeBases = updated
-                CoroutineScope(Dispatchers.IO).launch {
-                    saveHomeBases(context, updated)
-                }
-            }
-        }) {
-            Text("Save Home Base")
-        }
-
-        Spacer(Modifier.height(8.dp))
-
-        Text("Saved Home Bases:")
-        homeBases.filter { it.mapId == mapId }.forEachIndexed { index, hb ->
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("${hb.name} (${hb.lat}, ${hb.lon})")
-                Spacer(Modifier.width(8.dp))
-                Button(onClick = {
-                    val renamed = homeBases.toMutableList()
-                    renamed[index] = renamed[index].copy(name = "Custom Name")
-                    homeBases = renamed
-                    CoroutineScope(Dispatchers.IO).launch {
-                        saveHomeBases(context, renamed)
-                    }
-                }) {
-                    Text("Rename")
-                }
-            }
-        }
-    }
 }
 
 // Placeholder for Animation screen

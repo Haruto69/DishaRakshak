@@ -67,5 +67,12 @@ dependencies {
     implementation("androidx.compose.material3:material3")
     // Icons
     implementation("androidx.compose.material:material-icons-extended:1.7.8")
+    // DataStore
+    implementation("androidx.datastore:datastore-preferences:1.0.0")
+    // Gson
+    implementation("com.google.code.gson:gson:2.10.1")
+    // Coroutines (needed for .first() and launch)
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
+    implementation("org.jetbrains.kotlinx:kotlinx-coroutines-android:1.7.3")
 
 }
