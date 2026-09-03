@@ -39,7 +39,7 @@ import androidx.datastore.preferences.preferencesDataStore
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.first
-
+import androidx.compose.foundation.combinedClickable
 
 class MainActivity : ComponentActivity() {
 
@@ -190,6 +190,9 @@ fun SearchOSMScreen(gpsText: String) {
     var homeBases by remember { mutableStateOf(listOf<HomeBase>()) }
     var activeIndex by remember { mutableStateOf(-1) }
 
+    // Reset counter for AutoCompleteTextField
+    var resetCounter by remember { mutableStateOf(0) }
+
     // Load persisted bases on startup
     LaunchedEffect(Unit) {
         homeBases = loadHomeBases(context)
@@ -203,6 +206,12 @@ fun SearchOSMScreen(gpsText: String) {
     val availableNames = remember(activeOsmUri) { parseOsmNames(context, activeOsmUri) }
     val availableLats = remember(activeOsmUri) { parseOsmLatitudes(context, activeOsmUri) }
     val availableLons = remember(activeOsmUri) { parseOsmLongitudes(context, activeOsmUri) }
+
+    // State for dialogs (declare these at the top of SearchOSMScreen)
+    var showOptionsDialog by remember { mutableStateOf(false) }
+    var showRenameDialog by remember { mutableStateOf(false) }
+    var renameText by remember { mutableStateOf("") }
+    var selectedIndexForDialog by remember { mutableStateOf(-1) }
 
     Column(
         modifier = Modifier.fillMaxSize().padding(32.dp),
@@ -218,20 +227,6 @@ fun SearchOSMScreen(gpsText: String) {
             Button(onClick = { launcher.launch(arrayOf("application/xml","text/xml","*/*")) }) {
                 Text("Load Custom Map")
             }
-        }
-
-        Spacer(Modifier.height(8.dp))
-        if (activeOsmUri != null) {
-            val fileName = getFileName(context, activeOsmUri!!)
-            Text("Custom map selected: $fileName",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.primary
-            )
-        } else {
-            Text("Using default map (tighter_around_rns.osm)",
-                style = MaterialTheme.typography.bodySmall,
-                color = MaterialTheme.colorScheme.secondary
-            )
         }
 
         Spacer(Modifier.height(16.dp))
@@ -252,7 +247,7 @@ fun SearchOSMScreen(gpsText: String) {
                 label = "Enter place name",
                 allItems = availableNames,
                 onItemSelected = { selectedName = it; areaName = it },
-                resetKey = Pair(activeOsmUri, mode)
+                resetKey = resetCounter   // 🔑 pass resetCounter here
             )
         } else {
             Column {
@@ -260,14 +255,14 @@ fun SearchOSMScreen(gpsText: String) {
                     label = "Latitude",
                     allItems = availableLats,
                     onItemSelected = { lat = it },
-                    resetKey = Pair(activeOsmUri, mode)
+                    resetKey = resetCounter
                 )
                 Spacer(Modifier.height(8.dp))
                 AutoCompleteTextField(
                     label = "Longitude",
                     allItems = availableLons,
                     onItemSelected = { lon = it },
-                    resetKey = Pair(activeOsmUri, mode)
+                    resetKey = resetCounter
                 )
             }
         }
@@ -275,14 +270,21 @@ fun SearchOSMScreen(gpsText: String) {
         Spacer(Modifier.height(16.dp))
         Button(onClick = {
             if (mode == "name" && selectedName != null) {
+                val index = availableNames.indexOf(selectedName!!)
                 val hb = HomeBase(
                     name = selectedName!!,
-                    lat = lat.toDoubleOrNull() ?: 0.0,
-                    lon = lon.toDoubleOrNull() ?: 0.0,
+                    lat = availableLats.getOrNull(index)?.toDoubleOrNull() ?: 0.0,
+                    lon = availableLons.getOrNull(index)?.toDoubleOrNull() ?: 0.0,
                     mapId = activeOsmUri?.let { getFileName(context, it) } ?: "default"
                 )
                 val updated = homeBases + hb
                 homeBases = updated
+
+                // 🔑 Clear text box and reset autocomplete
+                areaName = ""
+                selectedName = null
+                resetCounter++
+
                 CoroutineScope(Dispatchers.IO).launch {
                     saveHomeBases(context, updated)
                 }
@@ -296,39 +298,86 @@ fun SearchOSMScreen(gpsText: String) {
             Text(errorText!!, color = MaterialTheme.colorScheme.error)
         }
 
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(16.dp))
         Text("Saved Home Bases:")
 
         homeBases.filter { it.mapId == (activeOsmUri?.let { getFileName(context, it) } ?: "default") }
             .forEachIndexed { index, hb ->
-                Row(verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.combinedClickable(
+                        onClick = { activeIndex = index },
+                        onLongClick = {
+                            selectedIndexForDialog = index
+                            showOptionsDialog = true
+                        }
+                    )
+                ) {
                     RadioButton(
                         selected = index == activeIndex,
                         onClick = { activeIndex = index }
                     )
                     Text("${hb.name} (${hb.lat}, ${hb.lon})")
+                }
+            }
 
-                    Spacer(Modifier.width(4.dp))
+// Options dialog
+        if (showOptionsDialog) {
+            AlertDialog(
+                onDismissRequest = { showOptionsDialog = false },
+                title = { Text("Manage Home Base") },
+                text = { Text("Rename or delete this home base?") },
+                confirmButton = {
                     Button(onClick = {
-                        val renamed = homeBases.toMutableList()
-                        renamed[index] = renamed[index].copy(name = "Custom Name")
-                        homeBases = renamed
-                        CoroutineScope(Dispatchers.IO).launch {
-                            saveHomeBases(context, renamed)
-                        }
+                        showOptionsDialog = false
+                        showRenameDialog = true
+                        renameText = homeBases[selectedIndexForDialog].name
                     }) { Text("Rename") }
-
-                    Spacer(Modifier.width(4.dp))
+                },
+                dismissButton = {
                     Button(onClick = {
                         val updated = homeBases.toMutableList()
-                        updated.removeAt(index)
+                        updated.removeAt(selectedIndexForDialog)
                         homeBases = updated
                         CoroutineScope(Dispatchers.IO).launch {
                             saveHomeBases(context, updated)
                         }
+                        showOptionsDialog = false
                     }) { Text("Delete") }
                 }
-            }
+            )
+        }
+
+// Rename dialog
+        if (showRenameDialog) {
+            AlertDialog(
+                onDismissRequest = { showRenameDialog = false },
+                title = { Text("Rename Home Base") },
+                text = {
+                    TextField(
+                        value = renameText,
+                        onValueChange = { renameText = it },
+                        label = { Text("New name") }
+                    )
+                },
+                confirmButton = {
+                    Button(onClick = {
+                        val updated = homeBases.toMutableList()
+                        updated[selectedIndexForDialog] =
+                            updated[selectedIndexForDialog].copy(name = renameText)
+                        homeBases = updated
+                        CoroutineScope(Dispatchers.IO).launch {
+                            saveHomeBases(context, updated)
+                        }
+                        showRenameDialog = false
+                    }) { Text("OK") }
+                },
+                dismissButton = {
+                    Button(onClick = { showRenameDialog = false }) { Text("Cancel") }
+                }
+            )
+        }
+
     }
 }
 
@@ -351,7 +400,7 @@ fun AutoCompleteTextField(
     onItemSelected: (String) -> Unit,
     resetKey: Any? = null
 ) {
-    // Reset query whenever resetKey changes (e.g. activeOsmUri or mode)
+    // Reset query whenever resetKey changes
     var query by remember(resetKey) { mutableStateOf("") }
 
     // Suggestions recompute whenever query OR allItems changes
@@ -389,10 +438,11 @@ fun AutoCompleteTextField(
         }
     }
 }
-
 // --- OSM Parsers ---
 fun parseOsmNames(context: Context, uri: Uri?): List<String> {
     val names = mutableListOf<String>()
+    val nodeMap = mutableMapOf<String, Pair<Double, Double>>() // id → (lat, lon)
+
     try {
         val inputStream = if (uri != null) {
             context.contentResolver.openInputStream(uri)
@@ -403,38 +453,67 @@ fun parseOsmNames(context: Context, uri: Uri?): List<String> {
         parser.setInput(inputStream, null)
 
         var eventType = parser.eventType
+        var currentName: String? = null
         var currentLat: String? = null
         var currentLon: String? = null
-        var currentName: String? = null
+        val currentWayNodes = mutableListOf<Pair<Double, Double>>()
 
         while (eventType != XmlPullParser.END_DOCUMENT) {
             when (eventType) {
                 XmlPullParser.START_TAG -> {
-                    if (parser.name == "node") {
-                        currentLat = parser.getAttributeValue(null, "lat")
-                        currentLon = parser.getAttributeValue(null, "lon")
-                    }
-                    if (parser.name == "tag") {
-                        val k = parser.getAttributeValue(null, "k")
-                        val v = parser.getAttributeValue(null, "v")
-                        if (k == "name" && v != null) {
-                            currentName = v
+                    when (parser.name) {
+                        "node" -> {
+                            val id = parser.getAttributeValue(null, "id")
+                            val lat = parser.getAttributeValue(null, "lat")?.toDoubleOrNull()
+                            val lon = parser.getAttributeValue(null, "lon")?.toDoubleOrNull()
+                            if (id != null && lat != null && lon != null) {
+                                nodeMap[id] = lat to lon
+                                currentLat = lat.toString()
+                                currentLon = lon.toString()
+                            }
+                        }
+                        "nd" -> {
+                            val ref = parser.getAttributeValue(null, "ref")
+                            nodeMap[ref]?.let { currentWayNodes.add(it) }
+                        }
+                        "tag" -> {
+                            val k = parser.getAttributeValue(null, "k")
+                            val v = parser.getAttributeValue(null, "v")
+                            if (k == "name" && v != null) {
+                                currentName = v
+                            }
                         }
                     }
                 }
                 XmlPullParser.END_TAG -> {
-                    if ((parser.name == "node" || parser.name == "way" || parser.name == "relation") && currentName != null) {
-                        val display = if (currentLat != null && currentLon != null) {
-                            "$currentName ($currentLat,$currentLon)"
-                        } else {
-                            currentName!!
+                    when (parser.name) {
+                        "node" -> {
+                            if (currentName != null && currentLat != null && currentLon != null) {
+                                names.add("$currentName ($currentLat,$currentLon)")
+                            }
+                            currentName = null
+                            currentLat = null
+                            currentLon = null
                         }
-                        names.add(display)
-
-                        // reset
-                        currentName = null
-                        currentLat = null
-                        currentLon = null
+                        "way" -> {
+                            if (currentName != null && currentWayNodes.isNotEmpty()) {
+                                val avgLat = currentWayNodes.map { it.first }.average()
+                                val avgLon = currentWayNodes.map { it.second }.average()
+                                names.add("$currentName ($avgLat,$avgLon)")
+                            }
+                            currentName = null
+                            currentWayNodes.clear()
+                        }
+                        "relation" -> {
+                            // For simplicity, treat relation like way: centroid of member nodes
+                            if (currentName != null && currentWayNodes.isNotEmpty()) {
+                                val avgLat = currentWayNodes.map { it.first }.average()
+                                val avgLon = currentWayNodes.map { it.second }.average()
+                                names.add("$currentName ($avgLat,$avgLon)")
+                            }
+                            currentName = null
+                            currentWayNodes.clear()
+                        }
                     }
                 }
             }
