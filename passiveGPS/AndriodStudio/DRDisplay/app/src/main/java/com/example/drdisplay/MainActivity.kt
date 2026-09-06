@@ -229,6 +229,24 @@ fun SearchOSMScreen(gpsText: String) {
             }
         }
 
+        Spacer(Modifier.height(8.dp))
+
+        // 🔑 Confirmation of selected map
+        if (activeOsmUri != null) {
+            val fileName = getFileName(context, activeOsmUri!!)
+            Text(
+                text = "Custom map selected: $fileName",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.primary
+            )
+        } else {
+            Text(
+                text = "Default map selected",
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.secondary
+            )
+        }
+
         Spacer(Modifier.height(16.dp))
 
         Text("🔍 Search Home Base", style = MaterialTheme.typography.headlineSmall)
