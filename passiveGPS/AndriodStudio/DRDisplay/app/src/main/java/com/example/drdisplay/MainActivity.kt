@@ -187,7 +187,7 @@ fun SearchOSMScreen(gpsText: String) {
     var errorText by remember { mutableStateOf<String?>(null) }
 
     // Home base state
-    var homeBases by remember { mutableStateOf(listOf<HomeBase>()) }
+    var homeBasesByMap by remember { mutableStateOf(mutableMapOf<String, MutableList<HomeBase>>()) }
     var activeIndex by remember { mutableStateOf(-1) }
 
     // Reset counter for AutoCompleteTextField
@@ -195,7 +195,7 @@ fun SearchOSMScreen(gpsText: String) {
 
     // Load persisted bases on startup
     LaunchedEffect(Unit) {
-        homeBases = loadHomeBases(context)
+        homeBasesByMap = loadHomeBases(context)
     }
 
     val launcher = rememberLauncherForActivityResult(
@@ -288,17 +288,21 @@ fun SearchOSMScreen(gpsText: String) {
         Spacer(Modifier.height(16.dp))
         Button(onClick = {
             if (mode == "name" && selectedName != null) {
+                val mapId = activeOsmUri?.let { getFileName(context, it) } ?: "default"
                 val index = availableNames.indexOf(selectedName!!)
                 val hb = HomeBase(
                     name = selectedName!!,
                     lat = availableLats.getOrNull(index)?.toDoubleOrNull() ?: 0.0,
                     lon = availableLons.getOrNull(index)?.toDoubleOrNull() ?: 0.0,
-                    mapId = activeOsmUri?.let { getFileName(context, it) } ?: "default"
+                    mapId = mapId
                 )
-                val updated = homeBases + hb
-                homeBases = updated
 
-                // 🔑 Clear text box and reset autocomplete
+                val updated = homeBasesByMap.toMutableMap()
+                val list = updated.getOrPut(mapId) { mutableListOf() }
+                list.add(hb)
+
+                homeBasesByMap = updated
+
                 areaName = ""
                 selectedName = null
                 resetCounter++
@@ -319,25 +323,25 @@ fun SearchOSMScreen(gpsText: String) {
         Spacer(Modifier.height(16.dp))
         Text("Saved Home Bases:")
 
-        homeBases.filter { it.mapId == (activeOsmUri?.let { getFileName(context, it) } ?: "default") }
-            .forEachIndexed { index, hb ->
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    modifier = Modifier.combinedClickable(
-                        onClick = { activeIndex = index },
-                        onLongClick = {
-                            selectedIndexForDialog = index
-                            showOptionsDialog = true
-                        }
-                    )
-                ) {
-                    RadioButton(
-                        selected = index == activeIndex,
-                        onClick = { activeIndex = index }
-                    )
-                    Text("${hb.name} (${hb.lat}, ${hb.lon})")
-                }
+        val mapId = activeOsmUri?.let { getFileName(context, it) } ?: "default"
+        homeBasesByMap[mapId]?.forEachIndexed { index, hb ->
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.combinedClickable(
+                    onClick = { activeIndex = index },
+                    onLongClick = {
+                        selectedIndexForDialog = index
+                        showOptionsDialog = true
+                    }
+                )
+            ) {
+                RadioButton(
+                    selected = index == activeIndex,
+                    onClick = { activeIndex = index }
+                )
+                Text("${hb.name} (${hb.lat}, ${hb.lon})")
             }
+        }
 
 // Options dialog
         if (showOptionsDialog) {
@@ -349,14 +353,21 @@ fun SearchOSMScreen(gpsText: String) {
                     Button(onClick = {
                         showOptionsDialog = false
                         showRenameDialog = true
-                        renameText = homeBases[selectedIndexForDialog].name
+
+                        val mapId = activeOsmUri?.let { getFileName(context, it) } ?: "default"
+                        renameText = homeBasesByMap[mapId]?.get(selectedIndexForDialog)?.name ?: ""
                     }) { Text("Rename") }
                 },
                 dismissButton = {
                     Button(onClick = {
-                        val updated = homeBases.toMutableList()
-                        updated.removeAt(selectedIndexForDialog)
-                        homeBases = updated
+                        val mapId = activeOsmUri?.let { getFileName(context, it) } ?: "default"
+                        val updated = homeBasesByMap.toMutableMap()
+                        val list = updated[mapId] ?: mutableListOf()
+
+                        list.removeAt(selectedIndexForDialog)
+                        updated[mapId] = list
+
+                        homeBasesByMap = updated
                         CoroutineScope(Dispatchers.IO).launch {
                             saveHomeBases(context, updated)
                         }
@@ -380,10 +391,16 @@ fun SearchOSMScreen(gpsText: String) {
                 },
                 confirmButton = {
                     Button(onClick = {
-                        val updated = homeBases.toMutableList()
-                        updated[selectedIndexForDialog] =
-                            updated[selectedIndexForDialog].copy(name = renameText)
-                        homeBases = updated
+                        val mapId = activeOsmUri?.let { getFileName(context, it) } ?: "default"
+                        val updated = homeBasesByMap.toMutableMap()
+                        val list = updated[mapId] ?: mutableListOf()
+
+                        list[selectedIndexForDialog] =
+                            list[selectedIndexForDialog].copy(name = renameText)
+
+                        updated[mapId] = list
+                        homeBasesByMap = updated
+
                         CoroutineScope(Dispatchers.IO).launch {
                             saveHomeBases(context, updated)
                         }
@@ -598,17 +615,19 @@ fun parseOsmLongitudes(context: Context, uri: Uri?): List<String> {
 
 
 //Saving home base
-suspend fun saveHomeBases(context: Context, bases: List<HomeBase>) {
+suspend fun saveHomeBases(context: Context, bases: Map<String, List<HomeBase>>) {
     val json = Gson().toJson(bases)
     context.homeBaseDataStore.edit { prefs ->
         prefs[HomeBasePrefs.HOME_BASES] = json
     }
 }
 
-suspend fun loadHomeBases(context: Context): List<HomeBase> {
+suspend fun loadHomeBases(context: Context): MutableMap<String, MutableList<HomeBase>> {
     val prefs = context.homeBaseDataStore.data.first()
-    val json = prefs[HomeBasePrefs.HOME_BASES] ?: "[]"
-    return Gson().fromJson(json, object : TypeToken<List<HomeBase>>() {}.type)
+    val json = prefs[HomeBasePrefs.HOME_BASES] ?: "{}"
+    val type = object : TypeToken<Map<String, List<HomeBase>>>() {}.type
+    val loaded: Map<String, List<HomeBase>> = Gson().fromJson(json, type)
+    return loaded.mapValues { it.value.toMutableList() }.toMutableMap()
 }
 
 // Placeholder for Animation screen
