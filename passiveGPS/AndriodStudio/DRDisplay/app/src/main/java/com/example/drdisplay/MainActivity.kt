@@ -40,6 +40,7 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.first
 import androidx.compose.foundation.combinedClickable
+import androidx.compose.material.icons.filled.Bluetooth
 
 class MainActivity : ComponentActivity() {
 
@@ -53,7 +54,9 @@ class MainActivity : ComponentActivity() {
             this,
             arrayOf(
                 Manifest.permission.ACCESS_FINE_LOCATION,
-                Manifest.permission.READ_EXTERNAL_STORAGE
+                Manifest.permission.READ_EXTERNAL_STORAGE,
+                Manifest.permission.BLUETOOTH_SCAN,
+                Manifest.permission.BLUETOOTH_CONNECT
             ),
             1
         )
@@ -90,6 +93,10 @@ fun AppLayout(fusedLocationClient: FusedLocationProviderClient) {
     var gpsText by remember { mutableStateOf("Waiting for GPS...") }
 
     val context = LocalContext.current
+
+    val bleManager = remember {
+        com.example.drdisplay.ble.BleManager(context)
+    }
 
     // Passive GPS updates
     LaunchedEffect(Unit) {
@@ -145,6 +152,11 @@ fun AppLayout(fusedLocationClient: FusedLocationProviderClient) {
             IconButton(onClick = { selectedScreen = "Animation" }) {
                 Icon(Icons.Filled.Map, contentDescription = "Animation")
             }
+            IconButton(onClick = { selectedScreen = "BLE" }) {
+                Icon(
+                    Icons.Filled.Bluetooth, contentDescription = "BLE Monitor"
+                )
+            }
         }
 
         // Main content area
@@ -153,9 +165,20 @@ fun AppLayout(fusedLocationClient: FusedLocationProviderClient) {
             contentAlignment = Alignment.Center
         ) {
             when (selectedScreen) {
-                "SearchOSM" -> SearchOSMScreen(gpsText)
-                "Animation" -> AnimationScreen(gpsText)
-                else -> Text("Main content goes here")
+
+                "SearchOSM" ->
+                    SearchOSMScreen(gpsText)
+
+                "Animation" ->
+                    AnimationScreen(gpsText)
+
+                "BLE" ->
+                    com.example.drdisplay.ble.BleScreen(
+                        bleManager = bleManager
+                    )
+
+                else ->
+                    Text("Main content goes here")
             }
         }
 
