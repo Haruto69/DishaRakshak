@@ -1,7 +1,7 @@
 package com.example.drdisplay
 
-import com.example.drdisplay.navigation.DeadReckoning
-import com.example.drdisplay.navigation.ImuSample
+import com.example.drdisplay.navigation.DeadReckoning.DeadReckoning
+import com.example.drdisplay.navigation.DeadReckoning.ImuSample
 import com.example.drdisplay.navigation.ImuSimulator
 
 /**

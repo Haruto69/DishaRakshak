@@ -41,6 +41,9 @@ import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.first
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.material.icons.filled.Bluetooth
+import androidx.compose.material.icons.filled.MapsHomeWork
+import com.example.drdisplay.navigation.animateMap.AnimationScreen
+import com.example.drdisplay.navigation.SimulatorScreen
 
 class MainActivity : ComponentActivity() {
 
@@ -76,7 +79,8 @@ data class HomeBase(
     var name: String,
     val lat: Double,
     val lon: Double,
-    val mapId: String // "default" or custom filename
+    val mapId: String,
+    val isSelected: Boolean = false
 )
 
 // DataStore setup
@@ -89,8 +93,19 @@ object HomeBasePrefs {
 
 @Composable
 fun AppLayout(fusedLocationClient: FusedLocationProviderClient) {
+
     var selectedScreen by remember { mutableStateOf("SearchOSM") }
+    var activeOsmUri by remember {
+        mutableStateOf<Uri?>(null)
+    }
     var gpsText by remember { mutableStateOf("Waiting for GPS...") }
+    var currentLat by remember {
+        mutableDoubleStateOf(0.0)
+    }
+
+    var currentLon by remember {
+        mutableDoubleStateOf(0.0)
+    }
 
     val context = LocalContext.current
 
@@ -114,8 +129,13 @@ fun AppLayout(fusedLocationClient: FusedLocationProviderClient) {
                 object : LocationCallback() {
                     override fun onLocationResult(locationResult: LocationResult) {
                         for (location in locationResult.locations) {
+                            currentLat = location.latitude
+                            currentLon = location.longitude
+
                             gpsText =
-                                "Lat: ${location.latitude}, Lon: ${location.longitude}, Acc: ${location.accuracy}m"
+                                "Lat: ${location.latitude}, " +
+                                        "Lon: ${location.longitude}, " +
+                                        "Acc: ${location.accuracy}m"
                         }
                     }
 
@@ -157,6 +177,16 @@ fun AppLayout(fusedLocationClient: FusedLocationProviderClient) {
                     Icons.Filled.Bluetooth, contentDescription = "BLE Monitor"
                 )
             }
+            IconButton(
+                onClick = {
+                    selectedScreen = "DeadReckoning"
+                }
+            ) {
+                Icon(
+                    Icons.Filled.MapsHomeWork,
+                    contentDescription = "Dead Reckoning"
+                )
+            }
         }
 
         // Main content area
@@ -167,15 +197,28 @@ fun AppLayout(fusedLocationClient: FusedLocationProviderClient) {
             when (selectedScreen) {
 
                 "SearchOSM" ->
-                    SearchOSMScreen(gpsText)
+                    SearchOSMScreen(
+                        gpsText = gpsText,
+                        activeOsmUri = activeOsmUri,
+                        onMapSelected = {
+                            activeOsmUri = it
+                        }
+                    )
 
                 "Animation" ->
-                    AnimationScreen(gpsText)
+                    AnimationScreen(
+                        gpsText = gpsText,
+                        mapUri = activeOsmUri,
+                        currentLat = currentLat,
+                        currentLon = currentLon
+                    )
 
                 "BLE" ->
                     com.example.drdisplay.ble.BleScreen(
                         bleManager = bleManager
                     )
+
+                "DeadReckoning" -> SimulatorScreen()
 
                 else ->
                     Text("Main content goes here")
@@ -196,10 +239,13 @@ fun AppLayout(fusedLocationClient: FusedLocationProviderClient) {
 
 // Placeholder for Search OSM screen
 @Composable
-fun SearchOSMScreen(gpsText: String) {
+fun SearchOSMScreen(
+    gpsText: String,
+    activeOsmUri: Uri?,
+    onMapSelected: (Uri?) -> Unit
+) {
     val context = LocalContext.current
 
-    var activeOsmUri by remember { mutableStateOf<Uri?>(null) }
     var mode by remember { mutableStateOf("name") }
     var areaName by remember { mutableStateOf("") }
     var selectedName by remember { mutableStateOf<String?>(null) }
@@ -223,7 +269,10 @@ fun SearchOSMScreen(gpsText: String) {
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument(),
-        onResult = { uri -> if (uri != null) activeOsmUri = uri }
+        onResult = { uri ->
+            if (uri != null)
+                onMapSelected(uri)
+        }
     )
 
     val availableNames = remember(activeOsmUri) { parseOsmNames(context, activeOsmUri) }
@@ -245,7 +294,11 @@ fun SearchOSMScreen(gpsText: String) {
         Spacer(Modifier.height(8.dp))
 
         Row {
-            Button(onClick = { activeOsmUri = null }) { Text("Use Default Map") }
+            Button(
+                onClick = {
+                    onMapSelected(null)
+                }
+            ) { Text("Use Default Map") }
             Spacer(Modifier.width(8.dp))
             Button(onClick = { launcher.launch(arrayOf("application/xml","text/xml","*/*")) }) {
                 Text("Load Custom Map")
@@ -360,7 +413,28 @@ fun SearchOSMScreen(gpsText: String) {
             ) {
                 RadioButton(
                     selected = index == activeIndex,
-                    onClick = { activeIndex = index }
+                    onClick = { activeIndex = index
+                        val updated = homeBasesByMap.toMutableMap()
+                        val mapId =
+                            activeOsmUri?.let {
+                                getFileName(context, it)
+                            } ?: "default"
+                        val list =
+                            updated[mapId]?.mapIndexed { i, hb ->
+                                hb.copy(
+                                    isSelected = i == index
+                                )
+                            }?.toMutableList()
+                        if (list != null) {
+                            updated[mapId] = list
+                            homeBasesByMap = updated
+                            CoroutineScope(Dispatchers.IO).launch {
+                                saveHomeBases(
+                                    context,
+                                    updated
+                                )
+                            }
+                        } }
                 )
                 Text("${hb.name} (${hb.lat}, ${hb.lon})")
             }
@@ -651,17 +725,4 @@ suspend fun loadHomeBases(context: Context): MutableMap<String, MutableList<Home
     val type = object : TypeToken<Map<String, List<HomeBase>>>() {}.type
     val loaded: Map<String, List<HomeBase>> = Gson().fromJson(json, type)
     return loaded.mapValues { it.value.toMutableList() }.toMutableMap()
-}
-
-// Placeholder for Animation screen
-@Composable
-fun AnimationScreen(gpsText: String) {
-    Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
-    ) {
-        Text("🎞️ Animation Screen")
-        Spacer(Modifier.height(16.dp))
-    }
 }

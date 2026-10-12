@@ -1,4 +1,4 @@
-package com.example.drdisplay.navigation
+package com.example.drdisplay.navigation.deadReckoning
 
 import kotlin.math.abs
 import kotlin.math.atan2

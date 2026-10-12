@@ -1,5 +1,7 @@
-package com.example.drdisplay.navigation
+package com.example.drdisplay.navigation.deadReckoning
 
+import com.example.drdisplay.navigation.deadReckoning.DeadReckoning
+import com.example.drdisplay.navigation.deadReckoning.ImuSample
 import java.util.Random
 
 /**
