@@ -41,9 +41,10 @@ import com.google.gson.reflect.TypeToken
 import kotlinx.coroutines.flow.first
 import androidx.compose.foundation.combinedClickable
 import androidx.compose.material.icons.filled.Bluetooth
-import androidx.compose.material.icons.filled.MapsHomeWork
 import com.example.drdisplay.navigation.animateMap.AnimationScreen
 import com.example.drdisplay.navigation.SimulatorScreen
+import android.util.Log
+import java.util.Collections.list
 
 class MainActivity : ComponentActivity() {
 
@@ -51,7 +52,6 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         // Ask for GPS + storage permission
         ActivityCompat.requestPermissions(
             this,
@@ -106,6 +106,9 @@ fun AppLayout(fusedLocationClient: FusedLocationProviderClient) {
     var currentLon by remember {
         mutableDoubleStateOf(0.0)
     }
+    var selectedHomeBase by remember {
+        mutableStateOf<HomeBase?>(null)
+    }
 
     val context = LocalContext.current
 
@@ -115,6 +118,7 @@ fun AppLayout(fusedLocationClient: FusedLocationProviderClient) {
 
     // Passive GPS updates
     LaunchedEffect(Unit) {
+
         if (ActivityCompat.checkSelfPermission(
                 context,
                 Manifest.permission.ACCESS_FINE_LOCATION
@@ -177,22 +181,17 @@ fun AppLayout(fusedLocationClient: FusedLocationProviderClient) {
                     Icons.Filled.Bluetooth, contentDescription = "BLE Monitor"
                 )
             }
-            IconButton(
-                onClick = {
-                    selectedScreen = "DeadReckoning"
-                }
-            ) {
-                Icon(
-                    Icons.Filled.MapsHomeWork,
-                    contentDescription = "Dead Reckoning"
-                )
-            }
         }
 
         // Main content area
         Box(
-            modifier = Modifier.weight(1f).fillMaxWidth(),
-            contentAlignment = Alignment.Center
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxWidth()
+                .padding(
+                    top = 8.dp,
+                    bottom = 8.dp
+                )
         ) {
             when (selectedScreen) {
 
@@ -202,15 +201,24 @@ fun AppLayout(fusedLocationClient: FusedLocationProviderClient) {
                         activeOsmUri = activeOsmUri,
                         onMapSelected = {
                             activeOsmUri = it
+                        },
+                        onHomeBaseSelected = {
+                            selectedHomeBase = it
+                            Log.d(
+                                "HOMEBASE",
+                                "selectedHomeBase NOW = ${it.name}"
+                            )
                         }
                     )
+
 
                 "Animation" ->
                     AnimationScreen(
                         gpsText = gpsText,
                         mapUri = activeOsmUri,
                         currentLat = currentLat,
-                        currentLon = currentLon
+                        currentLon = currentLon,
+                        selectedHomeBase = selectedHomeBase
                     )
 
                 "BLE" ->
@@ -242,7 +250,8 @@ fun AppLayout(fusedLocationClient: FusedLocationProviderClient) {
 fun SearchOSMScreen(
     gpsText: String,
     activeOsmUri: Uri?,
-    onMapSelected: (Uri?) -> Unit
+    onMapSelected: (Uri?) -> Unit,
+    onHomeBaseSelected: (HomeBase) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -257,15 +266,40 @@ fun SearchOSMScreen(
 
     // Home base state
     var homeBasesByMap by remember { mutableStateOf(mutableMapOf<String, MutableList<HomeBase>>()) }
-    var activeIndex by remember { mutableStateOf(-1) }
 
     // Reset counter for AutoCompleteTextField
     var resetCounter by remember { mutableStateOf(0) }
 
     // Load persisted bases on startup
-    LaunchedEffect(Unit) {
+    LaunchedEffect(activeOsmUri) {
+        Log.d(
+            "HOMEBASE",
+            "URI = $activeOsmUri"
+        )
+        Log.d("HOMEBASE", "LOAD EFFECT FIRED")
+
+        val currentMapId =
+            activeOsmUri?.let {
+                getFileName(context, it)
+            } ?: "default"
+
         homeBasesByMap = loadHomeBases(context)
+        homeBasesByMap[currentMapId]
+            ?.forEach {
+                Log.d(
+                    "HOMEBASE",
+                    "LOADED ${it.name} = ${it.isSelected}"
+                )
+            }
+
+        homeBasesByMap[currentMapId]
+            ?.firstOrNull { it.isSelected }
+            ?.let {
+                onHomeBaseSelected(it)
+            }
+        Log.d("HOMEBASE", "Current Map Id = $currentMapId")
     }
+
 
     val launcher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.OpenDocument(),
@@ -378,14 +412,39 @@ fun SearchOSMScreen(
                 list.add(hb)
 
                 homeBasesByMap = updated
+                updated[mapId]?.forEach {
+                    Log.d(
+                        "HOMEBASE",
+                        "${it.name} -> ${it.isSelected}"
+                    )
+                }
 
                 areaName = ""
                 selectedName = null
                 resetCounter++
 
                 CoroutineScope(Dispatchers.IO).launch {
+                    Log.d(
+                        "HOMEBASE",
+                        "SAVING TO DATASTORE"
+                    )
                     saveHomeBases(context, updated)
+                    Log.d(
+                        "HOMEBASE",
+                        "SAVE COMPLETE"
+                    )
                 }
+                val selectedBase =
+                    hb.copy(
+                        isSelected = true
+                    )
+
+                onHomeBaseSelected(selectedBase)
+
+                Log.d(
+                    "HOMEBASE",
+                    "APP STATE UPDATE -> ${selectedBase.name}"
+                )
             }
         }) {
             Text("Select Home Base")
@@ -402,41 +461,54 @@ fun SearchOSMScreen(
         val mapId = activeOsmUri?.let { getFileName(context, it) } ?: "default"
         homeBasesByMap[mapId]?.forEachIndexed { index, hb ->
             Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier.combinedClickable(
-                    onClick = { activeIndex = index },
-                    onLongClick = {
-                        selectedIndexForDialog = index
-                        showOptionsDialog = true
-                    }
-                )
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                RadioButton(
-                    selected = index == activeIndex,
-                    onClick = { activeIndex = index
+                Log.d(
+                    "HOMEBASE",
+                    "${hb.name} selected=${hb.isSelected}"
+                )
+                Button(
+                    onClick = {
+
                         val updated = homeBasesByMap.toMutableMap()
-                        val mapId =
-                            activeOsmUri?.let {
-                                getFileName(context, it)
-                            } ?: "default"
+
                         val list =
                             updated[mapId]?.mapIndexed { i, hb ->
-                                hb.copy(
-                                    isSelected = i == index
-                                )
+                                hb.copy(isSelected = i == index)
                             }?.toMutableList()
+
                         if (list != null) {
+
                             updated[mapId] = list
                             homeBasesByMap = updated
+
+                            val selectedBase = list[index]
+
+                            onHomeBaseSelected(selectedBase)
+
+                            Log.d(
+                                "HOMEBASE",
+                                "selectedHomeBase callback = ${selectedBase.name}"
+                            )
+
                             CoroutineScope(Dispatchers.IO).launch {
-                                saveHomeBases(
-                                    context,
-                                    updated
-                                )
+                                saveHomeBases(context, updated)
                             }
-                        } }
+                        }
+                    }
+                ){
+                    Text("Select")
+                }
+                Text(
+                    text = "${hb.name} (${hb.lat}, ${hb.lon})",
+                    modifier = Modifier.combinedClickable(
+                        onClick = { },
+                        onLongClick = {
+                            selectedIndexForDialog = index
+                            showOptionsDialog = true
+                        }
+                    )
                 )
-                Text("${hb.name} (${hb.lat}, ${hb.lon})")
             }
         }
 
@@ -465,6 +537,12 @@ fun SearchOSMScreen(
                         updated[mapId] = list
 
                         homeBasesByMap = updated
+                        updated[mapId]?.forEach {
+                            Log.d(
+                                "HOMEBASE",
+                                "${it.name} -> ${it.isSelected}"
+                            )
+                        }
                         CoroutineScope(Dispatchers.IO).launch {
                             saveHomeBases(context, updated)
                         }
@@ -497,7 +575,12 @@ fun SearchOSMScreen(
 
                         updated[mapId] = list
                         homeBasesByMap = updated
-
+                        updated[mapId]?.forEach {
+                            Log.d(
+                                "HOMEBASE",
+                                "${it.name} -> ${it.isSelected}"
+                            )
+                        }
                         CoroutineScope(Dispatchers.IO).launch {
                             saveHomeBases(context, updated)
                         }

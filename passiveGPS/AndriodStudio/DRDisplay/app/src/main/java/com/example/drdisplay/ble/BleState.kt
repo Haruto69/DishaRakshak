@@ -18,5 +18,21 @@ data class BleState(
 
     val isScanning: Boolean = false,
     val discoveredDevices: List<String> = emptyList(),
-    val beltFound: Boolean = false
+    val beltFound: Boolean = false,
+
+    val x: Double = 0.0,
+    val y: Double = 0.0,
+    val z: Double = 0.0,
+    val posX: Float = 0f,
+    val posY: Float = 0f,
+    val posZ: Float = 0f,
+
+    val curX: Float = 0f,
+    val curY: Float = 0f,
+
+    val homeX: Float = 0f,
+    val homeY: Float = 0f,
+
+    val distanceToHome: Float = 0f,
+    val bearingToHome: Float = 0f
 )

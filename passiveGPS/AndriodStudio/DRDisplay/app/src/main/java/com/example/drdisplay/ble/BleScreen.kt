@@ -19,6 +19,18 @@ fun BleScreen(
 ) {
 
     val state by bleManager.state
+    val instruction =
+        when {
+
+            state.bearingToHome > 20 ->
+                "Turn Right"
+
+            state.bearingToHome < -20 ->
+                "Turn Left"
+
+            else ->
+                "Walk Forward"
+        }
 
     Column(
         modifier = Modifier
@@ -72,28 +84,46 @@ fun BleScreen(
 
                     Text(
                         if (state.beltFound)
-                            "BELT FOUND ✅"
+                            "BELT FOUND"
                         else
-                            "BELT NOT FOUND ❌"
+                            "BELT NOT FOUND"
                     )
 
                     Spacer(Modifier.height(8.dp))
 
                     Text(
-                        if (state.connected)
-                            "Connected"
-                        else
-                            "Disconnected"
+                        when {
+                            state.connected -> "CONNECTED"
+                            state.beltFound -> "BELT FOUND - READY TO CONNECT"
+                            state.isScanning -> "SCANNING..."
+                            else -> "IDLE"
+                        }
                     )
 
                     Spacer(Modifier.height(8.dp))
 
+                    Text("Packet #: ${state.sequence}")
                     Text("Sequence: ${state.sequence}")
-                    Text("Roll: ${state.roll}")
-                    Text("Pitch: ${state.pitch}")
-                    Text("Velocity X: ${state.velocityX}")
-                    Text("Velocity Y: ${state.velocityY}")
-                    Text("Velocity Z: ${state.velocityZ}")
+                    Text("Roll: %.2f°".format(state.roll))
+                    Text("Pitch: %.2f°".format(state.pitch))
+                    /*
+                    Text("Velocity X: %.3f".format(state.velocityX))
+                    Text("Velocity Y: %.3f".format(state.velocityY))
+                    Text("Velocity Z: %.3f".format(state.velocityZ))
+                    */
+                    Text(
+                        "Distance To Home: ${
+                            state.distanceToHome
+                        } m"
+                    )
+                    Text(
+                        "Bearing To Home: ${
+                            state.bearingToHome
+                        }°"
+                    )
+                    Text(
+                        instruction
+                    )
                 }
             }
 
@@ -154,35 +184,12 @@ fun BleScreen(
         Spacer(Modifier.height(8.dp))
 
         Button(
-            onClick = {
+            onClick = @androidx.annotation.RequiresPermission(android.Manifest.permission.BLUETOOTH_SCAN) {
                 bleManager.stopScan()
             },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text("Stop Scan")
-        }
-
-        Spacer(Modifier.height(8.dp))
-
-        Button(
-            onClick = {
-                bleManager.connect()
-                bleManager.updateMockData()
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Mock Connect")
-        }
-
-        Spacer(Modifier.height(8.dp))
-
-        Button(
-            onClick = {
-                bleManager.disconnect()
-            },
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text("Disconnect")
         }
     }
 }

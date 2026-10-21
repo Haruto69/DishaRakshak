@@ -50,10 +50,18 @@ object GraphBuilder {
         parser.setInput(inputStream, null)
         var eventType = parser.eventType
         var currentWayNodes = mutableListOf<Long>()
+        var isRoad = false
         while (eventType != XmlPullParser.END_DOCUMENT) {
             when (eventType) {
                 XmlPullParser.START_TAG -> {
                     when (parser.name) {
+                        "tag" -> {
+                            val k = parser.getAttributeValue(null, "k")
+
+                            if (k == "highway") {
+                                isRoad = true
+                            }
+                        }
                         "node" -> {
                             val id =
                                 parser.getAttributeValue(null, "id")
@@ -79,6 +87,7 @@ object GraphBuilder {
                         }
                         "way" -> {
                             currentWayNodes = mutableListOf()
+                            isRoad = false
                         }
                         "nd" -> {
 
@@ -93,7 +102,7 @@ object GraphBuilder {
                     }
                 }
                 XmlPullParser.END_TAG -> {
-                    if (parser.name == "way") {
+                    if (parser.name == "way" && isRoad) {
                         for (i in 0 until currentWayNodes.size - 1) {
                             val a = currentWayNodes[i]
                             val b = currentWayNodes[i + 1]

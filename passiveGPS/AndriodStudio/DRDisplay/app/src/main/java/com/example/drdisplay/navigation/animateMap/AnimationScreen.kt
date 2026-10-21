@@ -1,18 +1,16 @@
 package com.example.drdisplay.navigation.animateMap
 
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.unit.dp
-import com.example.drdisplay.loadHomeBases
-import com.example.drdisplay.HomeBase
 import android.net.Uri
-import com.example.drdisplay.getFileName
-
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.unit.dp
+import android.util.Log
 
 import androidx.compose.ui.viewinterop.AndroidView
+import com.example.drdisplay.HomeBase
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.util.GeoPoint
@@ -23,89 +21,108 @@ fun AnimationScreen(
     gpsText: String,
     mapUri: Uri?,
     currentLat: Double,
-    currentLon: Double
+    currentLon: Double,
+    selectedHomeBase: HomeBase?
 ) {
     val context = LocalContext.current
 
     var nodeCount by remember { mutableStateOf(0) }
     var edgeCount by remember { mutableStateOf(0) }
     var startNode by remember { mutableLongStateOf(-1L) }
-    var homeNode by remember { mutableLongStateOf(-1L) }
     var routeLength by remember { mutableIntStateOf(0) }
     var routePreview by remember { mutableStateOf("") }
     var routeNodes by remember {
         mutableStateOf<List<Long>>(emptyList())
     }
+    var roadsDrawn by remember {
+        mutableStateOf(false)
+    }
     var graph by remember {
         mutableStateOf<RoadGraph?>(null)
     }
-    var homeBase by remember { mutableStateOf<HomeBase?>(null) }
 
-
-    LaunchedEffect(
-        mapUri,
-        currentLat,
-        currentLon
-    )
-    {
+    LaunchedEffect(mapUri) {
         try {
             graph = GraphBuilder.loadGraph(
                 context = context,
                 uri = mapUri
             )
-            val g = graph ?: return@LaunchedEffect
-            val homeBases =
-                loadHomeBases(context)
+            roadsDrawn = false
 
-            val mapId =
-                mapUri?.let {
-                    getFileName(context, it)
-                } ?: "default"
-            homeBase =
-                homeBases[mapId]
-                    ?.firstOrNull {
-                        it.isSelected
-                    }
-                    ?: homeBases[mapId]
-                        ?.firstOrNull()
-            if (homeBase != null) {
-                homeNode =
-                    RouteFinder.nearestNode(
-                        g,
-                        homeBase!!.lat,
-                        homeBase!!.lon
-                    )
-            } else {
-                println("No home base selected")
-                return@LaunchedEffect
+            graph?.let { g ->
+                nodeCount = g.nodes.size
+                edgeCount = g.adjacency.size
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
 
-            startNode =
+    LaunchedEffect(
+        graph,
+        currentLat,
+        currentLon
+    ) {
+        Log.d(
+            "ANIMATION",
+            "HomeBase = $selectedHomeBase"
+        )
+        val g = graph ?: return@LaunchedEffect
+        Log.d("ROUTE", "Entered Route Calculation")
+        val goalNode =
+            selectedHomeBase?.let {
                 RouteFinder.nearestNode(
                     g,
-                    currentLat,
-                    currentLon
+                    it.lat,
+                    it.lon
                 )
-            nodeCount = g.nodes.size
-            edgeCount = g.adjacency.size
-
-            val route =
-                RouteFinder.shortestPath(
-                    g,
-                    startNode,
-                    homeNode
-                )
-            routeNodes = route
-            routeLength = route.size
-            println("Start Node = $startNode")
-            println("Home Node = $homeNode")
-            println("Route Length = $routeLength")
-            println("Home Base = $homeBase")
-            println("HomeBase Lat = ${homeBase?.lat}")
-            println("HomeBase Lon = ${homeBase?.lon}")
-            println(
-                "Start Position = $currentLat, $currentLon"
+            } ?: return@LaunchedEffect
+        Log.d(
+            "ROUTE",
+            "Goal node = $goalNode"
+        )
+        startNode =
+            RouteFinder.nearestNode(
+                g,
+                currentLat,
+                currentLon
             )
+        Log.d(
+            "ROUTE",
+            "Start node = $startNode"
+        )
+        val route =
+            RouteFinder.shortestPath(
+                g,
+                startNode,
+                goalNode
+            )
+        routeNodes = route
+        Log.d(
+            "ROUTE",
+            "Route size = ${route.size}"
+        )
+
+        Log.d(
+            "ROUTE",
+            "Start coords = $currentLat,$currentLon"
+        )
+        Log.d(
+            "ROUTE",
+            "Goal coords = ${selectedHomeBase?.lat},${selectedHomeBase?.lon}"
+        )
+
+        Log.d(
+            "ROUTE",
+            "Goal snapped to = ${g.nodes[goalNode]}"
+        )
+        Log.d(
+            "ROUTE",
+            "Start snapped to = ${g.nodes[startNode]}"
+        )
+
+        try {
+            routeLength = route.size
             routePreview =
                 route.take(5)
                     .mapNotNull {
@@ -114,27 +131,37 @@ fun AnimationScreen(
                     .joinToString("\n") {
                         "${it.lat}, ${it.lon}"
                     }
-            println("Nodes = ${g.nodes.size}")
-            println("Adjacency = ${g.adjacency.size}")
+            Log.d(
+                "ROUTE",
+                "start=$startNode goal=$goalNode length=$routeLength"
+            )
         } catch (e: Exception) {
             e.printStackTrace()
         }
     }
 
+
     AndroidView(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 50.dp, bottom = 50.dp),
+            .padding(
+                top = 100.dp,
+                bottom = 120.dp
+            ),
         factory = { ctx ->
             MapView(ctx).apply {
                 setMultiTouchControls(true)
-                controller.setZoom(15.0)
+                controller.setCenter(
+                    GeoPoint(
+                        currentLat,
+                        currentLon
+                    )
+                )
+                controller.setZoom(17.0)
             }
         },
         update = { mapView ->
-            println("UPDATE CALLED")
-            println("Route Nodes = ${routeNodes.size}")
-            mapView.overlays.clear()
+            //mapView.overlays.clear()
             val currentMarker = Marker(mapView)
             currentMarker.position =
                 GeoPoint(
@@ -144,43 +171,46 @@ fun AnimationScreen(
             currentMarker.title = "Current Position"
             mapView.overlays.add(currentMarker)
 
-            homeBase?.let {
+            selectedHomeBase?.let {
                 val homeMarker = Marker(mapView)
                 homeMarker.position =
                     GeoPoint(
                         it.lat,
                         it.lon
                     )
-                homeMarker.title =
-                    "Home Base"
+                homeMarker.title = "Home Base"
                 mapView.overlays.add(homeMarker)
             }
-            graph?.let { g ->
-                g.adjacency.forEach { (fromId, neighbors) ->
-                    val fromNode = g.nodes[fromId]
-                        ?: return@forEach
-                    neighbors.forEach { neighborId ->
-                        val toNode = g.nodes[neighborId]
+
+            if (!roadsDrawn) {
+                graph?.let { g ->
+                    g.adjacency.forEach { (fromId, neighbors) ->
+                        val fromNode = g.nodes[fromId]
                             ?: return@forEach
-                        val road = Polyline()
-                        road.outlinePaint.color =
-                            android.graphics.Color.GRAY
-                        road.outlinePaint.strokeWidth = 4f
-                        road.setPoints(
-                            listOf(
-                                GeoPoint(
-                                    fromNode.lat,
-                                    fromNode.lon
-                                ),
-                                GeoPoint(
-                                    toNode.lat,
-                                    toNode.lon
+                        neighbors.forEach { neighborId ->
+                            val toNode = g.nodes[neighborId]
+                                ?: return@forEach
+                            val road = Polyline()
+                            road.outlinePaint.color =
+                                android.graphics.Color.GRAY
+                            road.outlinePaint.strokeWidth = 4f
+                            road.setPoints(
+                                listOf(
+                                    GeoPoint(
+                                        fromNode.lat,
+                                        fromNode.lon
+                                    ),
+                                    GeoPoint(
+                                        toNode.lat,
+                                        toNode.lon
+                                    )
                                 )
                             )
-                        )
-                        mapView.overlays.add(road)
+                            mapView.overlays.add(road)
+                        }
                     }
                 }
+                roadsDrawn = true
             }
 
             graph?.let { g ->
@@ -202,15 +232,6 @@ fun AnimationScreen(
                 mapView.overlays.add(routeLine)
             }
 
-            homeBase?.let {
-                mapView.controller.setCenter(
-                    GeoPoint(
-                        currentLat,
-                        currentLon
-                    )
-                )
-                mapView.controller.setZoom(17.0)
-            }
             mapView.invalidate()
         }
     )

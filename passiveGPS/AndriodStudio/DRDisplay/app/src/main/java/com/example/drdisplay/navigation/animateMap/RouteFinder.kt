@@ -11,6 +11,7 @@ representing the route
  */
 
 import java.util.PriorityQueue
+import android.util.Log
 
 object RouteFinder {
     private fun distance(
@@ -33,8 +34,9 @@ object RouteFinder {
     ): Long {
         var nearestId = -1L
         var bestDistance = Double.MAX_VALUE
-        println("Searching through ${graph.nodes.size} nodes")
         for ((id, node) in graph.nodes) {
+            if (!graph.adjacency.containsKey(id))
+                continue
             val d =
                 distance(
                     lat,
@@ -48,7 +50,12 @@ object RouteFinder {
                 nearestId = id
             }
         }
-        println("Nearest Node Found = $nearestId")
+        Log.d(
+            "ROUTE",
+            "start in adjacency = ${
+                graph.adjacency.containsKey(nearestId)
+            }"
+        )
         return nearestId
     }
 
@@ -107,6 +114,39 @@ object RouteFinder {
                     )
                 }
             }
+        }
+
+        Log.d(
+            "ROUTE",
+            "Goal predecessor = ${previous[goal]}"
+        )
+
+        if (
+            start != goal &&
+            previous[goal] == null
+        ) {
+            Log.d(
+                "ROUTE",
+                "No path found"
+            )
+            Log.d(
+                "ROUTE",
+                "Neighbors at start = ${graph.adjacency[start]?.size}"
+            )
+            Log.d(
+                "ROUTE",
+                "Neighbors at goal = ${graph.adjacency[goal]?.size}"
+            )
+            Log.d(
+                "ROUTE",
+                "start exists = ${graph.adjacency.containsKey(start)}"
+            )
+
+            Log.d(
+                "ROUTE",
+                "goal exists = ${graph.adjacency.containsKey(goal)}"
+            )
+            return emptyList()
         }
         val route = mutableListOf<Long>()
         var current: Long? = goal
