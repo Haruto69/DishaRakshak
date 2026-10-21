@@ -60,9 +60,13 @@ fun AnimationScreen(
 
     LaunchedEffect(
         graph,
-        currentLat,
-        currentLon
-    ) {
+        selectedHomeBase
+    )
+    {
+        Log.d(
+            "ROUTE_ONCE",
+            "Generating route"
+        )
         Log.d(
             "ANIMATION",
             "HomeBase = $selectedHomeBase"
@@ -161,7 +165,10 @@ fun AnimationScreen(
             }
         },
         update = { mapView ->
-            //mapView.overlays.clear()
+            Log.d(
+                "MARKER",
+                "Updating marker"
+            )
             val currentMarker = Marker(mapView)
             currentMarker.position =
                 GeoPoint(
@@ -169,6 +176,10 @@ fun AnimationScreen(
                     currentLon
                 )
             currentMarker.title = "Current Position"
+            Log.d(
+                "MARKER_POSITION",
+                "$currentLat,$currentLon"
+            )
             mapView.overlays.add(currentMarker)
 
             selectedHomeBase?.let {

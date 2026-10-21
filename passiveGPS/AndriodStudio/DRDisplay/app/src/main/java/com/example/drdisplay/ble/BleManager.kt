@@ -18,6 +18,7 @@ import androidx.annotation.RequiresPermission
 import java.util.UUID
 import kotlin.math.atan2
 import kotlin.math.sqrt
+import android.util.Log
 
 class BleManager(
     private val context: Context
@@ -119,16 +120,21 @@ class BleManager(
                         characteristic.value,
                         Charsets.UTF_8
                     )
+                Log.d(
+                    "BLE_PACKET",
+                    text
+                )
                 val fields =
                     text.split(",")
+                if (fields.size != 6)
+                    return
                 val vx =
                     fields[3].toFloat()
                 val vy =
                     fields[4].toFloat()
                 val vz =
                     fields[5].toFloat()
-                if (fields.size != 6)
-                    return
+
                 val now =
                     System.currentTimeMillis()
                 val dt =
@@ -138,6 +144,10 @@ class BleManager(
                 x += vx * dt
                 y += vy * dt
                 z += vz * dt
+                Log.d(
+                    "DR_POSITION",
+                    "x=$x y=$y z=$z vx=$vx vy=$vy"
+                )
                 val dx = homeX - x
                 val dy = homeY - y
                 val distanceToHome =

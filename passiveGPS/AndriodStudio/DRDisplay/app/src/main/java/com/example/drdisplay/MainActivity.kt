@@ -99,13 +99,25 @@ fun AppLayout(fusedLocationClient: FusedLocationProviderClient) {
         mutableStateOf<Uri?>(null)
     }
     var gpsText by remember { mutableStateOf("Waiting for GPS...") }
-    var currentLat by remember {
+    var gpsLat by remember {
+        mutableDoubleStateOf(0.0)
+    }
+    var gpsLon by remember {
+        mutableDoubleStateOf(0.0)
+    }
+    var navLat by remember {
+        mutableDoubleStateOf(0.0)
+    }
+    var navLon by remember {
+        mutableDoubleStateOf(0.0)
+    }
+    var originLat by remember {
+        mutableDoubleStateOf(0.0)
+    }
+    var originLon by remember {
         mutableDoubleStateOf(0.0)
     }
 
-    var currentLon by remember {
-        mutableDoubleStateOf(0.0)
-    }
     var selectedHomeBase by remember {
         mutableStateOf<HomeBase?>(null)
     }
@@ -114,6 +126,38 @@ fun AppLayout(fusedLocationClient: FusedLocationProviderClient) {
 
     val bleManager = remember {
         com.example.drdisplay.ble.BleManager(context)
+    }
+    val bleState by bleManager.state
+
+    LaunchedEffect(
+        bleState.posX,
+        bleState.posY,
+        gpsLat,
+        gpsLon
+    ) {
+        if (gpsLat == 0.0 || gpsLon == 0.0)
+            return@LaunchedEffect
+        navLat =
+            originLat +
+                    bleState.posY /
+                    111111.0
+        navLon =
+            originLon +
+                    bleState.posX /
+                    (
+                            111111.0 *
+                                    kotlin.math.cos(
+                                        Math.toRadians(originLat)
+                                    )
+                            )
+        Log.d(
+            "NAV_POSITION",
+            "lat=$navLat lon=$navLon"
+        )
+        Log.d(
+            "NAV_POSITION",
+            "nav=$navLat,$navLon origin=$originLat,$originLon"
+        )
     }
 
     // Passive GPS updates
@@ -133,8 +177,16 @@ fun AppLayout(fusedLocationClient: FusedLocationProviderClient) {
                 object : LocationCallback() {
                     override fun onLocationResult(locationResult: LocationResult) {
                         for (location in locationResult.locations) {
-                            currentLat = location.latitude
-                            currentLon = location.longitude
+                            gpsLat = location.latitude
+                            gpsLon = location.longitude
+                            if (originLat == 0.0 && originLon == 0.0) {
+
+                                originLat = gpsLat
+                                originLon = gpsLon
+
+                                navLat = gpsLat
+                                navLon = gpsLon
+                            }
 
                             gpsText =
                                 "Lat: ${location.latitude}, " +
@@ -216,8 +268,8 @@ fun AppLayout(fusedLocationClient: FusedLocationProviderClient) {
                     AnimationScreen(
                         gpsText = gpsText,
                         mapUri = activeOsmUri,
-                        currentLat = currentLat,
-                        currentLon = currentLon,
+                        currentLat = navLat,
+                        currentLon = navLon,
                         selectedHomeBase = selectedHomeBase
                     )
 

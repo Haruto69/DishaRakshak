@@ -146,6 +146,12 @@ object RouteFinder {
                 "ROUTE",
                 "goal exists = ${graph.adjacency.containsKey(goal)}"
             )
+
+            Log.d(
+                "ROUTE_ONCE",
+                "Route generated"
+            )
+
             return emptyList()
         }
         val route = mutableListOf<Long>()
