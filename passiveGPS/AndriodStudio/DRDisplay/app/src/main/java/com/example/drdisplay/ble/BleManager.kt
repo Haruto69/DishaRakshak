@@ -13,6 +13,7 @@ import android.bluetooth.BluetoothDevice
 import android.bluetooth.BluetoothGatt
 import android.bluetooth.BluetoothGattCallback
 import android.bluetooth.BluetoothGattCharacteristic
+import android.bluetooth.BluetoothGattDescriptor
 import android.bluetooth.BluetoothProfile
 import androidx.annotation.RequiresPermission
 import java.util.UUID
@@ -35,8 +36,6 @@ class BleManager(
 
     private var beltDevice: BluetoothDevice? = null
     private var bluetoothGatt: BluetoothGatt? = null
-    private var currentX = 0.0
-    private var currentY = 0.0
 
     private var homeX = 0.0
     private var homeY = 0.0
@@ -56,6 +55,17 @@ class BleManager(
 
     private val gattCallback =
         object : BluetoothGattCallback() {
+            override fun onDescriptorWrite(
+                gatt: BluetoothGatt,
+                descriptor: BluetoothGattDescriptor,
+                status: Int
+            ) {
+
+                Log.d(
+                    "BLE_FLOW",
+                    "CCCD_WRITE_COMPLETE status=$status"
+                )
+            }
             @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
             override fun onConnectionStateChange(
                 gatt: BluetoothGatt,
@@ -71,6 +81,10 @@ class BleManager(
                         state.value.copy(
                             connected = true
                         )
+                    Log.d(
+                        "BLE_FLOW",
+                        "CONNECTED"
+                    )
                     gatt.discoverServices()
                 }
                 if (
@@ -90,6 +104,10 @@ class BleManager(
                 gatt: BluetoothGatt,
                 status: Int
             ) {
+                Log.d(
+                    "BLE_FLOW",
+                    "SERVICES_DISCOVERED"
+                )
 
                 val service =
                     gatt.getService(
@@ -100,10 +118,46 @@ class BleManager(
                     service.getCharacteristic(
                         CHARACTERISTIC_UUID
                     ) ?: return
+                Log.d(
+                    "BLE_FLOW",
+                    "Characteristic properties = ${characteristic.properties}"
+                )
+                characteristic.descriptors.forEach {
+                    Log.d(
+                        "BLE_FLOW",
+                        "Descriptor UUID = ${it.uuid}"
+                    )
+                }
 
                 gatt.setCharacteristicNotification(
                     characteristic,
                     true
+                )
+
+                val descriptor =
+                    characteristic.getDescriptor(
+                        UUID.fromString(
+                            "00002902-0000-1000-8000-00805f9b34fb"
+                        )
+                    )
+                if (descriptor != null) {
+
+                    descriptor.value =
+                        BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
+
+                    gatt.writeDescriptor(
+                        descriptor
+                    )
+
+                    Log.d(
+                        "BLE_FLOW",
+                        "CCCD_WRITE_REQUESTED"
+                    )
+                }
+
+                Log.d(
+                    "BLE_FLOW",
+                    "NOTIFICATION_REQUESTED"
                 )
             }
 
@@ -115,6 +169,10 @@ class BleManager(
                 gatt: BluetoothGatt,
                 characteristic: BluetoothGattCharacteristic
             ) {
+                Log.d(
+                    "BLE_FLOW",
+                    "PACKET_RECEIVED"
+                )
                 val text =
                     String(
                         characteristic.value,
@@ -126,14 +184,14 @@ class BleManager(
                 )
                 val fields =
                     text.split(",")
-                if (fields.size != 6)
+                Log.d(
+                    "BLE_PACKET",
+                    fields.joinToString("|")
+                )
+                if (fields.size != 4)
                     return
-                val vx =
-                    fields[3].toFloat()
-                val vy =
-                    fields[4].toFloat()
-                val vz =
-                    fields[5].toFloat()
+                val auxValue =
+                    fields[3].toFloatOrNull() ?: 0f
 
                 val now =
                     System.currentTimeMillis()
@@ -141,12 +199,10 @@ class BleManager(
                     (now - previousTime) / 1000.0
                 previousTime = now
 
-                x += vx * dt
-                y += vy * dt
-                z += vz * dt
+                x += auxValue * dt
                 Log.d(
                     "DR_POSITION",
-                    "x=$x y=$y z=$z vx=$vx vy=$vy"
+                    "x=$x y=$y z=$z aux=$auxValue"
                 )
                 val dx = homeX - x
                 val dy = homeY - y
@@ -167,9 +223,9 @@ class BleManager(
                         sequence = fields[0].toLong(),
                         roll = fields[1].toFloat(),
                         pitch = fields[2].toFloat(),
-                        velocityX = vx,
-                        velocityY = vy,
-                        velocityZ = vz,
+                        velocityX = auxValue,
+                        velocityY = 0f,
+                        velocityZ = 0f,
                         posX = x.toFloat(),
                         posY = y.toFloat(),
                         posZ = z.toFloat(),
