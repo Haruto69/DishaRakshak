@@ -40,6 +40,8 @@ class BleManager(
     private var homeX = 0.0
     private var homeY = 0.0
 
+    private val DR_SCALE = 0.02
+
     private var previousTime =
         System.currentTimeMillis()
 
@@ -76,6 +78,8 @@ class BleManager(
                     newState ==
                     BluetoothProfile.STATE_CONNECTED
                 ) {
+                    gatt.requestMtu(185)
+                    gatt.discoverServices()
                     bluetoothGatt = gatt
                     state.value =
                         state.value.copy(
@@ -91,12 +95,18 @@ class BleManager(
                     newState ==
                     BluetoothProfile.STATE_DISCONNECTED
                 ) {
+
+                    beltDevice = null
+
                     state.value =
                         state.value.copy(
-                            connected = false
+                            connected = false,
+                            beltFound = false
                         )
+
                     startScan()
                 }
+
             }
 
             @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
@@ -165,13 +175,47 @@ class BleManager(
             private var y = 0.0
             private var z = 0.0
 
+            fun resetDeadReckoning() {
+                x = 0.0
+                y = 0.0
+                z = 0.0
+            }
+
+            private var gpsAnchorX = 0.0
+            private var gpsAnchorY = 0.0
+
+            fun resetDrPosition(
+                gpsX: Double,
+                gpsY: Double
+            ) {
+                x = gpsX
+                y = gpsY
+
+                gpsAnchorX = gpsX
+                gpsAnchorY = gpsY
+
+                Log.d(
+                    "GPS_RECOVERY",
+                    "DR reset to GPS"
+                )
+            }
+
+
             override fun onCharacteristicChanged(
                 gatt: BluetoothGatt,
                 characteristic: BluetoothGattCharacteristic
             ) {
                 Log.d(
+                    "BLE_DEBUG",
+                    "NEW_PARSER_RUNNING"
+                )
+                Log.d(
                     "BLE_FLOW",
                     "PACKET_RECEIVED"
+                )
+                Log.d(
+                    "BLE_PACKET",
+                    "rawBytes=${characteristic.value.size}"
                 )
                 val text =
                     String(
@@ -182,16 +226,38 @@ class BleManager(
                     "BLE_PACKET",
                     text
                 )
+                Log.d(
+                    "BLE_PACKET",
+                    "length=${text.length} text=[$text]"
+                )
                 val fields =
                     text.split(",")
+                Log.d(
+                    "BLE_DEBUG",
+                    "fields=${fields.size}"
+                )
                 Log.d(
                     "BLE_PACKET",
                     fields.joinToString("|")
                 )
-                if (fields.size != 4)
+                if (fields.size != 6) {
+
+                    Log.d(
+                        "BLE_DEBUG",
+                        "PACKET REJECTED"
+                    )
+
                     return
-                val auxValue =
+                }
+
+                val velocityX =
                     fields[3].toFloatOrNull() ?: 0f
+
+                val velocityY =
+                    fields[4].toFloatOrNull() ?: 0f
+
+                val velocityZ =
+                    fields[5].toFloatOrNull() ?: 0f
 
                 val now =
                     System.currentTimeMillis()
@@ -199,10 +265,13 @@ class BleManager(
                     (now - previousTime) / 1000.0
                 previousTime = now
 
-                x += auxValue * dt
+                x += velocityX * dt * DR_SCALE
+                y += velocityY * dt * DR_SCALE
+                z += velocityZ * dt * DR_SCALE
+
                 Log.d(
-                    "DR_POSITION",
-                    "x=$x y=$y z=$z aux=$auxValue"
+                    "VEL_DEBUG",
+                    "vx=$velocityX vy=$velocityY vz=$velocityZ dt=$dt"
                 )
                 val dx = homeX - x
                 val dy = homeY - y
@@ -223,17 +292,31 @@ class BleManager(
                         sequence = fields[0].toLong(),
                         roll = fields[1].toFloat(),
                         pitch = fields[2].toFloat(),
-                        velocityX = auxValue,
-                        velocityY = 0f,
-                        velocityZ = 0f,
+
+                        velocityX = velocityX,
+                        velocityY = velocityY,
+                        velocityZ = velocityZ,
+
                         posX = x.toFloat(),
                         posY = y.toFloat(),
                         posZ = z.toFloat(),
+
                         distanceToHome =
                             distanceToHome.toFloat(),
+
                         bearingToHome =
                             bearingToHome.toFloat()
                     )
+            }
+            override fun onMtuChanged(
+                gatt: BluetoothGatt,
+                mtu: Int,
+                status: Int
+            ) {
+                Log.d(
+                    "BLE_FLOW",
+                    "MTU=$mtu"
+                )
             }
         }
 

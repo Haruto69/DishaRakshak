@@ -178,6 +178,13 @@ uint32_t sequence;
 
 };
 
+struct BlePacket {
+    uint32_t sequence;
+    float roll;
+    float pitch;
+    float velocityX;
+};
+
 
 // ==================================================
 
@@ -235,6 +242,7 @@ class BeltServerCallbacks : public BLEServerCallbacks {
 
 void initializeBLE() {
 
+    BLEDevice::setMTU(185);
 
     BLEDevice::init("DishaRakshak-Belt");
 
@@ -928,6 +936,10 @@ void setup() {
 
     delay(1500);
 
+    Serial.print("STRUCT_SIZE=");
+Serial.println(
+    sizeof(CombinedMotionPacket)
+);
 
     Serial.println();
 
@@ -1044,17 +1056,14 @@ if (
 
     if (deviceConnected) {
 
+        Serial.println("DEVICE_CONNECTED_TRUE");
 
-        String payload =
+String payload =
+    createBlePayload(combined);
 
-            createBlePayload(combined);
-
-
-        pCharacteristic->setValue(
-
-            payload.c_str()
-
-        );
+pCharacteristic->setValue(
+    payload.c_str()
+);
 
 
         pCharacteristic->notify();

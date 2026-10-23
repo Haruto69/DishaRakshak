@@ -38,7 +38,12 @@ fun AnimationScreen(
     var startNode by remember { mutableLongStateOf(-1L) }
     var routeLength by remember { mutableIntStateOf(0) }
     var routePreview by remember { mutableStateOf("") }
-    var routeNodes by remember {
+
+    var staticRouteNodes by remember {
+        mutableStateOf<List<Long>>(emptyList())
+    }
+
+    var dynamicRouteNodes by remember {
         mutableStateOf<List<Long>>(emptyList())
     }
     var roadsDrawn by remember {
@@ -64,12 +69,20 @@ fun AnimationScreen(
         mutableStateOf<Marker?>(null)
     }
 
-    var routeOverlay by remember {
+    var staticRouteOverlay by remember {
+        mutableStateOf<Polyline?>(null)
+    }
+
+    var dynamicRouteOverlay by remember {
         mutableStateOf<Polyline?>(null)
     }
 
     var poiMarkersAdded by remember {
         mutableStateOf(false)
+    }
+
+    var lastRerouteTime by remember {
+        mutableLongStateOf(0L)
     }
 
     LaunchedEffect(mapUri) {
@@ -149,17 +162,15 @@ fun AnimationScreen(
             "ROUTE",
             "Start node = $startNode"
         )
-        val route =
+        val staticRoute =
             RouteFinder.shortestPath(
                 g,
                 startNode,
                 goalNode
             )
-        routeNodes = route
-        Log.d(
-            "ROUTE",
-            "Route size = ${route.size}"
-        )
+
+        staticRouteNodes = staticRoute
+        dynamicRouteNodes = staticRoute
 
         Log.d(
             "ROUTE",
@@ -180,9 +191,9 @@ fun AnimationScreen(
         )
 
         try {
-            routeLength = route.size
+            routeLength = staticRoute.size
             routePreview =
-                route.take(5)
+                staticRoute.take(5)
                     .mapNotNull {
                         g.nodes[it]
                     }
@@ -243,6 +254,81 @@ fun AnimationScreen(
                     currentLat,
                     currentLon
                 )
+
+            val dynamicRoutePoints =
+                dynamicRouteNodes.mapNotNull {
+                    graph?.nodes?.get(it)?.let {
+                        GeoPoint(
+                            it.lat,
+                            it.lon
+                        )
+                    }
+                }
+
+            fun isOffRoute(
+                position: GeoPoint,
+                route: List<GeoPoint>
+            ): Boolean {
+
+                if (route.isEmpty()) {
+                    return false
+                }
+
+                val nearest =
+                    route.minOf {
+                        position.distanceToAsDouble(it)
+                    }
+
+                return nearest > 12.0
+            }
+
+            val offRoute =
+                isOffRoute(
+                    GeoPoint(
+                        currentLat,
+                        currentLon
+                    ),
+                    dynamicRoutePoints
+                )
+            if (offRoute) {
+
+                val now = System.currentTimeMillis()
+
+                if (now - lastRerouteTime > 5000) {
+
+                    lastRerouteTime = now
+
+                    val g = graph ?: return@AndroidView
+
+                    val goalNode =
+                        selectedHomeBase?.let {
+                            RouteFinder.nearestNode(
+                                g,
+                                it.lat,
+                                it.lon
+                            )
+                        } ?: return@AndroidView
+
+                    val imuStartNode =
+                        RouteFinder.nearestNode(
+                            g,
+                            currentLat,
+                            currentLon
+                        )
+
+                    Log.d(
+                        "NAV_REROUTE",
+                        "REROUTING NOW"
+                    )
+
+                    dynamicRouteNodes =
+                        RouteFinder.shortestPath(
+                            g,
+                            imuStartNode,
+                            goalNode
+                        )
+                }
+            }
 
             if (gpsMarker == null) {
 
@@ -320,30 +406,63 @@ fun AnimationScreen(
                 roadsDrawn = true
             }
 
+            if (staticRouteOverlay == null) {
+
+                staticRouteOverlay = Polyline()
+
+                staticRouteOverlay!!
+                    .outlinePaint.color =
+                    android.graphics.Color.RED
+
+                staticRouteOverlay!!
+                    .outlinePaint.strokeWidth = 8f
+
+                mapView.overlays.add(
+                    staticRouteOverlay!!
+                )
+            }
             graph?.let { g ->
-                if (routeOverlay == null) {
 
-                    routeOverlay = Polyline()
-
-                    routeOverlay!!.outlinePaint.color =
-                        android.graphics.Color.RED
-
-                    routeOverlay!!.outlinePaint.strokeWidth =
-                        8f
-
-                    mapView.overlays.add(
-                        routeOverlay!!
-                    )
-                }
-
-                routeOverlay!!.setPoints(
-                    routeNodes.mapNotNull { nodeId ->
+                staticRouteOverlay?.setPoints(
+                    staticRouteNodes.mapNotNull { nodeId ->
                         g.nodes[nodeId]?.let { node ->
-                            GeoPoint(node.lat, node.lon)
+                            GeoPoint(
+                                node.lat,
+                                node.lon
+                            )
                         }
                     }
                 )
             }
+            if (dynamicRouteOverlay == null) {
+
+                dynamicRouteOverlay = Polyline()
+
+                dynamicRouteOverlay!!
+                    .outlinePaint.color =
+                    android.graphics.Color.BLUE
+
+                dynamicRouteOverlay!!
+                    .outlinePaint.strokeWidth = 6f
+
+                mapView.overlays.add(
+                    dynamicRouteOverlay!!
+                )
+            }
+            graph?.let { g ->
+
+                dynamicRouteOverlay?.setPoints(
+                    dynamicRouteNodes.mapNotNull {
+                        g.nodes[it]?.let { node ->
+                            GeoPoint(
+                                node.lat,
+                                node.lon
+                            )
+                        }
+                    }
+                )
+            }
+
             if (!poiMarkersAdded) {
 
                 poiList.forEach { poi ->

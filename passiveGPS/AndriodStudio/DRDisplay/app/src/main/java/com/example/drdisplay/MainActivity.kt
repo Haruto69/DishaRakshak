@@ -126,6 +126,10 @@ fun AppLayout(fusedLocationClient: FusedLocationProviderClient) {
         mutableDoubleStateOf(0.0)
     }
 
+    var lastGpsRecovery by remember {
+        mutableLongStateOf(0L)
+    }
+
     var selectedHomeBase by remember {
         mutableStateOf<HomeBase?>(null)
     }
@@ -187,6 +191,34 @@ fun AppLayout(fusedLocationClient: FusedLocationProviderClient) {
                         for (location in locationResult.locations) {
                             gpsLat = location.latitude
                             gpsLon = location.longitude
+                            if (
+                                location.accuracy < 10f
+                            ) {
+
+                                val now =
+                                    System.currentTimeMillis()
+
+                                if (
+                                    now - lastGpsRecovery >
+                                    10000
+                                ) {
+
+                                    lastGpsRecovery = now
+
+                                    originLat =
+                                        originLat * 0.8 +
+                                                gpsLat * 0.2
+
+                                    originLon =
+                                        originLon * 0.8 +
+                                                gpsLon * 0.2
+
+                                    Log.d(
+                                        "GPS_RECOVERY",
+                                        "ORIGIN RESET"
+                                    )
+                                }
+                            }
                             if (originLat == 0.0 && originLon == 0.0) {
 
                                 originLat = gpsLat
