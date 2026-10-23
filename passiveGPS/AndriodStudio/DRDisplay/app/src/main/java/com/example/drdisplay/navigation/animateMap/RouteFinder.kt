@@ -14,6 +14,35 @@ import java.util.PriorityQueue
 import android.util.Log
 
 object RouteFinder {
+
+    fun haversine(
+        lat1: Double,
+        lon1: Double,
+        lat2: Double,
+        lon2: Double
+    ): Double {
+
+        val R = 6371000.0
+
+        val dLat = Math.toRadians(lat2 - lat1)
+        val dLon = Math.toRadians(lon2 - lon1)
+
+        val a =
+            Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+                    Math.cos(Math.toRadians(lat1)) *
+                    Math.cos(Math.toRadians(lat2)) *
+                    Math.sin(dLon / 2) *
+                    Math.sin(dLon / 2)
+
+        val c =
+            2 * Math.atan2(
+                Math.sqrt(a),
+                Math.sqrt(1 - a)
+            )
+
+        return R * c
+    }
+    /*
     private fun distance(
         lat1: Double,
         lon1: Double,
@@ -26,6 +55,7 @@ object RouteFinder {
 
         return dx * dx + dy * dy
     }
+     */
 
     fun nearestNode(
         graph: RoadGraph,
@@ -38,7 +68,7 @@ object RouteFinder {
             if (!graph.adjacency.containsKey(id))
                 continue
             val d =
-                distance(
+                haversine(
                     lat,
                     lon,
                     node.lat,
@@ -93,7 +123,7 @@ object RouteFinder {
                     graph.nodes[neighbor]
                         ?: continue
                 val edgeCost =
-                    distance(
+                    haversine(
                         currentNode.lat,
                         currentNode.lon,
                         neighborNode.lat,

@@ -1,0 +1,5 @@
+ <!--  poi_dot.xml  -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android" android:shape="oval">
+    <size android:width="5dp" android:height="5dp"/>
+    <solid android:color="#000000"/>
+</shape>

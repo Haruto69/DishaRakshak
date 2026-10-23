@@ -44,6 +44,8 @@ import androidx.compose.material.icons.filled.Bluetooth
 import com.example.drdisplay.navigation.animateMap.AnimationScreen
 import com.example.drdisplay.navigation.SimulatorScreen
 import android.util.Log
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import java.util.Collections.list
 
 class MainActivity : ComponentActivity() {
@@ -81,6 +83,12 @@ data class HomeBase(
     val lon: Double,
     val mapId: String,
     val isSelected: Boolean = false
+)
+
+data class SearchLocation(
+    val name: String,
+    val lat: Double,
+    val lon: Double
 )
 
 // DataStore setup
@@ -268,6 +276,8 @@ fun AppLayout(fusedLocationClient: FusedLocationProviderClient) {
                     AnimationScreen(
                         gpsText = gpsText,
                         mapUri = activeOsmUri,
+                        gpsLat = gpsLat,
+                        gpsLon = gpsLon,
                         currentLat = navLat,
                         currentLon = navLon,
                         selectedHomeBase = selectedHomeBase
@@ -342,6 +352,10 @@ fun SearchOSMScreen(
                     "HOMEBASE",
                     "LOADED ${it.name} = ${it.isSelected}"
                 )
+                Log.d(
+                    "DOUBLE_ROAD_LOAD",
+                    "${it.name} ${it.lat} ${it.lon}"
+                )
             }
 
         homeBasesByMap[currentMapId]
@@ -361,9 +375,17 @@ fun SearchOSMScreen(
         }
     )
 
-    val availableNames = remember(activeOsmUri) { parseOsmNames(context, activeOsmUri) }
-    val availableLats = remember(activeOsmUri) { parseOsmLatitudes(context, activeOsmUri) }
-    val availableLons = remember(activeOsmUri) { parseOsmLongitudes(context, activeOsmUri) }
+    val availableLocations =
+        remember(activeOsmUri) {
+            parseOsmLocations(
+                context,
+                activeOsmUri
+            )
+        }
+    val availableNames =
+        availableLocations.map {
+            it.name
+        }
 
     // State for dialogs (declare these at the top of SearchOSMScreen)
     var showOptionsDialog by remember { mutableStateOf(false) }
@@ -372,7 +394,9 @@ fun SearchOSMScreen(
     var selectedIndexForDialog by remember { mutableStateOf(-1) }
 
     Column(
-        modifier = Modifier.fillMaxSize().padding(32.dp),
+        modifier = Modifier.fillMaxSize()
+            .padding(32.dp)
+            .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -414,14 +438,6 @@ fun SearchOSMScreen(
         Text("🔍 Search Home Base", style = MaterialTheme.typography.headlineSmall)
         Spacer(Modifier.height(16.dp))
 
-        Row {
-            Button(onClick = { mode = "name"; errorText = null }) { Text("Search by Name") }
-            Spacer(Modifier.width(8.dp))
-            Button(onClick = { mode = "coords"; errorText = null }) { Text("Search by Coordinates") }
-        }
-
-        Spacer(Modifier.height(16.dp))
-
         if (mode == "name") {
             AutoCompleteTextField(
                 label = "Enter place name",
@@ -429,39 +445,37 @@ fun SearchOSMScreen(
                 onItemSelected = { selectedName = it; areaName = it },
                 resetKey = resetCounter   // 🔑 pass resetCounter here
             )
-        } else {
-            Column {
-                AutoCompleteTextField(
-                    label = "Latitude",
-                    allItems = availableLats,
-                    onItemSelected = { lat = it },
-                    resetKey = resetCounter
-                )
-                Spacer(Modifier.height(8.dp))
-                AutoCompleteTextField(
-                    label = "Longitude",
-                    allItems = availableLons,
-                    onItemSelected = { lon = it },
-                    resetKey = resetCounter
-                )
-            }
         }
 
         Spacer(Modifier.height(16.dp))
         Button(onClick = {
             if (mode == "name" && selectedName != null) {
                 val mapId = activeOsmUri?.let { getFileName(context, it) } ?: "default"
-                val index = availableNames.indexOf(selectedName!!)
-                val hb = HomeBase(
-                    name = selectedName!!,
-                    lat = availableLats.getOrNull(index)?.toDoubleOrNull() ?: 0.0,
-                    lon = availableLons.getOrNull(index)?.toDoubleOrNull() ?: 0.0,
-                    mapId = mapId
+                val selectedLocation =
+                    availableLocations.firstOrNull {
+                        it.name == selectedName
+                    }
+                Log.d(
+                    "HOMEBASE_DEBUG",
+                    "Selected = ${selectedLocation?.name} lat=${selectedLocation?.lat} lon=${selectedLocation?.lon}"
                 )
+                val hb =
+                    HomeBase(
+                        name = selectedLocation!!.name,
+                        lat = selectedLocation.lat,
+                        lon = selectedLocation.lon,
+                        mapId = mapId
+                    )
 
                 val updated = homeBasesByMap.toMutableMap()
                 val list = updated.getOrPut(mapId) { mutableListOf() }
-                list.add(hb)
+                if (
+                    list.none {
+                        it.name == hb.name
+                    }
+                ) {
+                    list.add(hb)
+                }
 
                 homeBasesByMap = updated
                 updated[mapId]?.forEach {
@@ -509,6 +523,7 @@ fun SearchOSMScreen(
 
         Spacer(Modifier.height(16.dp))
         Text("Saved Home Bases:")
+        Spacer(Modifier.height(16.dp))
 
         val mapId = activeOsmUri?.let { getFileName(context, it) } ?: "default"
         homeBasesByMap[mapId]?.forEachIndexed { index, hb ->
@@ -793,8 +808,14 @@ fun parseOsmNames(context: Context, uri: Uri?): List<String> {
     return names.distinct()
 }
 
-fun parseOsmLatitudes(context: Context, uri: Uri?): List<String> {
-    val lats = mutableListOf<String>()
+fun parseOsmLocations(
+    context: Context,
+    uri: Uri?
+): List<SearchLocation> {
+    val locations =
+        mutableListOf<SearchLocation>()
+    val nodeMap = mutableMapOf<String, Pair<Double, Double>>() // id → (lat, lon)
+
     try {
         val inputStream = if (uri != null) {
             context.contentResolver.openInputStream(uri)
@@ -805,10 +826,89 @@ fun parseOsmLatitudes(context: Context, uri: Uri?): List<String> {
         parser.setInput(inputStream, null)
 
         var eventType = parser.eventType
+        var currentName: String? = null
+        var currentLat: String? = null
+        var currentLon: String? = null
+        val currentWayNodes = mutableListOf<Pair<Double, Double>>()
+
         while (eventType != XmlPullParser.END_DOCUMENT) {
-            if (eventType == XmlPullParser.START_TAG && parser.name == "node") {
-                val lat = parser.getAttributeValue(null, "lat")
-                if (lat != null) lats.add(lat)
+            when (eventType) {
+                XmlPullParser.START_TAG -> {
+                    when (parser.name) {
+                        "node" -> {
+                            val id = parser.getAttributeValue(null, "id")
+                            val lat = parser.getAttributeValue(null, "lat")?.toDoubleOrNull()
+                            val lon = parser.getAttributeValue(null, "lon")?.toDoubleOrNull()
+                            if (id != null && lat != null && lon != null) {
+                                nodeMap[id] = lat to lon
+                                currentLat = lat.toString()
+                                currentLon = lon.toString()
+                            }
+                        }
+                        "nd" -> {
+                            val ref = parser.getAttributeValue(null, "ref")
+                            nodeMap[ref]?.let { currentWayNodes.add(it) }
+                        }
+                        "tag" -> {
+                            val k = parser.getAttributeValue(null, "k")
+                            val v = parser.getAttributeValue(null, "v")
+                            if (k == "name" && v != null) {
+                                currentName = v
+                            }
+                        }
+                    }
+                }
+                XmlPullParser.END_TAG -> {
+                    when (parser.name) {
+                        "node" -> {
+                            if (currentName != null && currentLat != null && currentLon != null) {
+                                locations.add(
+                                    SearchLocation(
+                                        currentName,
+                                        currentLat.toDouble(),
+                                        currentLon.toDouble()
+                                    )
+                                )
+                            }
+                            currentName = null
+                            currentLat = null
+                            currentLon = null
+                        }
+                        "way" -> {
+                            if (currentName != null && currentWayNodes.isNotEmpty()) {
+                                val avgLat = currentWayNodes.map { it.first }.average()
+                                val avgLon = currentWayNodes.map { it.second }.average()
+                                locations.add(
+                                    SearchLocation(
+                                        currentName,
+                                        avgLat,
+                                        avgLon
+                                    )
+                                )
+
+                            }
+                            currentName = null
+                            currentWayNodes.clear()
+                        }
+                        "relation" -> {
+                            // For simplicity, treat relation like way: centroid of member nodes
+                            if (currentName != null && currentWayNodes.isNotEmpty()) {
+                                val avgLat = currentWayNodes.map { it.first }.average()
+                                val avgLon = currentWayNodes.map { it.second }.average()
+                                locations.add(
+                                    SearchLocation(
+                                        currentName,
+                                        avgLat,
+                                        avgLon
+                                    )
+                                )
+
+                            }
+                            currentName = null
+                            currentWayNodes.clear()
+                        }
+                    }
+                }
             }
             eventType = parser.next()
         }
@@ -816,33 +916,20 @@ fun parseOsmLatitudes(context: Context, uri: Uri?): List<String> {
     } catch (e: Exception) {
         e.printStackTrace()
     }
-    return lats.distinct()
-}
-
-fun parseOsmLongitudes(context: Context, uri: Uri?): List<String> {
-    val lons = mutableListOf<String>()
-    try {
-        val inputStream = if (uri != null) {
-            context.contentResolver.openInputStream(uri)
-        } else {
-            context.assets.open("tighter_around_rns.osm")
+    locations
+        .filter {
+            it.name == "Double Road"
         }
-        val parser = XmlPullParserFactory.newInstance().newPullParser()
-        parser.setInput(inputStream, null)
+        .forEach {
 
-        var eventType = parser.eventType
-        while (eventType != XmlPullParser.END_DOCUMENT) {
-            if (eventType == XmlPullParser.START_TAG && parser.name == "node") {
-                val lon = parser.getAttributeValue(null, "lon")
-                if (lon != null) lons.add(lon)
-            }
-            eventType = parser.next()
+            Log.d(
+                "DOUBLE_ROAD",
+                "${it.lat},${it.lon}"
+            )
         }
-        inputStream?.close()
-    } catch (e: Exception) {
-        e.printStackTrace()
+    return locations.distinctBy {
+        it.name
     }
-    return lons.distinct()
 }
 
 

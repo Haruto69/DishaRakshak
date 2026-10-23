@@ -1,0 +1,16 @@
+<!-- res/drawable/gps_green.xml -->
+
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+
+    <size
+        android:width="18dp"
+        android:height="18dp" />
+
+    <solid android:color="#00C853" />
+
+    <stroke
+        android:width="2dp"
+        android:color="#FFFFFF" />
+
+</shape>
