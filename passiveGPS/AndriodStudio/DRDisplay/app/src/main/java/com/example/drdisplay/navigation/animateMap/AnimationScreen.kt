@@ -77,6 +77,10 @@ fun AnimationScreen(
         mutableStateOf<Polyline?>(null)
     }
 
+    var mapCentered by remember {
+        mutableStateOf(false)
+    }
+
     var poiMarkersAdded by remember {
         mutableStateOf(false)
     }
@@ -86,6 +90,10 @@ fun AnimationScreen(
     }
 
     LaunchedEffect(mapUri) {
+        Log.d(
+            "ANIMATION_SCREEN",
+            "ENTERED"
+        )
         try {
             graph = GraphBuilder.loadGraph(
                 context = context,
@@ -139,6 +147,7 @@ fun AnimationScreen(
             "HomeBase = $selectedHomeBase"
         )
         val g = graph ?: return@LaunchedEffect
+        mapCentered = false
         Log.d("ROUTE", "Entered Route Calculation")
         val goalNode =
             selectedHomeBase?.let {
@@ -152,12 +161,20 @@ fun AnimationScreen(
             "ROUTE",
             "Goal node = $goalNode"
         )
+        if (
+            currentLat == 0.0 ||
+            currentLon == 0.0
+        ) {
+            return@LaunchedEffect
+        }
+
         startNode =
             RouteFinder.nearestNode(
                 g,
                 currentLat,
                 currentLon
             )
+
         Log.d(
             "ROUTE",
             "Start node = $startNode"
@@ -219,17 +236,42 @@ fun AnimationScreen(
             ),
         factory = { ctx ->
             MapView(ctx).apply {
+
+                Log.d(
+                    "MAP_DEBUG",
+                    "MAP CREATED"
+                )
+
                 setMultiTouchControls(true)
+
+                /*
                 controller.setCenter(
                     GeoPoint(
-                        currentLat,
-                        currentLon
+                        12.9009952,
+                        77.5183405
                     )
                 )
+                 */
+
                 controller.setZoom(17.0)
             }
         },
         update = { mapView ->
+
+            if (!mapCentered && selectedHomeBase != null) {
+
+                mapView.controller.setCenter(
+                    GeoPoint(
+                        selectedHomeBase.lat,
+                        selectedHomeBase.lon
+                    )
+                )
+
+                mapView.controller.setZoom(17.0)
+
+                mapCentered = true
+            }
+
             Log.d(
                 "MARKER",
                 "Updating marker"
@@ -330,26 +372,32 @@ fun AnimationScreen(
                 }
             }
 
-            if (gpsMarker == null) {
+            if (
+                gpsLat != 0.0 &&
+                gpsLon != 0.0
+            ) {
 
-                gpsMarker = Marker(mapView)
+                if (gpsMarker == null) {
 
-                gpsMarker!!.icon =
-                    ContextCompat.getDrawable(
-                        context,
-                        R.drawable.gps_green
+                    gpsMarker = Marker(mapView)
+
+                    gpsMarker!!.icon =
+                        ContextCompat.getDrawable(
+                            context,
+                            R.drawable.gps_green
+                        )
+
+                    mapView.overlays.add(
+                        gpsMarker!!
                     )
+                }
 
-                mapView.overlays.add(
-                    gpsMarker!!
-                )
+                gpsMarker!!.position =
+                    GeoPoint(
+                        gpsLat,
+                        gpsLon
+                    )
             }
-
-            gpsMarker!!.position =
-                GeoPoint(
-                    gpsLat,
-                    gpsLon
-                )
 
             selectedHomeBase?.let { home ->
 

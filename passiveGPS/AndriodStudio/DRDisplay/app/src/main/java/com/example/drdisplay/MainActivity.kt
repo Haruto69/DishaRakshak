@@ -99,6 +99,14 @@ object HomeBasePrefs {
     val HOME_BASES = stringPreferencesKey("home_bases")
 }
 
+object NavPrefs {
+    val LAST_GPS_LAT =
+        stringPreferencesKey("last_gps_lat")
+
+    val LAST_GPS_LON =
+        stringPreferencesKey("last_gps_lon")
+}
+
 @Composable
 fun AppLayout(fusedLocationClient: FusedLocationProviderClient) {
 
@@ -147,7 +155,7 @@ fun AppLayout(fusedLocationClient: FusedLocationProviderClient) {
         gpsLat,
         gpsLon
     ) {
-        if (gpsLat == 0.0 || gpsLon == 0.0)
+        if (originLat == 0.0 || originLon == 0.0)
             return@LaunchedEffect
         navLat =
             originLat +
@@ -174,6 +182,10 @@ fun AppLayout(fusedLocationClient: FusedLocationProviderClient) {
 
     // Passive GPS updates
     LaunchedEffect(Unit) {
+        Log.d(
+            "ANIMATION_SCREEN",
+            "ENTERED"
+        )
 
         if (ActivityCompat.checkSelfPermission(
                 context,
@@ -191,6 +203,17 @@ fun AppLayout(fusedLocationClient: FusedLocationProviderClient) {
                         for (location in locationResult.locations) {
                             gpsLat = location.latitude
                             gpsLon = location.longitude
+                            CoroutineScope(Dispatchers.IO).launch {
+
+                                context.homeBaseDataStore.edit { prefs ->
+
+                                    prefs[NavPrefs.LAST_GPS_LAT] =
+                                        gpsLat.toString()
+
+                                    prefs[NavPrefs.LAST_GPS_LON] =
+                                        gpsLon.toString()
+                                }
+                            }
                             if (
                                 location.accuracy < 10f
                             ) {
@@ -245,6 +268,41 @@ fun AppLayout(fusedLocationClient: FusedLocationProviderClient) {
             )
         } else {
             gpsText = "GPS permission not granted"
+        }
+    }
+
+    LaunchedEffect(Unit) {
+        Log.d(
+            "ANIMATION_SCREEN",
+            "ENTERED"
+        )
+
+        val prefs =
+            context.homeBaseDataStore.data.first()
+
+        val savedLat =
+            prefs[NavPrefs.LAST_GPS_LAT]
+                ?.toDoubleOrNull()
+
+        val savedLon =
+            prefs[NavPrefs.LAST_GPS_LON]
+                ?.toDoubleOrNull()
+
+        if (
+            savedLat != null &&
+            savedLon != null
+        ) {
+
+            originLat = savedLat
+            originLon = savedLon
+
+            navLat = savedLat
+            navLon = savedLon
+
+            Log.d(
+                "NAV_RESTORE",
+                "Recovered GPS anchor"
+            )
         }
     }
 

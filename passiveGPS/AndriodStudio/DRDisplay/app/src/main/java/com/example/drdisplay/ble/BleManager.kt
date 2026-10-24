@@ -20,6 +20,8 @@ import java.util.UUID
 import kotlin.math.atan2
 import kotlin.math.sqrt
 import android.util.Log
+import kotlin.math.cos
+import kotlin.math.sin
 
 class BleManager(
     private val context: Context
@@ -217,6 +219,7 @@ class BleManager(
                     "BLE_PACKET",
                     "rawBytes=${characteristic.value.size}"
                 )
+
                 val text =
                     String(
                         characteristic.value,
@@ -240,7 +243,7 @@ class BleManager(
                     "BLE_PACKET",
                     fields.joinToString("|")
                 )
-                if (fields.size != 6) {
+                if (fields.size != 7) {
 
                     Log.d(
                         "BLE_DEBUG",
@@ -250,14 +253,22 @@ class BleManager(
                     return
                 }
 
-                val velocityX =
+                val yaw =
                     fields[3].toFloatOrNull() ?: 0f
 
-                val velocityY =
+                val velocityX =
                     fields[4].toFloatOrNull() ?: 0f
 
-                val velocityZ =
+                val velocityY =
                     fields[5].toFloatOrNull() ?: 0f
+
+                val velocityZ =
+                    fields[6].toFloatOrNull() ?: 0f
+
+                Log.d(
+                    "IMU_PACKET",
+                    "vx=$velocityX vy=$velocityY vz=$velocityZ"
+                )
 
                 val now =
                     System.currentTimeMillis()
@@ -265,9 +276,26 @@ class BleManager(
                     (now - previousTime) / 1000.0
                 previousTime = now
 
+                /*
                 x += velocityX * dt * DR_SCALE
                 y += velocityY * dt * DR_SCALE
                 z += velocityZ * dt * DR_SCALE
+                 */
+                val yawRad = Math.toRadians(yaw.toDouble())
+
+                val worldVx =
+                    velocityX * cos(yawRad) -
+                            velocityY * sin(yawRad)
+
+                val worldVy =
+                    velocityX * sin(yawRad) +
+                            velocityY * cos(yawRad)
+
+                x += worldVx * dt * DR_SCALE
+                y += worldVy * dt * DR_SCALE
+
+
+                z += velocityZ * dt
 
                 Log.d(
                     "VEL_DEBUG",
@@ -287,11 +315,13 @@ class BleManager(
                             dx
                         )
                     )
+
                 state.value =
                     state.value.copy(
                         sequence = fields[0].toLong(),
                         roll = fields[1].toFloat(),
                         pitch = fields[2].toFloat(),
+                        yaw = yaw,
 
                         velocityX = velocityX,
                         velocityY = velocityY,
@@ -307,6 +337,19 @@ class BleManager(
                         bearingToHome =
                             bearingToHome.toFloat()
                     )
+
+                x += worldVx * dt
+                y += worldVy * dt
+
+                Log.d(
+                    "VEL_DEBUG",
+                    "vx=$velocityX vy=$velocityY vz=$velocityZ"
+                )
+
+                Log.d(
+                    "DR_DEBUG",
+                    "x=$x y=$y z=$z"
+                )
             }
             override fun onMtuChanged(
                 gatt: BluetoothGatt,

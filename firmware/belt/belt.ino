@@ -173,6 +173,8 @@ uint32_t sequence;
 
     float pitchDeg;
 
+    float yawDeg;
+
 
     bool bothFeetOnline;
 
@@ -334,6 +336,10 @@ String createBlePayload(
 
     payload += String(packet.pitchDeg, 2);
 
+    payload += ",";
+
+    payload += String(packet.yawDeg, 2);
+    
     payload += ",";
 
 
@@ -871,6 +877,10 @@ combined.sequence =
     combined.pitchDeg =
 
         (left.packet.pitchDeg + right.packet.pitchDeg) * 0.5f;
+
+    combined.yawDeg =
+        
+        (left.packet.yawDeg + right.packet.yawDeg) * 0.5f;
 
 
     combined.bothFeetOnline = true;

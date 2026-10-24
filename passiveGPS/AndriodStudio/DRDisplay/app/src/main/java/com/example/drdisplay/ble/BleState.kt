@@ -11,6 +11,7 @@ data class BleState(
 
     val roll: Float = 0f,
     val pitch: Float = 0f,
+    val yaw: Float = 0f,
 
     val velocityX: Float = 0f,
     val velocityY: Float = 0f,
