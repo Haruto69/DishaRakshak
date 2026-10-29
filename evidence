@@ -1,0 +1,450 @@
+Disha-Rakshak — Raw IMU Characterization Evidence
+================================================
+
+Run type: Stationary sensor characterization
+Sketch: firmware/foot_testing/01_raw_characterization/01_raw_characterization.ino
+Board/module: Right-foot ESP32 + MPU6050 (reported WHO_AM_I = 0x70)
+Serial baud: 115200
+Measurement: One 10-second stationary statistics window
+Conditions stated by sketch: module on a solid flat surface; keep completely still
+Source: Serial Monitor output pasted into the Codex conversation on 2026-10-29
+
+Raw sample readings provided before the statistics block
+---------------------------------------------------------
+16:59:16.967 -> A=(-0.0625, -0.0957, -0.8633) g  |A|=0.8708 g  G=(-1.084, -0.366, -0.977) deg/s
+16:59:17.067 -> A=(-0.0637, -0.0994, -0.8694) g  |A|=0.8774 g  G=(-1.168, -0.435, -1.008) deg/s
+16:59:17.170 -> A=(-0.0654, -0.0986, -0.8577) g  |A|=0.8658 g  G=(-1.046, -0.496, -1.015) deg/s
+16:59:17.271 -> A=(-0.0635, -0.0984, -0.8550) g  |A|=0.8630 g  G=(-1.176, -0.504, -0.878) deg/s
+16:59:17.371 -> A=(-0.0630, -0.0964, -0.8652) g  |A|=0.8729 g  G=(-1.237, -0.176, -1.031) deg/s
+16:59:17.479 -> A=(-0.0620, -0.1018, -0.8687) g  |A|=0.8768 g  G=(-1.061, -0.382, -1.015) deg/s
+16:59:17.584 -> A=(-0.0598, -0.0957, -0.8718) g  |A|=0.8791 g  G=(-1.061, -0.351, -1.000) deg/s
+
+Statistics block (copied as provided)
+------------------------------------
+16:59:17.617 -> ========================================
+16:59:17.617 -> [STATISTICS] Stationary measurement
+16:59:17.617 -> ========================================
+16:59:17.617 -> Accel X: mean=-0.067918 std=0.004067 min=-0.080322 max=-0.058350 g
+16:59:17.617 -> Accel Y: mean=-0.101122 std=0.002785 min=-0.108887 max=-0.092773 g
+16:59:17.650 -> Accel Z: mean=-0.863181 std=0.003994 min=-0.876709 max=-0.848877 g
+16:59:17.650 -> |Accel|: mean=0.871748 std=0.003966 min=0.857956 max=0.884965 g
+16:59:17.650 ->
+16:59:17.650 -> Gyro X: mean=-1.092466 std=0.091528 min=-1.801527 max=-0.893130 deg/s
+16:59:17.650 -> Gyro Y: mean=-0.425656 std=0.153133 min=-0.763359 max=0.770992 deg/s
+16:59:17.650 -> Gyro Z: mean=-0.963824 std=0.049231 min=-1.129771 max=-0.832061 deg/s
+16:59:17.650 ->
+16:59:17.683 -> [INFO] Starting another 10-second statistics window.
+16:59:17.683 -> [INFO] Keep the module completely still.
+
+Interpretation / reporting notes
+--------------------------------
+- This is one stationary raw-sensor characterization window, not a movement-classification or navigation-accuracy trial.
+- Mean acceleration magnitude was 0.871748 g (std 0.003966 g); it is stable in this window but below the approximately 1 g expected for a stationary accelerometer. Verify sensor orientation, range/scaling, and compare with a known-good reference before claiming accelerometer accuracy.
+- Gyroscope means show a measurable stationary bias: X=-1.092466, Y=-0.425656, Z=-0.963824 deg/s. The standard deviations quantify observed variation during this window.
+- Do not label the standard deviations as accuracy. They describe sample variability/noise under this test setup.
+- Preserve additional windows as separate dated runs, and record module identity, mounting/orientation, and whether the sensor was disturbed.
+
+
+Run 2 — Stationary IMU statistics
+=================================
+
+Run type: Stationary sensor characterization
+Sketch: firmware/foot_testing/01_raw_characterization/01_raw_characterization.ino
+Serial baud: 115200
+Measurement: One 10-second stationary statistics window
+Conditions stated by sketch: keep the module completely still
+Source: Serial Monitor output pasted into the Codex conversation on 2026-10-29 at 17:02 (client local time)
+
+Statistics block (copied as provided)
+------------------------------------
+17:02:03.278 -> ========================================
+17:02:03.278 -> [STATISTICS] Stationary measurement
+17:02:03.278 -> ========================================
+17:02:03.278 -> Accel X: mean=-0.026541 std=0.002893 min=-0.036621 max=-0.017822 g
+17:02:03.278 -> Accel Y: mean=-0.066488 std=0.002053 min=-0.073486 max=-0.058838 g
+17:02:03.278 -> Accel Z: mean=-0.870430 std=0.003836 min=-0.883057 max=-0.855469 g
+17:02:03.312 -> |Accel|: mean=0.873377 std=0.003834 min=0.858553 max=0.886289 g
+17:02:03.312 ->
+17:02:03.312 -> Gyro X: mean=-1.044947 std=0.079151 min=-1.748092 max=-0.862595 deg/s
+17:02:03.312 -> Gyro Y: mean=-0.487969 std=0.070495 min=-0.679389 max=0.030534 deg/s
+17:02:03.312 -> Gyro Z: mean=-0.943389 std=0.048648 min=-1.091603 max=-0.786260 deg/s
+17:02:03.312 ->
+17:02:03.312 -> [INFO] Starting another 10-second statistics window.
+17:02:03.312 -> [INFO] Keep the module completely still.
+
+Summary
+-------
+- Mean acceleration magnitude: 0.873377 g (std 0.003834 g), similar to Run 1's 0.871748 g (std 0.003966 g).
+- Acceleration magnitude remains below the approximately 1 g expected for a stationary sensor; investigate scaling/range or sensor condition before making an accuracy claim.
+- Gyroscope mean biases: X=-1.044947, Y=-0.487969, Z=-0.943389 deg/s.
+- This is another stationary characterization window, not an accuracy percentage or a movement/navigation trial.
+
+
+Run 3 — Stationary IMU statistics
+=================================
+
+Run type: Stationary sensor characterization
+Sketch: firmware/foot_testing/01_raw_characterization/01_raw_characterization.ino
+Serial baud: 115200
+Measurement: One 10-second stationary statistics window (as reported by sketch)
+Setup note from user: a small weight was placed on the sensor/module to keep it from moving
+Source: Serial Monitor output pasted into the Codex conversation on 2026-10-29 at 17:03 (client local time)
+
+Statistics block (copied as provided)
+------------------------------------
+17:03:54.906 -> Accel X: mean=-0.008664 std=0.003742 min=-0.020508 max=0.006836 g
+17:03:54.906 -> Accel Y: mean=-0.553738 std=0.003490 min=-0.563965 max=-0.541504 g
+17:03:54.906 -> Accel Z: mean=-0.688656 std=0.004962 min=-0.704102 max=-0.669434 g
+17:03:54.906 -> |Accel|: mean=0.883733 std=0.003702 min=0.871781 max=0.893677 g
+17:03:54.906 ->
+17:03:54.906 -> Gyro X: mean=-1.031420 std=2.437521 min=-11.480916 max=8.862596 deg/s
+17:03:54.939 -> Gyro Y: mean=-0.423282 std=1.117082 min=-5.038168 max=3.916031 deg/s
+17:03:54.939 -> Gyro Z: mean=-0.950183 std=1.888678 min=-9.755725 max=6.061069 deg/s
+17:03:54.939 ->
+17:03:54.939 -> [INFO] Starting another 10-second statistics window.
+17:03:54.939 -> Keep the module completely still.
+
+Summary and quality note
+------------------------
+- Mean acceleration magnitude: 0.883733 g (std 0.003702 g), still below approximately 1 g expected for a stationary sensor.
+- Gyroscope standard deviations (X=2.437521, Y=1.117082, Z=1.888678 deg/s) are much higher than in Runs 1 and 2. This suggests the sensor may have shifted/vibrated during this window, or the setup was disturbed; treat this run as potentially contaminated rather than a clean stationary-noise measurement.
+- The acceleration axis means differ substantially from Runs 1 and 2, consistent with a changed sensor orientation. Orientation changes redistribute acceleration across axes; they do not by themselves explain a total magnitude below 1 g.
+- Do not pool this run with the earlier clean-looking windows when reporting stationary gyro noise. Repeat without touching or loading the sensor during the full window, and ensure the weight does not press on the sensor/PCB or wires.
+
+
+Run 4 — Stationary IMU statistics
+=================================
+
+Run type: Stationary sensor characterization
+Sketch: firmware/foot_testing/01_raw_characterization/01_raw_characterization.ino
+Serial baud: 115200
+Measurement: One 10-second stationary statistics window (as reported by sketch)
+Setup: User reports the sensor/module was held still; weight was previously mentioned as a stabilizer
+Source: Serial Monitor output pasted into the Codex conversation on 2026-10-29 at 17:05 (client local time)
+
+Statistics block (copied as provided)
+------------------------------------
+17:05:12.099 -> [STATISTICS] Stationary measurement
+17:05:12.099 -> ========================================
+17:05:12.099 -> Accel X: mean=0.023159 std=0.002872 min=0.009521 max=0.032227 g
+17:05:12.099 -> Accel Y: mean=0.020130 std=0.002123 min=0.013916 max=0.027100 g
+17:05:12.132 -> Accel Z: mean=-0.874730 std=0.004372 min=-0.892578 max=-0.861816 g
+17:05:12.132 -> |Accel|: mean=0.875275 std=0.004377 min=0.862348 max=0.893113 g
+17:05:12.132 ->
+17:05:12.132 -> Gyro X: mean=-1.048794 std=0.051557 min=-1.198473 max=-0.877863 deg/s
+17:05:12.132 -> Gyro Y: mean=-0.399359 std=0.057359 min=-0.595420 max=-0.221374 deg/s
+17:05:12.132 -> Gyro Z: mean=-0.919893 std=0.047147 min=-1.053435 max=-0.732824 deg/s
+17:05:12.166 ->
+17:05:12.166 -> [INFO] Starting another 10-second statistics window.
+17:05:12.166 -> Keep the module completely still.
+17:05:12.166 -> ========================================
+
+Summary
+-------
+- Mean acceleration magnitude: 0.875275 g (std 0.004377 g), below approximately 1 g expected for a stationary sensor and consistent with Runs 1–3's magnitude reading.
+- Gyroscope standard deviations are low again (X=0.051557, Y=0.057359, Z=0.047147 deg/s), similar to Runs 1 and 2; the sensor appears steady during this window.
+- This remains sensor characterization, not an accuracy percentage. Investigate the repeated low acceleration magnitude before making accelerometer accuracy claims.
+
+
+Setup clarification (added after Run 4)
+=======================================
+
+The user clarified that Runs 1, 2, and 4 were taken with a small weight used to keep the module stationary. Run 3 was the only run taken without the weight; the user believes fan airflow moved the unweighted module slightly. Accordingly:
+
+- Treat Run 3 as disturbed by likely motion/airflow; its high gyro standard deviations support excluding it from stationary-noise summaries.
+- Runs 1, 2, and 4 are the intended weighted stationary runs and have low gyro variability.
+- The low acceleration-magnitude means (~0.872–0.875 g) recur in those weighted runs, so the discrepancy is not explained by the fan disturbance in Run 3. A weight that holds the board still should not itself change the acceleration magnitude, assuming it does not deform/press the sensor or change the measurement setup.
+- Keep each window's original measurements intact; this clarification updates their setup context only.
+
+
+Run 5 — Orientation check, stationary statistics
+================================================
+
+Run type: Stationary sensor characterization at a changed/flipped orientation (orientation not otherwise specified)
+Sketch: firmware/foot_testing/01_raw_characterization/01_raw_characterization.ino
+Serial baud: 115200
+Measurement: One 10-second stationary statistics window (as reported by sketch)
+Source: Serial Monitor output pasted into the Codex conversation on 2026-10-29 at 17:08 (client local time)
+
+Raw samples provided
+--------------------
+17:08:28.116 -> A=(-0.3484, 0.0190, 1.0986) g  |A|=1.1527 g  G=(-0.985, -0.405, -0.992) deg/s
+17:08:28.216 -> A=(-0.3491, 0.0176, 1.0933) g  |A|=1.1478 g  G=(-0.992, -0.542, -0.870) deg/s
+
+Statistics block (copied as provided)
+------------------------------------
+17:08:28.289 -> ========================================
+17:08:28.289 -> [STATISTICS] Stationary measurement
+17:08:28.289 -> ========================================
+17:08:28.289 -> Accel X: mean=-0.350474 std=0.002889 min=-0.361816 max=-0.340332 g
+17:08:28.322 -> Accel Y: mean=0.016978 std=0.002164 min=0.008789 max=0.023437 g
+17:08:28.322 -> Accel Z: mean=1.092924 std=0.004467 min=1.069824 max=1.125000 g
+17:08:28.322 -> |Accel|: mean=1.147874 std=0.004510 min=1.123482 max=1.180536 g
+17:08:28.322 ->
+17:08:28.322 -> Gyro X: mean=-0.980985 std=0.052164 min=-1.145038 max=-0.809160 deg/s
+17:08:28.322 -> Gyro Y: mean=-0.396763 std=0.070637 min=-0.816794 max=0.045802 deg/s
+17:08:28.322 -> Gyro Z: mean=-0.960099 std=0.049489 min=-1.122137 max=-0.809160 deg/s
+17:08:28.357 -> [INFO] Starting another 10-second statistics window.
+17:08:28.357 -> Keep the module completely still.
+
+Summary and interpretation
+--------------------------
+- Mean acceleration magnitude: 1.147874 g (std 0.004510 g), compared with approximately 0.872–0.875 g in weighted Runs 1, 2, and 4.
+- This repeatable shift across orientations indicates orientation-dependent magnitude error; a fixed accelerometer bias/offset is one possible cause. A single position cannot determine the cause or quantify accuracy.
+- Gyro standard deviations are low in this window (approximately 0.05–0.07 deg/s), consistent with a stable measurement.
+- Continue the orientation test with clearly recorded sensor faces/axes. Do not claim accelerometer accuracy from these runs until the orientation-dependent discrepancy is investigated or calibrated against a reference.
+
+
+Run 6 — Right side down, stationary statistics
+===============================================
+
+Orientation: Right side of the ESP board resting on the surface (as described by user)
+Run type: Stationary sensor characterization
+Sketch: firmware/foot_testing/01_raw_characterization/01_raw_characterization.ino
+Serial baud: 115200
+Measurement: One 10-second stationary statistics window (as reported by sketch)
+Source: Serial Monitor output pasted into the Codex conversation on 2026-10-29 at 17:10 (client local time)
+
+Statistics block (copied as provided; first timestamp appears as `10:24.403` in the pasted text)
+-----------------------------------------------------------------------------------------------
+10:24.403 -> [STATISTICS] Stationary measurement
+17:10:24.403 -> ========================================
+17:10:24.403 -> Accel X: mean=0.003482 std=0.002539 min=-0.006592 max=0.012207 g
+17:10:24.403 -> Accel Y: mean=-0.977608 std=0.002806 min=-0.986084 max=-0.969727 g
+17:10:24.403 -> Accel Z: mean=0.075477 std=0.004644 min=0.062256 max=0.092041 g
+17:10:24.403 -> |Accel|: mean=0.980538 std=0.002799 min=0.972453 max=0.988766 g
+17:10:24.436 ->
+17:10:24.436 -> Gyro X: mean=-0.995366 std=1.018404 min=-4.183206 max=3.282443 deg/s
+17:10:24.436 -> Gyro Y: mean=-0.342115 std=0.178691 min=-0.832061 max=0.312977 deg/s
+17:10:24.436 -> Gyro Z: mean=-1.008588 std=0.351491 min=-2.244275 max=0.305344 deg/s
+17:10:24.436 ->
+17:10:24.436 -> [INFO] Starting another 10-second statistics window.
+17:10:24.436 -> Keep the module completely still.
+
+Summary and quality note
+------------------------
+- Mean acceleration magnitude: 0.980538 g (std 0.002799 g), close to 1 g for a stationary sensor.
+- Acceleration is primarily on Y (mean -0.977608 g), consistent with this side orientation.
+- Gyro X standard deviation is 1.018404 deg/s with a range from -4.183206 to 3.282443 deg/s, noticeably higher than stable Runs 1, 2, 4, and 5. Possible slight movement/disturbance; keep this in the record but consider repeating this orientation before using its gyro noise estimate.
+
+
+Run 7 — Bottom side down, stationary statistics
+================================================
+
+Orientation: Bottom side of the ESP board resting on the surface (as described by user)
+Run type: Stationary sensor characterization
+Sketch: firmware/foot_testing/01_raw_characterization/01_raw_characterization.ino
+Serial baud: 115200
+Measurement: One 10-second stationary statistics window (as reported by sketch)
+Source: Serial Monitor output pasted into the Codex conversation on 2026-10-29 at 17:11 (client local time)
+
+Statistics block (copied as provided; first timestamp appears as `:11:28.832` in the pasted text)
+------------------------------------------------------------------------------------------------
+:11:28.832 -> [STATISTICS] Stationary measurement
+17:11:28.832 -> ========================================
+17:11:28.832 -> Accel X: mean=-1.000525 std=0.007627 min=-1.105957 max=-0.916260 g
+17:11:28.865 -> Accel Y: mean=0.026364 std=0.002146 min=0.019531 max=0.034912 g
+17:11:28.865 -> Accel Z: mean=0.101589 std=0.004944 min=0.077881 max=0.127441 g
+17:11:28.865 -> |Accel|: mean=1.006030 std=0.007463 min=0.925359 max=1.109245 g
+17:11:28.865 ->
+17:11:28.865 -> Gyro X: mean=-0.908298 std=0.054820 min=-1.068702 max=-0.725191 deg/s
+17:11:28.865 -> Gyro Y: mean=-0.391420 std=1.512527 min=-4.977099 max=4.679389 deg/s
+17:11:28.865 -> Gyro Z: mean=-1.192412 std=0.059758 min=-1.419847 max=-0.763359 deg/s
+17:11:28.898 ->
+17:11:28.898 -> [INFO] Starting another 10-second statistics window.
+17:11:28.898 -> Keep the module completely still.
+
+Summary and quality note
+------------------------
+- Mean acceleration magnitude: 1.006030 g (std 0.007463 g), close to 1 g; acceleration is primarily on X (mean -1.000525 g), consistent with this board-side orientation.
+- Acceleration X min/max span is relatively wide (-1.105957 to -0.916260 g); gyro Y standard deviation is 1.512527 deg/s with several-degree extremes. The board may have shifted or vibrated; repeat this orientation if a clean noise estimate is needed.
+
+
+Run 8 — Left side down, stationary statistics
+==============================================
+
+Orientation: Left side of the ESP board resting on the surface (as described by user)
+Run type: Stationary sensor characterization
+Sketch: firmware/foot_testing/01_raw_characterization/01_raw_characterization.ino
+Serial baud: 115200
+Measurement: One 10-second stationary statistics window (as reported by sketch)
+Source: Serial Monitor output pasted into the Codex conversation on 2026-10-29 at 17:12 (client local time)
+
+Statistics block (copied as provided)
+------------------------------------
+17:12:56.920 -> Accel X: mean=0.000909 std=0.002303 min=-0.006104 max=0.007813 g
+17:12:56.920 -> Accel Y: mean=1.016890 std=0.002787 min=1.008545 max=1.025146 g
+17:12:56.920 -> Accel Z: mean=0.055372 std=0.005157 min=0.041016 max=0.076416 g
+17:12:56.920 -> |Accel|: mean=1.018413 std=0.002786 min=1.009936 max=1.026426 g
+17:12:56.920 ->
+17:12:56.920 -> Gyro X: mean=-0.911885 std=0.885545 min=-3.938931 max=1.656489 deg/s
+17:12:56.952 -> Gyro Y: mean=-0.351573 std=0.083341 min=-0.641221 max=-0.076336 deg/s
+17:12:56.952 -> Gyro Z: mean=-0.997107 std=0.095970 min=-1.305344 max=-0.687023 deg/s
+17:12:56.952 ->
+17:12:56.952 -> [INFO] Starting another 10-second statistics window.
+17:12:56.952 -> Keep the module completely still.
+
+Summary and quality note
+------------------------
+- Mean acceleration magnitude: 1.018413 g (std 0.002786 g), close to 1 g; acceleration is primarily on Y (mean 1.016890 g), consistent with this side orientation.
+- Gyro X standard deviation is 0.885545 deg/s with a range from -3.938931 to 1.656489 deg/s, suggesting possible movement/disturbance. Acceleration magnitude itself is steady in this window.
+
+
+Run 9 — Last remaining side, stationary statistics
+===================================================
+
+Orientation: User identified this as the last side tested; exact board face/axis was not specified
+Run type: Stationary sensor characterization
+Sketch: firmware/foot_testing/01_raw_characterization/01_raw_characterization.ino
+Serial baud: 115200
+Measurement: One 10-second stationary statistics window (as reported by sketch)
+Source: Serial Monitor output pasted into the Codex conversation on 2026-10-29 at 17:13 (client local time)
+
+Statistics block (copied as provided)
+------------------------------------
+17:13:54.018 -> ========================================
+17:13:54.018 -> [STATISTICS] Stationary measurement
+17:13:54.018 -> ========================================
+17:13:54.018 -> Accel X: mean=0.942372 std=0.004765 min=0.910156 max=0.956787 g
+17:13:54.018 -> Accel Y: mean=0.056460 std=0.006734 min=-0.069336 max=0.075195 g
+17:13:54.051 -> Accel Z: mean=0.453332 std=0.011763 min=0.302246 max=0.487549 g
+17:13:54.051 -> |Accel|: mean=1.047347 std=0.005726 min=0.961532 max=1.069419 g
+17:13:54.051 ->
+17:13:54.051 -> Gyro X: mean=-0.791672 std=0.464522 min=-3.648855 max=1.603053 deg/s
+17:13:54.051 -> Gyro Y: mean=-0.504191 std=0.527441 min=-6.259542 max=1.885496 deg/s
+17:13:54.051 -> Gyro Z: mean=-1.076023 std=0.676774 min=-3.366412 max=4.633588 deg/s
+17:13:54.051 ->
+17:13:54.051 -> [INFO] Starting another 10-second statistics window.
+17:13:54.086 -> Keep the module completely still.
+17:13:54.086 -> ========================================
+
+Summary and quality note
+------------------------
+- Mean acceleration magnitude: 1.047347 g (std 0.005726 g), near 1 g but with more spread than the cleaner windows.
+- Gyro standard deviations are elevated on all axes (X=0.464522, Y=0.527441, Z=0.676774 deg/s), with several-degree extrema; possible movement/disturbance during the window.
+- The acceleration vector has substantial X and Z components (0.942372 g and 0.453332 g), so the board may not have been aligned squarely to a single face, or may have shifted. Repeat this orientation with clear face/axis labeling if using it for a six-position comparison.
+
+
+Movement trial excerpt — belt receiver
+=======================================
+
+Trial label: User reported “moved”
+Firmware/source indicated by output: Belt receiver, receiving LEFT and RIGHT foot packets
+Source: Serial Monitor excerpt pasted into the Codex conversation on 2026-10-29; trial start/end and duration not provided
+
+Raw log (copied as provided)
+---------------------------
+LEFT  | #5630 | MOVING | Tilt=PITCH+ | Move=Y- | Rotation=X+ | RPY=(-3.8,39.8,56.0) | Vel=(-0.19,-0.77,0.13)
+RIGHT | #5095 | MOVING | Tilt=ROLL+ | Move=X+ | Rotation=Y- | RPY=(142.8,18.8,-62.7) | Vel=(52.99,-4.63,-16.03)
+[COMBINED] #5630 RP=(69.5,29.3) Vel=(26.40,-2.70,-7.95)
+[DEBUG] valid=11974 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #5640 | MOVING | Tilt=PITCH+ | Move=Y- | Rotation=X- | RPY=(3.2,43.0,59.3) | Vel=(-0.40,-0.73,-0.65)
+RIGHT | #5108 | MOVING | Tilt=ROLL+ | Move=X+ | Rotation=Z- | RPY=(156.4,13.2,-66.5) | Vel=(54.41,-2.90,-14.40)
+[COMBINED] #5640 RP=(79.8,28.1) Vel=(27.01,-1.81,-7.52)
+[DEBUG] valid=11992 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #5655 | MOVING | Tilt=PITCH+ | Move=Y- | Rotation=X- | RPY=(-10.5,44.6,48.3) | Vel=(-0.39,-0.79,-1.11)
+RIGHT | #5119 | MOVING | Tilt=ROLL+ | Move=X+ | Rotation=Y+ | RPY=(163.7,25.6,-62.5) | Vel=(55.35,-2.45,-13.73)
+[COMBINED] #5655 RP=(76.6,35.1) Vel=(27.48,-1.62,-7.42)
+[DEBUG] valid=12014 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #5666 | MOVING | Tilt=PITCH+ | Move=Y- | Rotation=Y- | RPY=(-19.4,41.3,44.0) | Vel=(-0.77,-0.93,0.04)
+RIGHT | #5131 | MOVING | Tilt=ROLL+ | Move=X+ | Rotation=Y+ | RPY=(175.3,45.2,-75.3) | Vel=(55.77,-1.93,-14.63)
+[COMBINED] #5666 RP=(78.0,43.2) Vel=(27.50,-1.43,-7.30)
+[DEBUG] valid=12035 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #5679 | MOVING | Tilt=PITCH+ | Move=Y- | Rotation=Y- | RPY=(-20.4,49.6,46.7) | Vel=(-0.83,-1.42,-0.01)
+RIGHT | #5142 | MOVING | Tilt=ROLL+ | Move=X+ | Rotation=Y- | RPY=(173.0,41.6,-70.3) | Vel=(56.06,-1.71,-15.38)
+[COMBINED] #5679 RP=(76.3,45.6) Vel=(27.61,-1.56,-7.70)
+[DEBUG] valid=12053 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #5692 | MOVING | Tilt=PITCH+ | Move=Y- | Rotation=Y+ | RPY=(-22.0,63.7,53.1) | Vel=(-0.79,-1.39,-1.06)
+RIGHT | #5158 | MOVING | Tilt=ROLL+ | Move=X+ | Rotation=Z- | RPY=(162.2,15.2,-99.9) | Vel=(56.16,-0.88,-13.73)
+[COMBINED] #5692 RP=(70.1,39.4) Vel=(27.69,-1.14,-7.39)
+[DEBUG] valid=12071 badLength=0 badMagic=0 unknownSender=0
+
+Preliminary observations
+------------------------
+- All 12 individual foot-state rows in this excerpt say MOVING during a user-reported movement trial.
+- Belt debug counter increased from valid=11974 to valid=12071 across the excerpt; badLength, badMagic, and unknownSender remained 0 in every shown counter line.
+- This supports correct movement labeling in the shown samples and successful packet reception in the shown interval. It does not establish detection accuracy or packet-loss rate: the excerpt is short, total trial duration and ground-truth annotation are absent, and counter totals are cumulative since startup.
+- Velocity output includes very large RIGHT-foot values (around 53–56 on X); these are unvalidated estimates and should not be reported as true speed.
+
+
+Stationary trial excerpt — belt receiver
+========================================
+
+Trial label: User reported “still”
+Firmware/source indicated by output: Belt receiver, receiving LEFT and RIGHT foot packets
+Source: Serial Monitor excerpt pasted into the Codex conversation on 2026-10-29; trial start/end and duration not provided
+
+Raw log (copied as provided)
+---------------------------
+LEFT  | #882 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.0,-0.1,0.3) | Vel=(0.00,0.00,0.00)
+RIGHT | #348 | MOVING | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(0.0,-0.1,0.0) | Vel=(0.00,0.00,0.00)
+[COMBINED] #882 RP=(-0.0,-0.1) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=4458 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #895 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.0,-0.1,0.3) | Vel=(0.00,0.00,0.00)
+RIGHT | #361 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.1,-0.1,0.0) | Vel=(0.00,0.00,0.00)
+[COMBINED] #895 RP=(-0.0,-0.1) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=4482 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #908 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.0,-0.1,0.3) | Vel=(0.00,0.00,0.00)
+RIGHT | #373 | MOVING | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(0.1,-0.1,0.1) | Vel=(0.00,0.00,0.00)
+[COMBINED] #908 RP=(0.0,-0.1) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=4506 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #920 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.0,-0.1,0.3) | Vel=(0.00,0.00,0.00)
+RIGHT | #386 | MOVING | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.1,-0.0,0.0) | Vel=(0.00,-0.00,0.00)
+[COMBINED] #920 RP=(-0.0,-0.1) Vel=(0.00,-0.00,0.00)
+[DEBUG] valid=4528 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #933 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.0,-0.1,0.3) | Vel=(0.00,0.00,0.00)
+RIGHT | #398 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.2,-0.0,0.0) | Vel=(0.00,0.00,0.00)
+[COMBINED] #933 RP=(-0.1,-0.1) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=4552 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+
+Preliminary observations
+------------------------
+- LEFT state is STILL in all 5 shown snapshots (5/5).
+- RIGHT state is STILL in 2 of 5 snapshots and MOVING in 3 of 5, despite user labeling the trial still. In all 5 snapshots its separate Move field says STILL, and velocity is approximately zero.
+- `STILL`/`MOVING` and `Move=STILL` are distinct outputs in the firmware: `Move` is derived from velocity thresholds, while `isStill` is the stationarity classifier. Do not count `Move=STILL` as a correct still-classifier prediction.
+- Belt debug count rises from valid=4458 to 4552; shown error counters remain zero. Counts are cumulative, and excerpt duration is unknown, so this does not yield a packet-loss rate.
+- If the user truly kept both modules still throughout, these samples show intermittent false-MOVING output from the RIGHT module. This is preliminary sample evidence only, not a full-trial accuracy estimate.
+
+Stationary trial continuation (next 5 snapshots)
+------------------------------------------------
+LEFT  | #970 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.0,-0.1,0.3) | Vel=(0.00,0.00,0.00)
+RIGHT | #435 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.1,-0.0,0.0) | Vel=(0.00,0.00,0.00)
+[COMBINED] #970 RP=(-0.1,-0.1) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=4618 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #983 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.0,-0.1,0.3) | Vel=(0.00,0.00,0.00)
+RIGHT | #448 | MOVING | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.1,-0.1,0.0) | Vel=(0.00,0.00,0.00)
+[COMBINED] #983 RP=(-0.1,-0.1) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=4643 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #994 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(0.0,-0.1,0.3) | Vel=(0.00,0.00,0.00)
+RIGHT | #458 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.2,-0.0,0.0) | Vel=(0.00,0.00,0.00)
+[COMBINED] #994 RP=(-0.1,-0.1) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=4662 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #1008 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(0.0,-0.1,0.3) | Vel=(0.00,0.00,0.00)
+RIGHT | #473 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.1,-0.0,0.0) | Vel=(0.00,0.00,0.00)
+[COMBINED] #1008 RP=(-0.1,-0.1) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=4690 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #1020 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(0.0,-0.1,0.4) | Vel=(0.00,0.00,0.00)
+RIGHT | #485 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.1,-0.0,0.0) | Vel=(0.00,0.00,0.00)
+[COMBINED] #1020 RP=(-0.1,-0.1) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=4708 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+
+Updated stationary excerpt counts (10 snapshots total across the two pasted blocks)
+----------------------------------------------------------------------------------
+- LEFT: STILL in 10/10 snapshots.
+- RIGHT: STILL in 6/10 and MOVING in 4/10 snapshots, while Move=STILL and velocity is zero in all shown rows.
+- These are sample counts from pasted snapshots, not a frame-level detection-accuracy estimate for the entire still trial; total trial duration and complete output are not available.
