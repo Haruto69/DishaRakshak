@@ -1,0 +1,1090 @@
+STRUCT_SIZE=60
+
+========================================
+Disha-Rakshak Belt Module - BUILD 6 BLE
+Dual Foot Motion Receiver
+========================================
+[ESP-NOW] Belt MAC: 70:4B:CA:47:6D:3C
+[ESP-NOW] Listening on channel 6
+[BLE] Advertising Started
+[READY] Waiting for LEFT and RIGHT foot packets
+----------------------------------------
+LEFT  | #25428 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-39.0) | Vel=(0.00,0.00,0.00)
+RIGHT | #24893 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.3,-17.6,-28.4) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25428 RP=(-34.8,-12.6) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=44 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25441 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-39.0) | Vel=(0.00,0.00,0.00)
+RIGHT | #24906 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.3,-17.6,-28.4) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25441 RP=(-34.9,-12.6) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=69 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25453 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-39.0) | Vel=(0.00,0.00,0.00)
+RIGHT | #24917 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.3,-17.6,-28.4) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25453 RP=(-34.9,-12.6) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=90 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25466 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-39.0) | Vel=(0.00,0.00,0.00)
+RIGHT | #24931 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.3,-17.6,-28.4) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25466 RP=(-34.9,-12.6) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=113 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25478 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-39.0) | Vel=(0.00,0.00,0.00)
+RIGHT | #24941 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.3,-17.6,-28.4) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25478 RP=(-34.9,-12.6) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=132 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25490 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-39.0) | Vel=(0.00,0.00,0.00)
+RIGHT | #24956 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.3,-17.6,-28.4) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25490 RP=(-34.8,-12.6) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=153 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25502 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-39.0) | Vel=(0.00,0.00,0.00)
+RIGHT | #24968 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.3,-17.6,-28.4) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25502 RP=(-34.9,-12.6) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=174 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25516 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-39.0) | Vel=(0.00,0.00,0.00)
+RIGHT | #24981 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.3,-17.6,-28.4) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25516 RP=(-34.9,-12.6) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=197 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25528 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-39.0) | Vel=(0.00,0.00,0.00)
+RIGHT | #24993 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.3,-17.6,-28.4) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25528 RP=(-34.9,-12.6) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=218 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25541 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.9) | Vel=(0.00,0.00,0.00)
+RIGHT | #25006 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.3,-17.6,-28.4) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25541 RP=(-34.9,-12.6) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=241 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25553 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.9) | Vel=(0.00,0.00,0.00)
+RIGHT | #25017 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.3,-17.6,-28.5) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25553 RP=(-34.9,-12.6) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=262 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25565 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.9) | Vel=(0.00,0.00,0.00)
+RIGHT | #25031 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.3,-17.6,-28.5) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25565 RP=(-34.9,-12.6) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=281 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25577 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.9) | Vel=(0.00,0.00,0.00)
+RIGHT | #25043 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.4,-17.6,-28.5) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25577 RP=(-34.9,-12.6) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=300 badLength=0 badMagic=0 unknownSender=0
+����������������������������������������������������������������--------
+LEFT  | #25591 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.9) | Vel=(0.00,0.00,0.00)
+RIGHT | #25056 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.4,-17.7,-28.5) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25591 RP=(-34.9,-12.6) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=324 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25603 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.9) | Vel=(0.00,0.00,0.00)
+RIGHT | #25068 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.4,-17.6,-28.5) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25603 RP=(-34.9,-12.6) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=345 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25615 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.9) | Vel=(0.00,0.00,0.00)
+RIGHT | #25081 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.4,-17.6,-28.5) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25615 RP=(-34.9,-12.6) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=364 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25628 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.9) | Vel=(0.00,0.00,0.00)
+RIGHT | #25093 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.4,-17.6,-28.5) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25628 RP=(-34.9,-12.6) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=385 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25639 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.8) | Vel=(0.00,0.00,0.00)
+RIGHT | #25105 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.4,-17.6,-28.5) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25639 RP=(-34.9,-12.6) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=406 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25653 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.8) | Vel=(0.00,0.00,0.00)
+RIGHT | #25117 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.4,-17.6,-28.5) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25653 RP=(-34.9,-12.6) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=426 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25665 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.8) | Vel=(0.00,0.00,0.00)
+RIGHT | #25129 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.4,-17.6,-28.5) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25665 RP=(-34.9,-12.6) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=445 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25677 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.8) | Vel=(0.00,0.00,0.00)
+RIGHT | #25143 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.4,-17.6,-28.5) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25677 RP=(-34.9,-12.6) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=470 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25690 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.8) | Vel=(0.00,0.00,0.00)
+RIGHT | #25156 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.4,-17.6,-28.5) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25690 RP=(-34.9,-12.6) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=490 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25702 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.8) | Vel=(0.00,0.00,0.00)
+RIGHT | #25167 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.4,-17.7,-28.5) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25702 RP=(-34.9,-12.6) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=510 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25715 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.8) | Vel=(0.00,0.00,0.00)
+RIGHT | #25181 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.4,-17.6,-28.5) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25715 RP=(-34.9,-12.6) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=533 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25728 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.5,-7.6,-38.9) | Vel=(0.00,0.00,0.00)
+RIGHT | #25192 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.4,-17.6,-28.5) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25728 RP=(-34.9,-12.6) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=554 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25740 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.8) | Vel=(0.00,0.00,0.00)
+RIGHT | #25206 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.4,-17.6,-28.5) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25740 RP=(-34.9,-12.6) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=575 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25752 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.8) | Vel=(0.00,0.00,0.00)
+RIGHT | #25217 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.4,-17.6,-28.5) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25752 RP=(-34.9,-12.6) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=595 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25765 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-38.8) | Vel=(0.00,0.00,0.00)
+RIGHT | #25231 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.4,-17.7,-28.5) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25765 RP=(-34.9,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=615 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25778 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-38.8) | Vel=(0.00,0.00,0.00)
+RIGHT | #25241 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.4,-17.7,-28.5) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25778 RP=(-34.9,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=635 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25790 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-38.8) | Vel=(0.00,0.00,0.00)
+RIGHT | #25256 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.4,-17.7,-28.6) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25790 RP=(-34.9,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=657 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25802 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.8) | Vel=(0.00,0.00,0.00)
+RIGHT | #25266 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.4,-17.7,-28.6) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25802 RP=(-34.9,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=678 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25815 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.8) | Vel=(0.00,0.00,0.00)
+RIGHT | #25280 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.4,-17.7,-28.6) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25815 RP=(-34.9,-12.6) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=701 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25828 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.8) | Vel=(0.00,0.00,0.00)
+RIGHT | #25292 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.4,-17.7,-28.6) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25828 RP=(-34.9,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=723 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25840 | MOVING | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.8) | Vel=(0.00,0.00,0.00)
+RIGHT | #25306 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.4,-17.7,-28.6) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25840 RP=(-34.9,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=746 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25853 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.8) | Vel=(0.00,0.00,0.00)
+RIGHT | #25318 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.4,-17.7,-28.6) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25853 RP=(-34.9,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=767 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25865 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-38.8) | Vel=(0.00,0.00,0.00)
+RIGHT | #25331 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.4,-17.7,-28.6) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25865 RP=(-34.9,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=787 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25878 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-38.8) | Vel=(0.00,0.00,0.00)
+RIGHT | #25343 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.4,-17.7,-28.6) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25878 RP=(-34.9,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=808 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25888 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-38.8) | Vel=(0.00,0.00,0.00)
+RIGHT | #25356 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.4,-17.7,-28.6) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25888 RP=(-34.9,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=829 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25902 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-38.8) | Vel=(0.00,0.00,0.00)
+RIGHT | #25368 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.4,-17.7,-28.6) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25902 RP=(-34.9,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=850 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25915 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.7) | Vel=(0.00,0.00,0.00)
+RIGHT | #25381 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.4,-17.7,-28.6) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25915 RP=(-34.9,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=872 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25928 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.7) | Vel=(0.00,0.00,0.00)
+RIGHT | #25393 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.5,-17.7,-28.6) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25928 RP=(-34.9,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=897 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25940 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.7) | Vel=(0.00,0.00,0.00)
+RIGHT | #25406 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.4,-17.7,-28.6) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25940 RP=(-34.9,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=920 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25953 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.7) | Vel=(0.00,0.00,0.00)
+RIGHT | #25418 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.5,-17.7,-28.6) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25953 RP=(-34.9,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=939 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25964 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.7) | Vel=(0.00,0.00,0.00)
+RIGHT | #25430 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.5,-17.7,-28.6) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25964 RP=(-34.9,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=958 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25977 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.7) | Vel=(0.00,0.00,0.00)
+RIGHT | #25443 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.5,-17.7,-28.6) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25977 RP=(-34.9,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=977 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #25988 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.6) | Vel=(0.00,0.00,0.00)
+RIGHT | #25454 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.5,-17.7,-28.6) | Vel=(0.00,0.00,0.00)
+[COMBINED] #25988 RP=(-34.9,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=997 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26002 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.6) | Vel=(0.00,0.00,0.00)
+RIGHT | #25468 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.4,-17.7,-28.6) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26002 RP=(-34.9,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1022 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26015 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.6) | Vel=(0.00,0.00,0.00)
+RIGHT | #25481 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.5,-17.7,-28.6) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26015 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1046 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26028 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-38.6) | Vel=(0.00,0.00,0.00)
+RIGHT | #25493 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.5,-17.7,-28.6) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26028 RP=(-34.9,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1067 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26040 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.6) | Vel=(0.00,0.00,0.00)
+RIGHT | #25502 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.5,-17.7,-28.6) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26040 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1084 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26052 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-38.6) | Vel=(0.00,0.00,0.00)
+RIGHT | #25518 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.5,-17.7,-28.7) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26052 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1104 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26065 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-38.6) | Vel=(0.00,0.00,0.00)
+RIGHT | #25529 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.5,-17.7,-28.7) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26065 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1123 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26077 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-38.6) | Vel=(0.00,0.00,0.00)
+RIGHT | #25543 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.5,-17.7,-28.7) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26077 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1142 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26089 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.5) | Vel=(0.00,0.00,0.00)
+RIGHT | #25554 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.5,-17.7,-28.7) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26089 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1158 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26102 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-38.5) | Vel=(0.00,0.00,0.00)
+RIGHT | #25567 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.5,-17.7,-28.7) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26102 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1182 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26114 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-38.5) | Vel=(0.00,0.00,0.00)
+RIGHT | #25580 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.5,-17.7,-28.7) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26114 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1200 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26127 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-38.5) | Vel=(0.00,0.00,0.00)
+RIGHT | #25593 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.5,-17.7,-28.7) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26127 RP=(-34.9,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1223 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26140 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.5) | Vel=(0.00,0.00,0.00)
+RIGHT | #25606 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.5,-17.7,-28.7) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26140 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1241 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26153 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.5) | Vel=(0.00,0.00,0.00)
+RIGHT | #25618 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.5,-17.7,-28.7) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26153 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1262 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26165 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-38.5) | Vel=(0.00,0.00,0.00)
+RIGHT | #25629 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.5,-17.7,-28.7) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26165 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1282 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26178 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.4) | Vel=(0.00,0.00,0.00)
+RIGHT | #25643 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.5,-17.8,-28.7) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26178 RP=(-34.9,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1306 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26190 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.4) | Vel=(0.00,0.00,0.00)
+RIGHT | #25656 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.5,-17.7,-28.7) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26190 RP=(-34.9,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1327 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26202 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.4) | Vel=(0.00,0.00,0.00)
+RIGHT | #25666 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.5,-17.7,-28.7) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26202 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1348 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26215 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.4) | Vel=(0.00,0.00,0.00)
+RIGHT | #25680 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.5,-17.7,-28.7) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26215 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1370 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26227 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.4) | Vel=(0.00,0.00,0.00)
+RIGHT | #25692 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.5,-17.7,-28.7) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26227 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1392 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26237 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.4) | Vel=(0.00,0.00,0.00)
+RIGHT | #25705 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.7,-28.7) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26237 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1411 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26252 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.4) | Vel=(0.00,0.00,0.00)
+RIGHT | #25717 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.8,-28.7) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26252 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1432 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26265 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.3) | Vel=(0.00,0.00,0.00)
+RIGHT | #25730 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.8,-28.7) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26265 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1454 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26277 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.3) | Vel=(0.00,0.00,0.00)
+RIGHT | #25742 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.8,-28.7) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26277 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1472 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26290 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.3) | Vel=(0.00,0.00,0.00)
+RIGHT | #25755 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.5,-17.8,-28.7) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26290 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1496 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26302 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.3) | Vel=(0.00,0.00,0.00)
+RIGHT | #25767 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.5,-17.7,-28.7) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26302 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1518 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26315 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.3) | Vel=(0.00,0.00,0.00)
+RIGHT | #25779 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.7,-28.7) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26315 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1539 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26326 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.3) | Vel=(0.00,0.00,0.00)
+RIGHT | #25791 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.5,-17.7,-28.7) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26326 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1555 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26340 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.3) | Vel=(0.00,0.00,0.00)
+RIGHT | #25804 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.7,-28.8) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26340 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1576 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26352 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.5,-7.7,-38.3) | Vel=(0.00,0.00,0.00)
+RIGHT | #25817 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.5,-17.8,-28.8) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26352 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1598 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26365 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-38.3) | Vel=(0.00,0.00,0.00)
+RIGHT | #25830 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.8,-28.8) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26365 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1618 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26377 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.3) | Vel=(0.00,0.00,0.00)
+RIGHT | #25843 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.5,-17.8,-28.8) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26377 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1636 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26390 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-38.2) | Vel=(0.00,0.00,0.00)
+RIGHT | #25855 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.8,-28.8) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26390 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1655 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26402 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-38.2) | Vel=(0.00,0.00,0.00)
+RIGHT | #25867 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.5,-17.8,-28.8) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26402 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1675 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26415 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-38.2) | Vel=(0.00,0.00,0.00)
+RIGHT | #25880 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.8,-28.8) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26415 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1698 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26425 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-38.2) | Vel=(0.00,0.00,0.00)
+RIGHT | #25892 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.8,-28.8) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26425 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1718 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26440 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.2) | Vel=(0.00,0.00,0.00)
+RIGHT | #25905 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.8,-28.8) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26440 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1739 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26452 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-38.2) | Vel=(0.00,0.00,0.00)
+RIGHT | #25916 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.8,-28.8) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26452 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1759 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26463 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-38.2) | Vel=(0.00,0.00,0.00)
+RIGHT | #25928 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.8,-28.8) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26463 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1776 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26477 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-38.1) | Vel=(0.00,0.00,0.00)
+RIGHT | #25942 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.8,-28.8) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26477 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1797 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26490 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.1) | Vel=(0.00,0.00,0.00)
+RIGHT | #25955 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.8,-28.8) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26490 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1818 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26501 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-38.1) | Vel=(0.00,0.00,0.00)
+RIGHT | #25968 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.8,-28.8) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26501 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1840 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26514 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-38.1) | Vel=(0.00,0.00,0.00)
+RIGHT | #25979 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.8,-28.8) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26514 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1860 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26527 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.1) | Vel=(0.00,0.00,0.00)
+RIGHT | #25993 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.8,-28.8) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26527 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1881 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26539 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.1) | Vel=(0.00,0.00,0.00)
+RIGHT | #26005 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.8,-28.8) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26539 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1901 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26552 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.1) | Vel=(0.00,0.00,0.00)
+RIGHT | #26018 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.8,-28.8) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26552 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1923 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26565 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.1) | Vel=(0.00,0.00,0.00)
+RIGHT | #26029 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.8,-28.8) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26565 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1946 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26576 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.0) | Vel=(0.00,0.00,0.00)
+RIGHT | #26042 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.8,-28.8) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26576 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1966 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26590 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-38.0) | Vel=(0.00,0.00,0.00)
+RIGHT | #26055 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.8,-28.8) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26590 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=1986 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26602 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-38.0) | Vel=(0.00,0.00,0.00)
+RIGHT | #26068 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.8,-28.8) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26602 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=2007 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26613 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.0) | Vel=(0.00,0.00,0.00)
+RIGHT | #26080 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.8,-28.9) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26613 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=2023 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26626 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-38.0) | Vel=(0.00,0.00,0.00)
+RIGHT | #26093 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.8,-28.9) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26626 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=2042 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26639 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-38.0) | Vel=(0.00,0.00,0.00)
+RIGHT | #26105 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.8,-28.9) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26639 RP=(-35.0,-12.8) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=2064 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26650 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-37.9) | Vel=(0.00,0.00,0.00)
+RIGHT | #26117 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.9,-28.9) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26650 RP=(-35.0,-12.8) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=2081 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26664 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-37.9) | Vel=(0.00,0.00,0.00)
+RIGHT | #26129 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.8,-28.9) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26664 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=2100 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26677 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-37.9) | Vel=(0.00,0.00,0.00)
+RIGHT | #26143 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.8,-28.9) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26677 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=2123 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26690 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-37.9) | Vel=(0.00,0.00,0.00)
+RIGHT | #26154 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.8,-28.9) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26690 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=2139 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26702 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-37.9) | Vel=(0.00,0.00,0.00)
+RIGHT | #26168 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.8,-28.9) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26702 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=2160 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26715 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-37.9) | Vel=(0.00,0.00,0.00)
+RIGHT | #26180 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.8,-28.9) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26715 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=2181 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26726 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-37.9) | Vel=(0.00,0.00,0.00)
+RIGHT | #26193 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.8,-28.9) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26726 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=2202 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26739 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-37.9) | Vel=(0.00,0.00,0.00)
+RIGHT | #26205 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.7,-17.8,-28.9) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26739 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=2221 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26752 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-37.8) | Vel=(0.00,0.00,0.00)
+RIGHT | #26218 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.8,-28.9) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26752 RP=(-35.0,-12.8) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=2242 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26764 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-37.8) | Vel=(0.00,0.00,0.00)
+RIGHT | #26230 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.6,-17.8,-28.9) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26764 RP=(-35.0,-12.8) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=2263 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26777 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-37.8) | Vel=(0.00,0.00,0.00)
+RIGHT | #26241 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.7,-17.8,-28.9) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26777 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=2283 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26789 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-37.8) | Vel=(0.00,0.00,0.00)
+RIGHT | #26255 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.7,-17.8,-28.9) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26789 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=2299 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26802 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-37.8) | Vel=(0.00,0.00,0.00)
+RIGHT | #26265 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.7,-17.8,-28.9) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26802 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=2318 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26815 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.6,-37.8) | Vel=(0.00,0.00,0.00)
+RIGHT | #26279 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.7,-17.8,-28.9) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26815 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=2337 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26827 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-37.7) | Vel=(0.00,0.00,0.00)
+RIGHT | #26293 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.7,-17.9,-28.9) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26827 RP=(-35.0,-12.8) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=2356 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26836 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-37.7) | Vel=(0.00,0.00,0.00)
+RIGHT | #26303 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.7,-17.9,-28.9) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26836 RP=(-35.0,-12.8) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=2369 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26852 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-37.7) | Vel=(0.00,0.00,0.00)
+RIGHT | #26317 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.7,-17.9,-28.9) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26852 RP=(-35.0,-12.8) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=2392 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26861 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-37.7) | Vel=(0.00,0.00,0.00)
+RIGHT | #26328 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.7,-17.9,-28.9) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26861 RP=(-35.0,-12.8) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=2411 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26877 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(-0.4,-7.7,-37.7) | Vel=(0.00,0.00,0.00)
+RIGHT | #26343 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.7,-17.8,-29.0) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26877 RP=(-35.0,-12.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=2434 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26889 | MOVING | Tilt=LEVEL | Move=STILL | Rotation=Y- | RPY=(-0.3,-7.0,-37.6) | Vel=(-0.01,0.01,0.01)
+RIGHT | #26355 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.7,-17.9,-29.0) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26889 RP=(-35.0,-12.4) Vel=(-0.00,0.01,0.00)
+[DEBUG] valid=2449 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26902 | MOVING | Tilt=PITCH- | Move=STILL | Rotation=Z+ | RPY=(-2.8,-8.7,-26.5) | Vel=(0.06,0.08,0.06)
+RIGHT | #26367 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.7,-17.8,-29.0) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26902 RP=(-36.2,-13.3) Vel=(0.03,0.04,0.03)
+[DEBUG] valid=2468 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26913 | MOVING | Tilt=PITCH+ | Move=X- | Rotation=Y+ | RPY=(-14.1,32.6,-17.4) | Vel=(-0.35,0.08,0.25)
+RIGHT | #26380 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.7,-17.8,-29.0) | Vel=(0.00,0.00,0.00)
+[COMBINED] #26913 RP=(-41.9,7.4) Vel=(-0.17,0.04,0.12)
+[DEBUG] valid=2489 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26927 | MOVING | Tilt=PITCH+ | Move=X- | Rotation=Y+ | RPY=(-25.0,54.4,-2.6) | Vel=(-0.25,-0.10,0.19)
+RIGHT | #26392 | MOVING | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-69.8,-17.8,-28.9) | Vel=(0.00,0.00,-0.01)
+[COMBINED] #26927 RP=(-47.4,18.3) Vel=(-0.12,-0.05,0.09)
+[DEBUG] valid=2508 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26939 | MOVING | Tilt=PITCH+ | Move=Y- | Rotation=Z- | RPY=(-47.6,55.2,-12.2) | Vel=(-0.67,-0.93,0.31)
+RIGHT | #26405 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=NONE | RPY=(-70.0,-17.8,-28.9) | Vel=(-0.00,-0.01,-0.12)
+[COMBINED] #26939 RP=(-58.8,18.7) Vel=(-0.34,-0.47,0.10)
+[DEBUG] valid=2526 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26952 | MOVING | Tilt=PITCH+ | Move=Y- | Rotation=Z- | RPY=(-41.8,55.6,-25.4) | Vel=(-1.90,-2.19,-0.19)
+RIGHT | #26418 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=X+ | RPY=(-91.2,-19.0,-30.9) | Vel=(0.02,0.08,-0.23)
+[COMBINED] #26952 RP=(-66.5,18.3) Vel=(-0.94,-1.05,-0.21)
+[DEBUG] valid=2546 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26964 | MOVING | Tilt=PITCH+ | Move=Y- | Rotation=Z- | RPY=(-45.0,60.0,-28.0) | Vel=(-2.67,-3.17,-0.51)
+RIGHT | #26430 | MOVING | Tilt=ROLL- | Move=X+ | Rotation=Z+ | RPY=(-128.0,-20.5,-29.2) | Vel=(1.51,1.26,-0.67)
+[COMBINED] #26964 RP=(-86.5,19.8) Vel=(-0.58,-0.95,-0.59)
+[DEBUG] valid=2564 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26976 | MOVING | Tilt=PITCH+ | Move=Y- | Rotation=X+ | RPY=(-53.8,58.0,-33.0) | Vel=(-3.18,-4.22,-0.78)
+RIGHT | #26441 | MOVING | Tilt=ROLL- | Move=Y+ | Rotation=X- | RPY=(-149.8,-36.9,-10.4) | Vel=(1.97,2.91,-0.94)
+[COMBINED] #26976 RP=(-101.8,10.5) Vel=(-0.60,-0.65,-0.86)
+[DEBUG] valid=2580 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #26988 | MOVING | Tilt=PITCH+ | Move=Y- | Rotation=X+ | RPY=(-47.9,56.1,-32.9) | Vel=(-3.36,-5.26,-0.72)
+RIGHT | #26455 | MOVING | Tilt=ROLL- | Move=Y+ | Rotation=Y- | RPY=(-180.0,-74.0,-11.4) | Vel=(0.27,4.95,-2.49)
+[COMBINED] #26988 RP=(-113.9,-8.9) Vel=(-1.55,-0.16,-1.61)
+[DEBUG] valid=2603 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27002 | MOVING | Tilt=PITCH+ | Move=Y- | Rotation=X+ | RPY=(-29.9,50.1,-35.8) | Vel=(-3.59,-6.59,-1.04)
+RIGHT | #26468 | MOVING | Tilt=ROLL+ | Move=Y+ | Rotation=Z- | RPY=(170.0,-82.8,-41.8) | Vel=(-1.60,6.97,-5.36)
+[COMBINED] #27002 RP=(70.0,-16.4) Vel=(-2.60,0.19,-3.20)
+[DEBUG] valid=2620 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27014 | MOVING | Tilt=PITCH+ | Move=Y- | Rotation=X+ | RPY=(-18.5,48.8,-45.0) | Vel=(-4.27,-7.45,-1.48)
+RIGHT | #26480 | MOVING | Tilt=ROLL+ | Move=Y+ | Rotation=Z- | RPY=(168.3,-67.3,-70.4) | Vel=(-3.06,8.52,-8.03)
+[COMBINED] #27014 RP=(74.9,-9.3) Vel=(-3.66,0.54,-4.75)
+[DEBUG] valid=2638 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27027 | MOVING | Tilt=PITCH+ | Move=Y- | Rotation=Y+ | RPY=(-20.1,52.5,-47.5) | Vel=(-4.31,-8.14,-2.00)
+RIGHT | #26490 | MOVING | Tilt=ROLL+ | Move=DOWN | Rotation=Z+ | RPY=(161.2,-43.9,-77.1) | Vel=(-4.49,9.53,-10.29)
+[COMBINED] #27027 RP=(70.5,4.3) Vel=(-4.40,0.70,-6.15)
+[DEBUG] valid=2657 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27039 | MOVING | Tilt=PITCH+ | Move=Y- | Rotation=Z- | RPY=(-23.6,70.7,-60.4) | Vel=(-4.59,-8.49,-2.08)
+RIGHT | #26505 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=Z+ | RPY=(-179.7,-41.0,-58.1) | Vel=(-6.96,11.11,-12.21)
+[COMBINED] #27039 RP=(-101.6,14.8) Vel=(-5.78,1.31,-7.14)
+[DEBUG] valid=2674 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27052 | MOVING | Tilt=PITCH+ | Move=Y- | Rotation=Z- | RPY=(-32.2,72.3,-70.5) | Vel=(-5.43,-9.15,-2.20)
+RIGHT | #26516 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=X+ | RPY=(-153.1,-32.4,-42.1) | Vel=(-9.04,11.98,-12.65)
+[COMBINED] #27052 RP=(-92.6,20.0) Vel=(-7.24,1.42,-7.42)
+[DEBUG] valid=2694 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27064 | MOVING | Tilt=PITCH+ | Move=Y- | Rotation=X- | RPY=(-48.3,71.7,-66.4) | Vel=(-5.62,-9.86,-2.58)
+RIGHT | #26530 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=Y+ | RPY=(-156.4,-4.9,-35.1) | Vel=(-11.33,12.51,-13.31)
+[COMBINED] #27064 RP=(-102.4,33.4) Vel=(-8.48,1.33,-7.94)
+[DEBUG] valid=2717 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27077 | MOVING | Tilt=PITCH+ | Move=Y- | Rotation=Z+ | RPY=(-62.2,68.8,-64.3) | Vel=(-5.56,-10.88,-2.40)
+RIGHT | #26541 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=Y+ | RPY=(-153.0,12.6,-26.3) | Vel=(-11.08,12.20,-13.71)
+[COMBINED] #27077 RP=(-107.6,40.7) Vel=(-8.32,0.66,-8.05)
+[DEBUG] valid=2733 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27089 | MOVING | Tilt=PITCH+ | Move=Y- | Rotation=Z+ | RPY=(-64.8,67.3,-57.5) | Vel=(-5.71,-11.43,-2.41)
+RIGHT | #26554 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=Z+ | RPY=(-153.4,9.0,8.4) | Vel=(-9.09,11.78,-13.39)
+[COMBINED] #27089 RP=(-109.1,38.1) Vel=(-7.40,0.18,-7.90)
+[DEBUG] valid=2752 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27101 | MOVING | Tilt=PITCH+ | Move=Y- | Rotation=Z+ | RPY=(-67.4,68.0,-47.7) | Vel=(-6.16,-11.76,-2.91)
+RIGHT | #26567 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=X- | RPY=(-153.5,4.2,19.6) | Vel=(-7.73,12.23,-13.67)
+[COMBINED] #27101 RP=(-110.4,36.1) Vel=(-6.94,0.24,-8.29)
+[DEBUG] valid=2767 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27114 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=X- | RPY=(-97.9,87.4,-38.6) | Vel=(-6.90,-12.51,-2.80)
+RIGHT | #26580 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=Z- | RPY=(-155.9,-9.9,8.9) | Vel=(-6.11,12.83,-13.28)
+[COMBINED] #27114 RP=(-126.9,38.7) Vel=(-6.51,0.16,-8.04)
+[DEBUG] valid=2785 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27126 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=Z- | RPY=(-108.9,93.4,-43.9) | Vel=(-5.64,-13.53,-2.65)
+RIGHT | #26591 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=Z- | RPY=(-156.2,-15.2,-7.7) | Vel=(-5.18,12.64,-13.49)
+[COMBINED] #27126 RP=(-132.5,39.1) Vel=(-5.41,-0.45,-8.07)
+[DEBUG] valid=2802 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27139 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=X+ | RPY=(-106.5,79.7,-42.0) | Vel=(-5.98,-15.08,-2.70)
+RIGHT | #26605 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=Z+ | RPY=(-151.7,-16.3,-3.9) | Vel=(-3.92,12.28,-13.59)
+[COMBINED] #27139 RP=(-129.1,31.7) Vel=(-4.95,-1.40,-8.15)
+[DEBUG] valid=2819 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27150 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=X+ | RPY=(-95.9,71.3,-29.2) | Vel=(-6.67,-16.36,-3.06)
+RIGHT | #26617 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=X- | RPY=(-157.1,-15.8,9.5) | Vel=(-3.53,12.38,-13.35)
+[COMBINED] #27150 RP=(-126.5,27.7) Vel=(-5.10,-1.99,-8.21)
+[DEBUG] valid=2836 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27164 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=X- | RPY=(-107.8,69.8,-26.1) | Vel=(-7.61,-17.59,-3.99)
+RIGHT | #26630 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=Z- | RPY=(-160.9,-21.7,12.7) | Vel=(-3.09,12.71,-13.15)
+[COMBINED] #27164 RP=(-134.3,24.1) Vel=(-5.35,-2.44,-8.57)
+[DEBUG] valid=2856 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27177 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=Z- | RPY=(-134.5,72.8,-29.0) | Vel=(-8.08,-18.69,-3.64)
+RIGHT | #26640 | MOVING | Tilt=ROLL- | Move=Y+ | Rotation=X+ | RPY=(-155.3,-23.4,-2.7) | Vel=(-2.50,12.78,-12.56)
+[COMBINED] #27177 RP=(-144.9,24.7) Vel=(-5.29,-2.96,-8.10)
+[DEBUG] valid=2874 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27189 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=Z+ | RPY=(-132.7,67.2,-42.0) | Vel=(-7.97,-19.31,-3.38)
+RIGHT | #26655 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=X+ | RPY=(-144.2,-16.7,-13.6) | Vel=(-1.74,12.24,-12.86)
+[COMBINED] #27189 RP=(-138.5,25.2) Vel=(-4.86,-3.54,-8.12)
+[DEBUG] valid=2889 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27202 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=Z+ | RPY=(-128.2,59.0,-37.3) | Vel=(-8.36,-20.36,-2.90)
+RIGHT | #26665 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=Z+ | RPY=(-145.1,-19.1,-9.5) | Vel=(-1.17,11.84,-12.75)
+[COMBINED] #27202 RP=(-136.7,20.0) Vel=(-4.76,-4.26,-7.82)
+[DEBUG] valid=2907 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27214 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=Y- | RPY=(-121.6,49.0,-39.3) | Vel=(-9.40,-21.02,-3.18)
+RIGHT | #26679 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=Z+ | RPY=(-150.6,-15.7,8.3) | Vel=(-0.78,11.72,-12.57)
+[COMBINED] #27214 RP=(-136.1,16.7) Vel=(-5.09,-4.65,-7.87)
+[DEBUG] valid=2923 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27227 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=X- | RPY=(-139.1,42.2,-41.1) | Vel=(-10.29,-21.33,-3.67)
+RIGHT | #26690 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=Y+ | RPY=(-149.8,-11.1,15.8) | Vel=(0.06,11.38,-12.44)
+[COMBINED] #27227 RP=(-144.5,15.6) Vel=(-5.12,-4.97,-8.05)
+[DEBUG] valid=2941 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27239 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=X- | RPY=(-169.4,46.7,-50.0) | Vel=(-11.04,-20.82,-3.70)
+RIGHT | #26704 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=Y+ | RPY=(-132.9,-0.1,-2.7) | Vel=(2.02,10.45,-12.55)
+[COMBINED] #27239 RP=(-151.2,23.3) Vel=(-4.51,-5.19,-8.12)
+[DEBUG] valid=2959 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27252 | MOVING | Tilt=ROLL+ | Move=Y- | Rotation=Z- | RPY=(176.2,49.6,-68.1) | Vel=(-10.58,-19.74,-4.08)
+RIGHT | #26717 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=Z+ | RPY=(-129.3,4.1,-13.3) | Vel=(3.47,9.00,-13.86)
+[COMBINED] #27252 RP=(23.5,26.8) Vel=(-3.56,-5.37,-8.97)
+[DEBUG] valid=2971 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27264 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=X+ | RPY=(-169.3,51.5,-66.8) | Vel=(-10.05,-18.93,-3.63)
+RIGHT | #26730 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=Y+ | RPY=(-142.8,-2.8,4.1) | Vel=(5.46,7.85,-14.43)
+[COMBINED] #27264 RP=(-156.1,24.3) Vel=(-2.29,-5.54,-9.03)
+[DEBUG] valid=2993 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27277 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=Z- | RPY=(-155.1,46.9,-61.3) | Vel=(-10.19,-18.67,-3.97)
+RIGHT | #26741 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=Y+ | RPY=(-148.6,-9.3,6.9) | Vel=(6.65,7.75,-14.90)
+[COMBINED] #27277 RP=(-151.9,18.8) Vel=(-1.77,-5.46,-9.44)
+[DEBUG] valid=3012 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27289 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=X- | RPY=(-165.2,52.5,-60.0) | Vel=(-10.42,-18.22,-3.90)
+RIGHT | #26755 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=Z- | RPY=(-149.3,-17.5,-0.3) | Vel=(8.33,7.55,-14.55)
+[COMBINED] #27289 RP=(-157.3,17.5) Vel=(-1.05,-5.34,-9.22)
+[DEBUG] valid=3026 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27302 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=Y- | RPY=(-161.8,43.3,-64.5) | Vel=(-10.59,-16.85,-3.59)
+RIGHT | #26766 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=Z- | RPY=(-147.5,-18.7,-16.3) | Vel=(9.21,6.75,-14.62)
+[COMBINED] #27302 RP=(-154.7,12.3) Vel=(-0.69,-5.05,-9.11)
+[DEBUG] valid=3042 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27314 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=X+ | RPY=(-138.7,46.1,-74.4) | Vel=(-10.68,-15.94,-4.02)
+RIGHT | #26780 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=Z+ | RPY=(-146.9,-22.4,-12.0) | Vel=(10.41,5.76,-15.20)
+[COMBINED] #27314 RP=(-142.8,11.9) Vel=(-0.14,-5.09,-9.61)
+[DEBUG] valid=3054 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27327 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=X+ | RPY=(-125.7,53.3,-73.4) | Vel=(-11.09,-14.80,-4.22)
+RIGHT | #26785 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=Z+ | RPY=(-151.8,-24.5,-0.8) | Vel=(10.95,5.47,-14.82)
+[COMBINED] #27327 RP=(-138.7,14.4) Vel=(-0.07,-4.67,-9.52)
+[DEBUG] valid=3065 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27339 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=X- | RPY=(-130.3,54.1,-68.1) | Vel=(-11.55,-14.23,-4.89)
+RIGHT | #26799 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=X- | RPY=(-160.5,-31.1,3.9) | Vel=(11.58,5.48,-14.96)
+[COMBINED] #27339 RP=(-145.4,11.5) Vel=(0.01,-4.37,-9.92)
+[DEBUG] valid=3074 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27352 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=X- | RPY=(-152.2,61.8,-64.0) | Vel=(-12.31,-14.18,-4.74)
+RIGHT | #26816 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=X+ | RPY=(-162.0,-40.3,-4.2) | Vel=(12.11,5.68,-14.05)
+[COMBINED] #27352 RP=(-157.1,10.8) Vel=(-0.10,-4.25,-9.40)
+[DEBUG] valid=3087 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27364 | MOVING | Tilt=ROLL+ | Move=Y- | Rotation=X- | RPY=(172.4,79.5,-77.5) | Vel=(-12.13,-14.31,-4.72)
+RIGHT | #26829 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=X+ | RPY=(-144.9,-24.7,-22.3) | Vel=(12.48,4.69,-14.24)
+[COMBINED] #27364 RP=(13.8,27.4) Vel=(0.18,-4.81,-9.48)
+[DEBUG] valid=3107 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27372 | MOVING | Tilt=ROLL+ | Move=Y- | Rotation=X- | RPY=(166.9,82.1,-83.3) | Vel=(-11.62,-14.61,-4.57)
+RIGHT | #26841 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=Y+ | RPY=(-134.1,-13.6,-21.3) | Vel=(13.53,3.58,-14.45)
+[COMBINED] #27372 RP=(16.4,34.2) Vel=(0.96,-5.51,-9.51)
+[DEBUG] valid=3120 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27389 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=X+ | RPY=(-143.3,63.4,-93.6) | Vel=(-11.63,-15.37,-4.21)
+RIGHT | #26854 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=X- | RPY=(-144.0,-12.5,-11.2) | Vel=(14.81,2.75,-14.84)
+[COMBINED] #27389 RP=(-143.6,25.4) Vel=(1.59,-6.31,-9.52)
+[DEBUG] valid=3140 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27402 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=X- | RPY=(-65.9,56.3,-95.7) | Vel=(-12.85,-14.05,-5.58)
+RIGHT | #26865 | MOVING | Tilt=ROLL- | Move=X+ | Rotation=Z- | RPY=(-144.5,-12.8,-11.0) | Vel=(15.75,2.30,-14.89)
+[COMBINED] #27402 RP=(-105.2,21.8) Vel=(1.45,-5.87,-10.23)
+[DEBUG] valid=3150 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27412 | MOVING | Tilt=ROLL- | Move=X- | Rotation=X- | RPY=(-72.6,65.3,-89.0) | Vel=(-13.96,-12.32,-6.65)
+RIGHT | #26876 | MOVING | Tilt=ROLL- | Move=X+ | Rotation=X+ | RPY=(-139.2,-16.1,-21.3) | Vel=(16.89,0.96,-14.69)
+[COMBINED] #27412 RP=(-105.9,24.6) Vel=(1.47,-5.68,-10.67)
+[DEBUG] valid=3164 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27427 | MOVING | Tilt=PITCH+ | Move=X- | Rotation=Y+ | RPY=(-71.0,79.5,-100.6) | Vel=(-15.49,-10.78,-8.06)
+RIGHT | #26890 | MOVING | Tilt=ROLL- | Move=X+ | Rotation=X+ | RPY=(-130.3,-4.6,-33.1) | Vel=(17.56,-0.68,-15.68)
+[COMBINED] #27427 RP=(-100.7,37.4) Vel=(1.04,-5.73,-11.87)
+[DEBUG] valid=3177 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27439 | MOVING | Tilt=PITCH+ | Move=X- | Rotation=Y- | RPY=(-31.7,74.5,-108.8) | Vel=(-16.19,-8.45,-8.57)
+RIGHT | #26904 | MOVING | Tilt=ROLL- | Move=X+ | Rotation=X+ | RPY=(-139.6,-15.2,-22.2) | Vel=(18.88,-2.60,-16.19)
+[COMBINED] #27439 RP=(-85.6,29.6) Vel=(1.35,-5.52,-12.38)
+[DEBUG] valid=3194 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27452 | MOVING | Tilt=PITCH+ | Move=X- | Rotation=Y- | RPY=(18.0,55.2,-105.5) | Vel=(-15.22,-6.24,-11.04)
+RIGHT | #26916 | MOVING | Tilt=ROLL- | Move=X+ | Rotation=Z+ | RPY=(-144.3,-18.5,-15.4) | Vel=(19.68,-3.31,-16.49)
+[COMBINED] #27452 RP=(-63.1,18.4) Vel=(2.23,-4.77,-13.77)
+[DEBUG] valid=3213 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27464 | MOVING | Tilt=PITCH+ | Move=X- | Rotation=X- | RPY=(32.0,57.4,-106.7) | Vel=(-13.51,-4.47,-13.15)
+RIGHT | #26929 | MOVING | Tilt=ROLL- | Move=X+ | Rotation=Z- | RPY=(-143.3,-23.7,-22.7) | Vel=(20.73,-3.95,-16.03)
+[COMBINED] #27464 RP=(-55.6,16.9) Vel=(3.61,-4.21,-14.59)
+[DEBUG] valid=3229 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27476 | MOVING | Tilt=PITCH+ | Move=DOWN | Rotation=X- | RPY=(19.3,69.2,-116.8) | Vel=(-12.19,-3.03,-14.82)
+RIGHT | #26941 | MOVING | Tilt=ROLL- | Move=X+ | Rotation=Y+ | RPY=(-148.5,-31.7,-42.0) | Vel=(21.07,-4.92,-16.16)
+[COMBINED] #27476 RP=(-64.6,18.7) Vel=(4.44,-3.98,-15.49)
+[DEBUG] valid=3244 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27489 | MOVING | Tilt=PITCH+ | Move=DOWN | Rotation=Z- | RPY=(-8.2,71.8,-118.0) | Vel=(-11.14,-0.41,-16.11)
+RIGHT | #26955 | MOVING | Tilt=ROLL- | Move=X+ | Rotation=Z+ | RPY=(-142.0,-34.9,-33.3) | Vel=(21.78,-5.94,-15.94)
+[COMBINED] #27489 RP=(-75.1,18.5) Vel=(5.32,-3.17,-16.03)
+[DEBUG] valid=3268 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27501 | MOVING | Tilt=PITCH+ | Move=DOWN | Rotation=X+ | RPY=(-24.1,59.7,-112.4) | Vel=(-10.68,1.87,-17.90)
+RIGHT | #26967 | MOVING | Tilt=ROLL- | Move=X+ | Rotation=X- | RPY=(-150.8,-37.9,-23.9) | Vel=(21.84,-6.17,-15.97)
+[COMBINED] #27501 RP=(-87.4,10.9) Vel=(5.58,-2.15,-16.93)
+[DEBUG] valid=3285 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27514 | MOVING | Tilt=PITCH+ | Move=DOWN | Rotation=X- | RPY=(-11.7,51.6,-110.9) | Vel=(-10.53,4.22,-20.61)
+RIGHT | #26979 | MOVING | Tilt=ROLL- | Move=X+ | Rotation=Y- | RPY=(-154.9,-38.2,-24.3) | Vel=(21.85,-5.85,-15.74)
+[COMBINED] #27514 RP=(-83.3,6.7) Vel=(5.66,-0.82,-18.17)
+[DEBUG] valid=3300 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27527 | MOVING | Tilt=PITCH+ | Move=DOWN | Rotation=X- | RPY=(1.6,64.5,-108.6) | Vel=(-9.57,6.67,-22.95)
+RIGHT | #26992 | MOVING | Tilt=ROLL- | Move=X+ | Rotation=Z- | RPY=(-149.8,-40.3,-36.7) | Vel=(22.05,-5.71,-15.09)
+[COMBINED] #27527 RP=(-74.1,12.1) Vel=(6.24,0.48,-19.02)
+[DEBUG] valid=3316 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27539 | MOVING | Tilt=PITCH+ | Move=DOWN | Rotation=X+ | RPY=(-7.0,72.1,-107.2) | Vel=(-9.04,8.63,-24.33)
+RIGHT | #27003 | MOVING | Tilt=ROLL- | Move=X+ | Rotation=Z+ | RPY=(-149.7,-40.3,-41.9) | Vel=(22.12,-6.09,-15.54)
+[COMBINED] #27539 RP=(-78.3,15.9) Vel=(6.54,1.27,-19.94)
+[DEBUG] valid=3338 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27551 | MOVING | Tilt=PITCH+ | Move=DOWN | Rotation=X+ | RPY=(-12.2,63.3,-108.2) | Vel=(-8.45,11.41,-25.93)
+RIGHT | #27015 | MOVING | Tilt=ROLL- | Move=X+ | Rotation=Z+ | RPY=(-147.7,-37.9,-30.7) | Vel=(22.30,-6.12,-14.83)
+[COMBINED] #27551 RP=(-80.0,12.7) Vel=(6.92,2.64,-20.38)
+[DEBUG] valid=3361 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27564 | MOVING | Tilt=PITCH+ | Move=DOWN | Rotation=Y- | RPY=(-34.3,52.6,-103.0) | Vel=(-8.66,13.59,-28.26)
+RIGHT | #27030 | MOVING | Tilt=ROLL- | Move=X+ | Rotation=Z+ | RPY=(-151.7,-42.8,-25.7) | Vel=(22.27,-5.81,-15.13)
+[COMBINED] #27564 RP=(-93.0,4.9) Vel=(6.81,3.89,-21.70)
+[DEBUG] valid=3384 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27577 | MOVING | Tilt=PITCH+ | Move=DOWN | Rotation=Y+ | RPY=(-0.8,56.9,-105.3) | Vel=(-8.20,16.31,-31.08)
+RIGHT | #27042 | MOVING | Tilt=ROLL- | Move=X+ | Rotation=Z- | RPY=(-151.5,-43.6,-28.8) | Vel=(22.07,-5.53,-14.33)
+[COMBINED] #27577 RP=(-76.2,6.6) Vel=(6.93,5.39,-22.70)
+[DEBUG] valid=3403 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27589 | MOVING | Tilt=PITCH+ | Move=DOWN | Rotation=X- | RPY=(-40.1,70.8,-115.3) | Vel=(-8.04,18.29,-32.59)
+RIGHT | #27055 | MOVING | Tilt=ROLL- | Move=X+ | Rotation=X+ | RPY=(-149.4,-37.3,-38.7) | Vel=(22.01,-5.93,-14.54)
+[COMBINED] #27589 RP=(-94.7,16.7) Vel=(6.98,6.18,-23.57)
+[DEBUG] valid=3423 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27598 | MOVING | Tilt=PITCH+ | Move=DOWN | Rotation=Z- | RPY=(-30.6,71.6,-121.1) | Vel=(-7.96,19.96,-33.36)
+RIGHT | #27064 | MOVING | Tilt=ROLL- | Move=X+ | Rotation=X+ | RPY=(-139.2,-29.2,-37.2) | Vel=(22.21,-6.35,-14.34)
+[COMBINED] #27598 RP=(-84.9,21.2) Vel=(7.13,6.81,-23.85)
+[DEBUG] valid=3435 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27614 | MOVING | Tilt=PITCH+ | Move=DOWN | Rotation=Y- | RPY=(-41.2,59.1,-127.8) | Vel=(-7.33,23.24,-35.33)
+RIGHT | #27079 | MOVING | Tilt=ROLL- | Move=X+ | Rotation=X+ | RPY=(-140.7,-29.8,-32.6) | Vel=(22.58,-7.06,-14.25)
+[COMBINED] #27614 RP=(-90.9,14.7) Vel=(7.62,8.09,-24.79)
+[DEBUG] valid=3450 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27626 | MOVING | Tilt=PITCH+ | Move=DOWN | Rotation=X- | RPY=(-22.5,53.5,-133.1) | Vel=(-6.31,25.07,-37.52)
+RIGHT | #27092 | MOVING | Tilt=ROLL- | Move=X+ | Rotation=Z- | RPY=(-137.2,-25.0,-38.9) | Vel=(22.78,-7.86,-14.16)
+[COMBINED] #27626 RP=(-79.9,14.3) Vel=(8.23,8.60,-25.84)
+[DEBUG] valid=3469 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27639 | MOVING | Tilt=PITCH+ | Move=DOWN | Rotation=X- | RPY=(-43.9,57.9,-135.7) | Vel=(-5.03,27.49,-39.45)
+RIGHT | #27103 | MOVING | Tilt=ROLL- | Move=X+ | Rotation=Y+ | RPY=(-135.3,-19.6,-50.0) | Vel=(22.78,-8.94,-13.77)
+[COMBINED] #27639 RP=(-89.6,19.1) Vel=(8.88,9.27,-26.61)
+[DEBUG] valid=3488 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27652 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=Z- | RPY=(-90.7,58.8,-158.8) | Vel=(-4.47,29.11,-40.72)
+RIGHT | #27117 | MOVING | Tilt=ROLL- | Move=X+ | Rotation=X+ | RPY=(-128.5,-7.5,-53.7) | Vel=(23.01,-10.63,-14.55)
+[COMBINED] #27652 RP=(-109.6,25.7) Vel=(9.27,9.24,-27.64)
+[DEBUG] valid=3507 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27664 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=Y- | RPY=(-103.8,57.5,-150.7) | Vel=(-4.06,30.54,-41.35)
+RIGHT | #27128 | MOVING | Tilt=ROLL- | Move=X+ | Rotation=Y+ | RPY=(-132.8,-9.8,-40.8) | Vel=(23.50,-12.25,-14.89)
+[COMBINED] #27664 RP=(-118.3,23.9) Vel=(9.72,9.15,-28.12)
+[DEBUG] valid=3529 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27676 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=X- | RPY=(-121.2,53.0,-149.8) | Vel=(-4.10,31.93,-42.24)
+RIGHT | #27142 | MOVING | Tilt=ROLL- | Move=X+ | Rotation=Z- | RPY=(-133.5,-10.1,-44.3) | Vel=(24.22,-13.59,-15.45)
+[COMBINED] #27676 RP=(-127.3,21.4) Vel=(10.06,9.17,-28.85)
+[DEBUG] valid=3551 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27689 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=X- | RPY=(-125.2,62.4,-150.6) | Vel=(-4.26,33.75,-42.71)
+RIGHT | #27151 | MOVING | Tilt=ROLL- | Move=X+ | Rotation=Z- | RPY=(-135.5,-19.1,-56.0) | Vel=(24.56,-14.74,-15.17)
+[COMBINED] #27689 RP=(-130.4,21.7) Vel=(10.15,9.51,-28.94)
+[DEBUG] valid=3567 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27701 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=Y+ | RPY=(-88.8,69.7,-154.8) | Vel=(-4.41,35.15,-43.47)
+RIGHT | #27166 | MOVING | Tilt=ROLL- | Move=X+ | Rotation=Z- | RPY=(-131.5,-19.5,-72.3) | Vel=(24.26,-16.13,-15.47)
+[COMBINED] #27701 RP=(-110.2,25.1) Vel=(9.92,9.51,-29.47)
+[DEBUG] valid=3584 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27714 | MOVING | Tilt=PITCH+ | Move=DOWN | Rotation=Z- | RPY=(-41.3,65.9,-158.6) | Vel=(-3.03,37.39,-44.60)
+RIGHT | #27179 | MOVING | Tilt=ROLL- | Move=X+ | Rotation=Z+ | RPY=(-132.1,-19.8,-66.7) | Vel=(24.11,-17.54,-15.62)
+[COMBINED] #27714 RP=(-86.7,23.1) Vel=(10.54,9.93,-30.11)
+[DEBUG] valid=3597 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27726 | MOVING | Tilt=PITCH+ | Move=DOWN | Rotation=Y- | RPY=(-25.3,54.1,-156.0) | Vel=(-1.25,38.94,-46.68)
+RIGHT | #27192 | MOVING | Tilt=ROLL- | Move=X+ | Rotation=X- | RPY=(-145.4,-27.5,-59.1) | Vel=(24.12,-18.25,-15.56)
+[COMBINED] #27726 RP=(-85.3,13.3) Vel=(11.44,10.34,-31.12)
+[DEBUG] valid=3613 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27738 | MOVING | Tilt=PITCH+ | Move=DOWN | Rotation=X- | RPY=(12.4,48.7,-157.0) | Vel=(0.66,39.75,-49.35)
+RIGHT | #27203 | MOVING | Tilt=ROLL- | Move=X+ | Rotation=Y+ | RPY=(-141.9,-23.4,-53.3) | Vel=(24.33,-18.77,-15.55)
+[COMBINED] #27738 RP=(-64.7,12.7) Vel=(12.49,10.49,-32.45)
+[DEBUG] valid=3632 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27750 | MOVING | Tilt=PITCH+ | Move=DOWN | Rotation=Z- | RPY=(27.2,60.7,-163.3) | Vel=(3.28,39.92,-51.57)
+RIGHT | #27215 | MOVING | Tilt=ROLL- | Move=X+ | Rotation=X+ | RPY=(-138.1,-25.4,-62.1) | Vel=(24.32,-19.67,-15.00)
+[COMBINED] #27750 RP=(-55.4,17.6) Vel=(13.80,10.12,-33.29)
+[DEBUG] valid=3645 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27763 | MOVING | Tilt=PITCH+ | Move=DOWN | Rotation=Z- | RPY=(13.8,68.4,-177.3) | Vel=(5.38,39.59,-53.53)
+RIGHT | #27229 | MOVING | Tilt=ROLL- | Move=X+ | Rotation=Z- | RPY=(-129.6,-16.5,-80.8) | Vel=(23.38,-20.78,-15.32)
+[COMBINED] #27763 RP=(-57.9,26.0) Vel=(14.38,9.41,-34.42)
+[DEBUG] valid=3659 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27776 | MOVING | Tilt=PITCH+ | Move=DOWN | Rotation=Y- | RPY=(12.8,65.5,173.5) | Vel=(8.22,38.71,-54.90)
+RIGHT | #27242 | MOVING | Tilt=ROLL- | Move=X+ | Rotation=Z- | RPY=(-121.1,-5.5,-95.4) | Vel=(22.37,-21.96,-15.28)
+[COMBINED] #27776 RP=(-54.2,30.0) Vel=(15.29,8.38,-35.09)
+[DEBUG] valid=3674 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27789 | MOVING | Tilt=PITCH+ | Move=DOWN | Rotation=Y- | RPY=(3.4,46.7,162.9) | Vel=(10.72,37.87,-57.02)
+RIGHT | #27254 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=Y+ | RPY=(-126.4,1.7,-103.9) | Vel=(21.51,-22.65,-15.84)
+[COMBINED] #27789 RP=(-61.5,24.2) Vel=(16.12,7.61,-36.43)
+[DEBUG] valid=3691 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27801 | MOVING | Tilt=PITCH+ | Move=DOWN | Rotation=Y- | RPY=(-30.4,44.7,153.8) | Vel=(12.86,37.62,-59.02)
+RIGHT | #27267 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=Z- | RPY=(-129.8,5.5,-119.8) | Vel=(20.28,-23.51,-15.49)
+[COMBINED] #27801 RP=(-80.1,25.1) Vel=(16.57,7.06,-37.25)
+[DEBUG] valid=3710 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27814 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=Z- | RPY=(-55.7,52.2,146.6) | Vel=(14.67,37.59,-60.32)
+RIGHT | #27278 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=Z- | RPY=(-136.5,7.8,-130.7) | Vel=(19.54,-23.67,-15.66)
+[COMBINED] #27814 RP=(-96.1,30.0) Vel=(17.11,6.96,-37.99)
+[DEBUG] valid=3731 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27825 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=X- | RPY=(-72.7,55.6,137.9) | Vel=(16.05,37.83,-60.49)
+RIGHT | #27292 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=X+ | RPY=(-141.3,6.7,-132.5) | Vel=(18.69,-23.69,-15.50)
+[COMBINED] #27825 RP=(-107.0,31.1) Vel=(17.37,7.07,-37.99)
+[DEBUG] valid=3748 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27839 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=Y- | RPY=(-84.8,47.7,125.6) | Vel=(17.35,38.00,-60.85)
+RIGHT | #27304 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=Z- | RPY=(-139.9,7.8,-142.1) | Vel=(18.04,-23.83,-15.43)
+[COMBINED] #27839 RP=(-112.4,27.8) Vel=(17.69,7.09,-38.14)
+[DEBUG] valid=3767 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27851 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=Y- | RPY=(-104.1,33.2,126.1) | Vel=(18.32,37.41,-61.04)
+RIGHT | #27317 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=Y+ | RPY=(-145.0,18.2,-157.1) | Vel=(17.62,-23.21,-15.28)
+[COMBINED] #27851 RP=(-124.5,25.7) Vel=(17.97,7.10,-38.16)
+[DEBUG] valid=3787 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27864 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=Y- | RPY=(-126.7,16.0,127.5) | Vel=(19.20,36.04,-61.59)
+RIGHT | #27328 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=Y+ | RPY=(-150.9,38.8,-176.9) | Vel=(17.13,-23.18,-15.39)
+[COMBINED] #27864 RP=(-138.8,27.4) Vel=(18.16,6.43,-38.49)
+[DEBUG] valid=3807 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27875 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=X- | RPY=(-133.6,13.2,130.8) | Vel=(19.61,34.47,-62.92)
+RIGHT | #27342 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=X- | RPY=(-159.9,41.6,176.5) | Vel=(16.14,-23.76,-15.60)
+[COMBINED] #27875 RP=(-146.8,27.4) Vel=(17.87,5.35,-39.26)
+[DEBUG] valid=3826 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27889 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=Y- | RPY=(-132.6,20.4,133.5) | Vel=(20.07,31.85,-64.14)
+RIGHT | #27354 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=Y+ | RPY=(-163.0,35.4,176.6) | Vel=(15.45,-24.13,-15.37)
+[COMBINED] #27889 RP=(-147.8,27.9) Vel=(17.76,3.86,-39.76)
+[DEBUG] valid=3846 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27901 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=X+ | RPY=(-117.0,28.0,132.8) | Vel=(20.33,30.22,-65.10)
+RIGHT | #27367 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=X+ | RPY=(-147.4,43.5,174.9) | Vel=(14.85,-24.60,-15.30)
+[COMBINED] #27901 RP=(-132.2,35.8) Vel=(17.59,2.81,-40.20)
+[DEBUG] valid=3867 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27913 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=Z- | RPY=(-99.2,36.8,132.0) | Vel=(20.63,28.63,-65.74)
+RIGHT | #27379 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=X+ | RPY=(-126.5,47.2,173.7) | Vel=(14.22,-24.97,-15.69)
+[COMBINED] #27913 RP=(-112.9,42.0) Vel=(17.42,1.83,-40.72)
+[DEBUG] valid=3889 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27926 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=Z- | RPY=(-94.9,44.8,112.7) | Vel=(20.96,27.60,-66.07)
+RIGHT | #27392 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=Y+ | RPY=(-100.8,60.3,173.0) | Vel=(12.99,-24.87,-16.89)
+[COMBINED] #27926 RP=(-97.9,52.5) Vel=(16.98,1.37,-41.48)
+[DEBUG] valid=3907 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27938 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=X- | RPY=(-114.7,48.0,95.0) | Vel=(20.97,27.74,-66.39)
+RIGHT | #27404 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=Y+ | RPY=(-92.7,57.5,167.2) | Vel=(10.65,-24.75,-19.07)
+[COMBINED] #27938 RP=(-103.7,52.7) Vel=(15.81,1.49,-42.73)
+[DEBUG] valid=3924 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27950 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=Y- | RPY=(-135.9,32.0,85.8) | Vel=(21.00,28.22,-66.39)
+RIGHT | #27416 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=X+ | RPY=(-82.1,38.0,172.4) | Vel=(8.32,-24.71,-20.82)
+[COMBINED] #27950 RP=(-109.0,35.0) Vel=(14.66,1.76,-43.60)
+[DEBUG] valid=3942 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27964 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=X+ | RPY=(-120.1,13.8,93.2) | Vel=(20.66,27.62,-66.30)
+RIGHT | #27429 | MOVING | Tilt=ROLL- | Move=Y- | Rotation=Z+ | RPY=(-139.5,22.6,-173.1) | Vel=(6.63,-26.41,-22.97)
+[COMBINED] #27964 RP=(-129.8,18.2) Vel=(13.64,0.61,-44.64)
+[DEBUG] valid=3966 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27975 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=Z+ | RPY=(-123.1,-1.1,81.3) | Vel=(19.66,26.93,-66.55)
+RIGHT | #27441 | MOVING | Tilt=ROLL+ | Move=Y- | Rotation=Y+ | RPY=(178.1,7.7,-157.6) | Vel=(7.11,-28.02,-26.14)
+[COMBINED] #27975 RP=(27.5,3.3) Vel=(13.38,-0.54,-46.34)
+[DEBUG] valid=3983 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #27989 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=X- | RPY=(-87.5,-5.4,57.6) | Vel=(19.04,26.55,-66.69)
+RIGHT | #27454 | MOVING | Tilt=ROLL+ | Move=DOWN | Rotation=NONE | RPY=(131.0,6.1,-154.7) | Vel=(7.40,-28.12,-30.61)
+[COMBINED] #27989 RP=(21.7,0.4) Vel=(13.22,-0.79,-48.65)
+[DEBUG] valid=4004 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #28000 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=X+ | RPY=(-85.3,-4.5,58.4) | Vel=(18.73,26.78,-66.77)
+RIGHT | #27467 | STILL | Tilt=ROLL+ | Move=STILL | Rotation=NONE | RPY=(92.7,2.3,-154.3) | Vel=(0.00,0.00,0.00)
+[COMBINED] #28000 RP=(3.7,-1.1) Vel=(9.37,13.39,-33.39)
+[DEBUG] valid=4027 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #28014 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=NONE | RPY=(-83.2,-4.5,58.1) | Vel=(18.46,26.95,-66.77)
+RIGHT | #27479 | STILL | Tilt=ROLL+ | Move=STILL | Rotation=NONE | RPY=(65.3,-0.6,-154.2) | Vel=(0.00,0.00,0.00)
+[COMBINED] #28014 RP=(-9.0,-2.5) Vel=(9.23,13.47,-33.39)
+[DEBUG] valid=4047 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #28025 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=NONE | RPY=(-81.4,-4.5,57.7) | Vel=(18.29,27.06,-66.77)
+RIGHT | #27492 | STILL | Tilt=ROLL+ | Move=STILL | Rotation=NONE | RPY=(42.2,-3.1,-154.1) | Vel=(0.00,0.00,0.00)
+[COMBINED] #28025 RP=(-19.6,-3.8) Vel=(9.15,13.53,-33.39)
+[DEBUG] valid=4068 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #28039 | MOVING | Tilt=ROLL- | Move=DOWN | Rotation=NONE | RPY=(-79.9,-4.6,57.4) | Vel=(18.14,27.19,-66.77)
+RIGHT | #27504 | STILL | Tilt=ROLL+ | Move=STILL | Rotation=NONE | RPY=(25.7,-4.9,-154.1) | Vel=(0.00,0.00,0.00)
+[COMBINED] #28039 RP=(-27.1,-4.8) Vel=(9.07,13.60,-33.39)
+[DEBUG] valid=4089 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #28051 | MOVING | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-78.9,-4.8,57.2) | Vel=(-0.03,0.03,-0.00)
+RIGHT | #27516 | STILL | Tilt=ROLL+ | Move=STILL | Rotation=NONE | RPY=(12.7,-6.3,-154.1) | Vel=(0.00,0.00,0.00)
+[COMBINED] #28051 RP=(-33.1,-5.6) Vel=(-0.01,0.01,-0.00)
+[DEBUG] valid=4111 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #28064 | MOVING | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-78.1,-5.0,57.3) | Vel=(-0.01,0.01,0.00)
+RIGHT | #27527 | STILL | Tilt=LEVEL | Move=STILL | Rotation=NONE | RPY=(3.3,-7.4,-154.1) | Vel=(0.00,0.00,0.00)
+[COMBINED] #28064 RP=(-37.4,-6.2) Vel=(-0.01,0.01,0.00)
+[DEBUG] valid=4132 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #28076 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-77.6,-5.0,57.2) | Vel=(0.00,0.00,0.00)
+RIGHT | #27541 | STILL | Tilt=PITCH- | Move=STILL | Rotation=NONE | RPY=(-6.0,-8.4,-154.2) | Vel=(0.00,0.00,0.00)
+[COMBINED] #28076 RP=(-41.8,-6.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=4153 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #28089 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-77.1,-5.1,57.1) | Vel=(0.00,0.00,0.00)
+RIGHT | #27554 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-12.6,-9.1,-154.1) | Vel=(0.00,0.00,0.00)
+[COMBINED] #28089 RP=(-44.8,-7.1) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=4173 badLength=0 badMagic=0 unknownSender=0
+����������������������������������������������������������������--------
+LEFT  | #28101 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-76.9,-5.2,57.1) | Vel=(0.00,0.00,0.00)
+RIGHT | #27567 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-17.7,-9.7,-154.1) | Vel=(0.00,0.00,0.00)
+[COMBINED] #28101 RP=(-47.3,-7.5) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=4192 badLength=0 badMagic=0 unknownSender=0
+----------------------------------------
+LEFT  | #28111 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-76.7,-5.3,57.2) | Vel=(0.00,0.00,0.00)
+RIGHT | #27579 | STILL | Tilt=ROLL- | Move=STILL | Rotation=NONE | RPY=(-21.3,-10.1,-154.1) | Vel=(0.00,0.00,0.00)
+[COMBINED] #28111 RP=(-49.0,-7.7) Vel=(0.00,0.00,0.00)
+[DEBUG] valid=4210 badLength=0 badMagic=0 unknownSender=0
