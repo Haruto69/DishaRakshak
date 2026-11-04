@@ -9,11 +9,17 @@ import android.content.pm.PackageManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.background
+import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.zIndex
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Map
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.foundation.isSystemInDarkTheme
+import kotlinx.coroutines.flow.map
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,6 +27,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
+import androidx.core.view.WindowCompat
 import com.example.drdisplay.ui.theme.DRDisplayTheme
 import com.google.android.gms.location.*
 import org.xmlpull.v1.XmlPullParser
@@ -51,6 +58,12 @@ import java.util.Collections.list
 class MainActivity : ComponentActivity() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private var permissionVersion by mutableIntStateOf(0)
+
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        permissionVersion++
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,8 +82,28 @@ class MainActivity : ComponentActivity() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         setContent {
-            DRDisplayTheme {
-                AppLayout(fusedLocationClient)
+            val appearanceFlow = remember { homeBaseDataStore.data.map { it[AppearancePrefs.MODE] ?: "system" } }
+            val appearance by appearanceFlow.collectAsState(initial = "system")
+            val darkTheme = when (appearance) {
+                "light" -> false
+                "dark" -> true
+                else -> isSystemInDarkTheme()
+            }
+            val scope = rememberCoroutineScope()
+            SideEffect {
+                WindowCompat.getInsetsController(window, window.decorView).apply {
+                    isAppearanceLightStatusBars = !darkTheme
+                    isAppearanceLightNavigationBars = !darkTheme
+                }
+                @Suppress("DEPRECATION")
+                window.statusBarColor = if (darkTheme) android.graphics.Color.rgb(18, 20, 24) else android.graphics.Color.WHITE
+                @Suppress("DEPRECATION")
+                window.navigationBarColor = if (darkTheme) android.graphics.Color.rgb(18, 20, 24) else android.graphics.Color.WHITE
+            }
+            DRDisplayTheme(darkTheme = darkTheme) {
+                AppLayout(fusedLocationClient, permissionVersion, appearance) { mode ->
+                    scope.launch { homeBaseDataStore.edit { it[AppearancePrefs.MODE] = mode } }
+                }
             }
         }
     }
@@ -95,6 +128,10 @@ data class SearchLocation(
 val Context.homeBaseDataStore: androidx.datastore.core.DataStore<Preferences>
         by preferencesDataStore(name = "home_bases")
 
+object AppearancePrefs {
+    val MODE = stringPreferencesKey("appearance_mode")
+}
+
 object HomeBasePrefs {
     val HOME_BASES = stringPreferencesKey("home_bases")
 }
@@ -108,7 +145,13 @@ object NavPrefs {
 }
 
 @Composable
-fun AppLayout(fusedLocationClient: FusedLocationProviderClient) {
+fun AppLayout(
+    fusedLocationClient: FusedLocationProviderClient,
+    permissionVersion: Int,
+    appearance: String,
+    onAppearanceChange: (String) -> Unit
+) {
+    var showAppearance by remember { mutableStateOf(false) }
 
     var selectedScreen by remember { mutableStateOf("SearchOSM") }
     var activeOsmUri by remember {
@@ -180,8 +223,8 @@ fun AppLayout(fusedLocationClient: FusedLocationProviderClient) {
         )
     }
 
-    // Passive GPS updates
-    LaunchedEffect(Unit) {
+    // Start again when the runtime permission result arrives.
+    LaunchedEffect(permissionVersion) {
         Log.d(
             "ANIMATION_SCREEN",
             "ENTERED"
@@ -215,7 +258,7 @@ fun AppLayout(fusedLocationClient: FusedLocationProviderClient) {
                                 }
                             }
                             if (
-                                location.accuracy < 10f
+                                originLat != 0.0 && originLon != 0.0 && location.accuracy < 10f
                             ) {
 
                                 val now =
@@ -306,30 +349,48 @@ fun AppLayout(fusedLocationClient: FusedLocationProviderClient) {
         }
     }
 
+    if (showAppearance) {
+        AlertDialog(
+            onDismissRequest = { showAppearance = false },
+            title = { Text("Appearance") },
+            text = {
+                Column {
+                    listOf("system" to "System default", "light" to "Light", "dark" to "Dark").forEach { (mode, label) ->
+                        Row(
+                            modifier = Modifier.fillMaxWidth().heightIn(min = 48.dp)
+                                .combinedClickable(onClick = { onAppearanceChange(mode); showAppearance = false }),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            RadioButton(selected = appearance == mode, onClick = { onAppearanceChange(mode); showAppearance = false })
+                            Text(label, modifier = Modifier.padding(start = 8.dp))
+                        }
+                    }
+                }
+            },
+            confirmButton = { TextButton(onClick = { showAppearance = false }) { Text("Close") } }
+        )
+    }
+
+    Surface(modifier = Modifier.fillMaxSize(), color = MaterialTheme.colorScheme.background, contentColor = MaterialTheme.colorScheme.onBackground) {
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(top = 48.dp, bottom = 24.dp),
+            .safeDrawingPadding(),
         verticalArrangement = Arrangement.SpaceBetween
     ) {
-        // Top row of icons
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.SpaceEvenly,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            IconButton(onClick = { selectedScreen = "SearchOSM" }) {
-                Icon(Icons.Filled.Home, contentDescription = "Search OSM")
-            }
-            IconButton(onClick = { selectedScreen = "Animation" }) {
-                Icon(Icons.Filled.Map, contentDescription = "Animation")
-            }
-            IconButton(onClick = { selectedScreen = "BLE" }) {
-                Icon(
-                    Icons.Filled.Bluetooth, contentDescription = "BLE Monitor"
-                )
+        Surface(tonalElevation = 3.dp, modifier = Modifier.fillMaxWidth().zIndex(1f)) {
+            Column {
+                Row(modifier = Modifier.fillMaxWidth().padding(start = 20.dp, end = 8.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Text("Disha Rakshak", style = MaterialTheme.typography.titleLarge, modifier = Modifier.weight(1f))
+                    IconButton(onClick = { showAppearance = true }) {
+                        Icon(Icons.Filled.Settings, contentDescription = "Appearance settings")
+                    }
+                }
+                NavigationBar {
+                    NavigationBarItem(selected = selectedScreen == "SearchOSM", onClick = { selectedScreen = "SearchOSM" }, icon = { Icon(Icons.Filled.Home, contentDescription = null) }, label = { Text("Home") })
+                    NavigationBarItem(selected = selectedScreen == "Animation", onClick = { selectedScreen = "Animation" }, icon = { Icon(Icons.Filled.Map, contentDescription = null) }, label = { Text("Map") })
+                    NavigationBarItem(selected = selectedScreen == "BLE", onClick = { selectedScreen = "BLE" }, icon = { Icon(Icons.Filled.Bluetooth, contentDescription = null) }, label = { Text("Belt") })
+                }
             }
         }
 
@@ -338,10 +399,7 @@ fun AppLayout(fusedLocationClient: FusedLocationProviderClient) {
             modifier = Modifier
                 .weight(1f)
                 .fillMaxWidth()
-                .padding(
-                    top = 8.dp,
-                    bottom = 8.dp
-                )
+                .clipToBounds()
         ) {
             when (selectedScreen) {
 
@@ -356,14 +414,14 @@ fun AppLayout(fusedLocationClient: FusedLocationProviderClient) {
                             selectedHomeBase = it
                             Log.d(
                                 "HOMEBASE",
-                                "selectedHomeBase NOW = ${it.name}"
+                                "selectedHomeBase NOW = ${it?.name}"
                             )
                         }
                     )
 
 
                 "Animation" ->
-                    AnimationScreen(
+                    key(activeOsmUri) { AnimationScreen(
                         gpsText = gpsText,
                         mapUri = activeOsmUri,
                         gpsLat = gpsLat,
@@ -371,7 +429,7 @@ fun AppLayout(fusedLocationClient: FusedLocationProviderClient) {
                         currentLat = navLat,
                         currentLon = navLon,
                         selectedHomeBase = selectedHomeBase
-                    )
+                    ) }
 
                 "BLE" ->
                     com.example.drdisplay.ble.BleScreen(
@@ -387,13 +445,14 @@ fun AppLayout(fusedLocationClient: FusedLocationProviderClient) {
 
         // Persistent GPS footer
         Text(
-            text = gpsText,
-            style = MaterialTheme.typography.bodyMedium,
+            text = if (selectedScreen == "Animation") "$gpsText\n© OpenStreetMap contributors" else gpsText,
+            style = MaterialTheme.typography.bodySmall,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(8.dp),
+                .padding(12.dp),
             textAlign = TextAlign.Center
         )
+    }
     }
 }
 
@@ -403,7 +462,7 @@ fun SearchOSMScreen(
     gpsText: String,
     activeOsmUri: Uri?,
     onMapSelected: (Uri?) -> Unit,
-    onHomeBaseSelected: (HomeBase) -> Unit
+    onHomeBaseSelected: (HomeBase?) -> Unit
 ) {
     val context = LocalContext.current
 
@@ -448,11 +507,7 @@ fun SearchOSMScreen(
                 )
             }
 
-        homeBasesByMap[currentMapId]
-            ?.firstOrNull { it.isSelected }
-            ?.let {
-                onHomeBaseSelected(it)
-            }
+        onHomeBaseSelected(homeBasesByMap[currentMapId]?.firstOrNull { it.isSelected })
         Log.d("HOMEBASE", "Current Map Id = $currentMapId")
     }
 
@@ -485,12 +540,14 @@ fun SearchOSMScreen(
 
     Column(
         modifier = Modifier.fillMaxSize()
-            .padding(32.dp)
+            .padding(horizontal = 20.dp, vertical = 16.dp)
             .verticalScroll(rememberScrollState()),
         verticalArrangement = Arrangement.Top,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text("Select Map Source", style = MaterialTheme.typography.titleMedium)
+        Text("Your map", style = MaterialTheme.typography.headlineSmall, modifier = Modifier.fillMaxWidth())
+        Text("Choose a map and a home base for your route.", style = MaterialTheme.typography.bodyMedium, modifier = Modifier.fillMaxWidth().padding(top = 4.dp, bottom = 12.dp))
+        Text("Map source", style = MaterialTheme.typography.titleMedium, modifier = Modifier.fillMaxWidth())
         Spacer(Modifier.height(8.dp))
 
         Row {
@@ -525,7 +582,7 @@ fun SearchOSMScreen(
 
         Spacer(Modifier.height(16.dp))
 
-        Text("🔍 Search Home Base", style = MaterialTheme.typography.headlineSmall)
+        Text("Find a home base", style = MaterialTheme.typography.titleLarge, modifier = Modifier.fillMaxWidth())
         Spacer(Modifier.height(16.dp))
 
         if (mode == "name") {
@@ -558,14 +615,9 @@ fun SearchOSMScreen(
                     )
 
                 val updated = homeBasesByMap.toMutableMap()
-                val list = updated.getOrPut(mapId) { mutableListOf() }
-                if (
-                    list.none {
-                        it.name == hb.name
-                    }
-                ) {
-                    list.add(hb)
-                }
+                val list = updated.getOrPut(mapId) { mutableListOf() }.toMutableList()
+                if (list.none { it.name == hb.name }) list.add(hb)
+                updated[mapId] = list.map { it.copy(isSelected = it.name == hb.name) }.toMutableList()
 
                 homeBasesByMap = updated
                 updated[mapId]?.forEach {
@@ -590,10 +642,7 @@ fun SearchOSMScreen(
                         "SAVE COMPLETE"
                     )
                 }
-                val selectedBase =
-                    hb.copy(
-                        isSelected = true
-                    )
+                val selectedBase = updated.getValue(mapId).first { it.isSelected }
 
                 onHomeBaseSelected(selectedBase)
 
@@ -612,12 +661,18 @@ fun SearchOSMScreen(
         }
 
         Spacer(Modifier.height(16.dp))
-        Text("Saved Home Bases:")
+        Text("Saved home bases", style = MaterialTheme.typography.titleMedium, modifier = Modifier.fillMaxWidth())
         Spacer(Modifier.height(16.dp))
 
         val mapId = activeOsmUri?.let { getFileName(context, it) } ?: "default"
         homeBasesByMap[mapId]?.forEachIndexed { index, hb ->
             Row(
+                modifier = Modifier.fillMaxWidth().padding(vertical = 4.dp)
+                    .background(
+                        if (hb.isSelected) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
+                        MaterialTheme.shapes.medium
+                    ).padding(horizontal = 12.dp, vertical = 8.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Log.d(
@@ -630,8 +685,8 @@ fun SearchOSMScreen(
                         val updated = homeBasesByMap.toMutableMap()
 
                         val list =
-                            updated[mapId]?.mapIndexed { i, hb ->
-                                hb.copy(isSelected = i == index)
+                            updated[mapId]?.mapIndexed { i, item ->
+                                item.copy(isSelected = i == index && !hb.isSelected)
                             }?.toMutableList()
 
                         if (list != null) {
@@ -639,13 +694,13 @@ fun SearchOSMScreen(
                             updated[mapId] = list
                             homeBasesByMap = updated
 
-                            val selectedBase = list[index]
+                            val selectedBase = list.firstOrNull { it.isSelected }
 
                             onHomeBaseSelected(selectedBase)
 
                             Log.d(
                                 "HOMEBASE",
-                                "selectedHomeBase callback = ${selectedBase.name}"
+                                "selectedHomeBase callback = ${selectedBase?.name}"
                             )
 
                             CoroutineScope(Dispatchers.IO).launch {
@@ -654,18 +709,24 @@ fun SearchOSMScreen(
                         }
                     }
                 ){
-                    Text("Select")
+                    Text(if (hb.isSelected) "Selected" else "Select")
                 }
-                Text(
-                    text = "${hb.name} (${hb.lat}, ${hb.lon})",
-                    modifier = Modifier.combinedClickable(
+                Column(
+                    modifier = Modifier.weight(1f).combinedClickable(
                         onClick = { },
                         onLongClick = {
                             selectedIndexForDialog = index
                             showOptionsDialog = true
                         }
                     )
-                )
+                ) {
+                    Text(hb.name, style = MaterialTheme.typography.titleSmall)
+                    Text(
+                        text = String.format(java.util.Locale.US, "%.6f, %.6f", hb.lat, hb.lon),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
             }
         }
 
@@ -796,14 +857,22 @@ fun AutoCompleteTextField(
                     .heightIn(max = 200.dp)
             ) {
                 items(suggestions) { suggestion ->
-                    TextButton(
+                    OutlinedButton(
                         onClick = {
                             query = suggestion
                             onItemSelected(suggestion)
                         },
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth().padding(top = 6.dp),
+                        shape = MaterialTheme.shapes.small,
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = MaterialTheme.colorScheme.onSurface
+                        )
                     ) {
-                        Text(suggestion)
+                        Text(
+                            text = suggestion,
+                            modifier = Modifier.fillMaxWidth(),
+                            textAlign = TextAlign.Start
+                        )
                     }
                 }
             }

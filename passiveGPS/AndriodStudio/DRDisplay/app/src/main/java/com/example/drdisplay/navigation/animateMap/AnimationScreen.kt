@@ -19,6 +19,9 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.overlay.Polyline
+import org.osmdroid.views.overlay.Polygon
+import androidx.compose.ui.draw.clipToBounds
+import org.osmdroid.util.BoundingBox
 
 @SuppressLint("LocalContextGetResourceValueCall")
 @Composable
@@ -135,7 +138,8 @@ fun AnimationScreen(
 
     LaunchedEffect(
         graph,
-        selectedHomeBase
+        selectedHomeBase,
+        currentLat != 0.0 && currentLon != 0.0
     )
     {
         Log.d(
@@ -146,8 +150,9 @@ fun AnimationScreen(
             "ANIMATION",
             "HomeBase = $selectedHomeBase"
         )
+        staticRouteNodes = emptyList()
+        dynamicRouteNodes = emptyList()
         val g = graph ?: return@LaunchedEffect
-        mapCentered = false
         Log.d("ROUTE", "Entered Route Calculation")
         val goalNode =
             selectedHomeBase?.let {
@@ -229,13 +234,12 @@ fun AnimationScreen(
 
     AndroidView(
         modifier = Modifier
-            .fillMaxSize()
-            .padding(
-                top = 100.dp,
-                bottom = 120.dp
-            ),
+            .fillMaxSize().clipToBounds(),
         factory = { ctx ->
             MapView(ctx).apply {
+                setUseDataConnection(false)
+                overlayManager.tilesOverlay.isEnabled = false
+                setBackgroundColor(android.graphics.Color.rgb(242, 239, 233))
 
                 Log.d(
                     "MAP_DEBUG",
@@ -258,18 +262,24 @@ fun AnimationScreen(
         },
         update = { mapView ->
 
-            if (!mapCentered && selectedHomeBase != null) {
-
-                mapView.controller.setCenter(
-                    GeoPoint(
-                        selectedHomeBase.lat,
-                        selectedHomeBase.lon
-                    )
+            val nodes = graph?.nodes?.values
+            if (!mapCentered && !nodes.isNullOrEmpty()) {
+                val bounds = graph?.bounds ?: OsmBounds(
+                    nodes.maxOf { it.lat }, nodes.maxOf { it.lon },
+                    nodes.minOf { it.lat }, nodes.minOf { it.lon }
                 )
-
-                mapView.controller.setZoom(17.0)
-
                 mapCentered = true
+                mapView.post {
+                    if (bounds.north > bounds.south && bounds.east > bounds.west && mapView.width > 0 && mapView.height > 0) {
+                        val box = BoundingBox(bounds.north, bounds.east, bounds.south, bounds.west)
+                        mapView.zoomToBoundingBox(box, false, 32)
+                        mapView.setMinZoomLevel(mapView.zoomLevelDouble)
+                        mapView.setScrollableAreaLimitDouble(box)
+                    } else {
+                        mapView.controller.setCenter(GeoPoint(bounds.north, bounds.east))
+                        mapView.controller.setZoom(17.0)
+                    }
+                }
             }
 
             Log.d(
@@ -399,6 +409,10 @@ fun AnimationScreen(
                     )
             }
 
+            if (selectedHomeBase == null) {
+                homeMarker?.let { mapView.overlays.remove(it) }
+                homeMarker = null
+            }
             selectedHomeBase?.let { home ->
 
                 if (homeMarker == null) {
@@ -423,34 +437,8 @@ fun AnimationScreen(
                     )
             }
 
-            if (!roadsDrawn) {
-                graph?.let { g ->
-                    g.adjacency.forEach { (fromId, neighbors) ->
-                        val fromNode = g.nodes[fromId]
-                            ?: return@forEach
-                        neighbors.forEach { neighborId ->
-                            val toNode = g.nodes[neighborId]
-                                ?: return@forEach
-                            val road = Polyline()
-                            road.outlinePaint.color =
-                                android.graphics.Color.GRAY
-                            road.outlinePaint.strokeWidth = 4f
-                            road.setPoints(
-                                listOf(
-                                    GeoPoint(
-                                        fromNode.lat,
-                                        fromNode.lon
-                                    ),
-                                    GeoPoint(
-                                        toNode.lat,
-                                        toNode.lon
-                                    )
-                                )
-                            )
-                            mapView.overlays.add(road)
-                        }
-                    }
-                }
+            if (!roadsDrawn && graph != null) {
+                mapView.overlays.add(0, OsmMapOverlay(graph!!))
                 roadsDrawn = true
             }
 
@@ -511,7 +499,7 @@ fun AnimationScreen(
                 )
             }
 
-            if (!poiMarkersAdded) {
+            if (!poiMarkersAdded && graph != null) {
 
                 poiList.forEach { poi ->
                     val marker = Marker(mapView)
