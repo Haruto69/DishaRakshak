@@ -27,9 +27,15 @@ data class RoadNode(
     val lon: Double
 )
 
+data class OsmWay(val nodes: List<Long>, val tags: Map<String, String>)
+data class OsmBounds(val north: Double, val east: Double, val south: Double, val west: Double)
+
 data class RoadGraph(
     val nodes: MutableMap<Long, RoadNode> = mutableMapOf(),
-    val adjacency: MutableMap<Long, MutableList<Long>> = mutableMapOf()
+    val adjacency: MutableMap<Long, MutableList<Long>> = mutableMapOf(),
+    val buildings: MutableList<List<Long>> = mutableListOf(),
+    val ways: MutableList<OsmWay> = mutableListOf(),
+    var bounds: OsmBounds? = null
 )
 
 object GraphBuilder {
@@ -51,16 +57,31 @@ object GraphBuilder {
         var eventType = parser.eventType
         var currentWayNodes = mutableListOf<Long>()
         var isRoad = false
+        var isBuilding = false
+        var inWay = false
+        val wayTags = mutableMapOf<String, String>()
         while (eventType != XmlPullParser.END_DOCUMENT) {
             when (eventType) {
                 XmlPullParser.START_TAG -> {
                     when (parser.name) {
+                        "bounds" -> {
+                            val south = parser.getAttributeValue(null, "minlat")?.toDoubleOrNull()
+                            val west = parser.getAttributeValue(null, "minlon")?.toDoubleOrNull()
+                            val north = parser.getAttributeValue(null, "maxlat")?.toDoubleOrNull()
+                            val east = parser.getAttributeValue(null, "maxlon")?.toDoubleOrNull()
+                            if (north != null && south != null && east != null && west != null &&
+                                north > south && east > west && north <= 85.0 && south >= -85.0 &&
+                                east <= 180.0 && west >= -180.0) {
+                                graph.bounds = OsmBounds(north, east, south, west)
+                            }
+                        }
                         "tag" -> {
                             val k = parser.getAttributeValue(null, "k")
+                            val v = parser.getAttributeValue(null, "v")
+                            if (inWay && k != null && v != null) wayTags[k] = v
 
-                            if (k == "highway") {
-                                isRoad = true
-                            }
+                            if (k == "highway") isRoad = true
+                            if (k == "building" && parser.getAttributeValue(null, "v") != "no") isBuilding = true
                         }
                         "node" -> {
                             val id =
@@ -87,7 +108,10 @@ object GraphBuilder {
                         }
                         "way" -> {
                             currentWayNodes = mutableListOf()
+                            inWay = true
+                            wayTags.clear()
                             isRoad = false
+                            isBuilding = false
                         }
                         "nd" -> {
 
@@ -102,6 +126,13 @@ object GraphBuilder {
                     }
                 }
                 XmlPullParser.END_TAG -> {
+                    if (parser.name == "way") {
+                        inWay = false
+                        graph.ways.add(OsmWay(currentWayNodes.toList(), wayTags.toMap()))
+                    }
+                    if (parser.name == "way" && isBuilding && currentWayNodes.size >= 4 && currentWayNodes.first() == currentWayNodes.last()) {
+                        graph.buildings.add(currentWayNodes.toList())
+                    }
                     if (parser.name == "way" && isRoad) {
                         for (i in 0 until currentWayNodes.size - 1) {
                             val a = currentWayNodes[i]
