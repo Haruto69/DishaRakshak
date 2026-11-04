@@ -29,6 +29,7 @@ class BleManager(
     val state = mutableStateOf(
         BleState()
     )
+    val packetLogger = PacketLogger(context.applicationContext)
     private val bluetoothManager =
         context.getSystemService(
             BluetoothManager::class.java
@@ -203,10 +204,25 @@ class BleManager(
             }
 
 
+            @Suppress("DEPRECATION")
             override fun onCharacteristicChanged(
                 gatt: BluetoothGatt,
                 characteristic: BluetoothGattCharacteristic
             ) {
+                handlePacket(characteristic.uuid, characteristic.value.copyOf())
+            }
+
+            override fun onCharacteristicChanged(
+                gatt: BluetoothGatt,
+                characteristic: BluetoothGattCharacteristic,
+                value: ByteArray
+            ) {
+                handlePacket(characteristic.uuid, value.copyOf())
+            }
+
+            private fun handlePacket(uuid: UUID, value: ByteArray) {
+                packetLogger.record(value, uuid.toString())
+                if (uuid != CHARACTERISTIC_UUID) return
                 Log.d(
                     "BLE_DEBUG",
                     "NEW_PARSER_RUNNING"
@@ -217,12 +233,12 @@ class BleManager(
                 )
                 Log.d(
                     "BLE_PACKET",
-                    "rawBytes=${characteristic.value.size}"
+                    "rawBytes=${value.size}"
                 )
 
                 val text =
                     String(
-                        characteristic.value,
+                        value,
                         Charsets.UTF_8
                     )
                 Log.d(
@@ -234,7 +250,7 @@ class BleManager(
                     "length=${text.length} text=[$text]"
                 )
                 val fields =
-                    text.split(",")
+                    text.trim().split(",").map { it.trim() }
                 Log.d(
                     "BLE_DEBUG",
                     "fields=${fields.size}"
@@ -243,7 +259,8 @@ class BleManager(
                     "BLE_PACKET",
                     fields.joinToString("|")
                 )
-                if (fields.size != 7) {
+                if (fields.size != 7 || fields[0].toLongOrNull() == null ||
+                    fields.drop(1).any { it.toFloatOrNull()?.isFinite() != true }) {
 
                     Log.d(
                         "BLE_DEBUG",

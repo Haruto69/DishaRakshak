@@ -1,8 +1,8 @@
 package com.example.drdisplay
 
-import com.example.drdisplay.navigation.DeadReckoning.DeadReckoning
-import com.example.drdisplay.navigation.DeadReckoning.ImuSample
-import com.example.drdisplay.navigation.ImuSimulator
+import com.example.drdisplay.navigation.deadReckoning.DeadReckoning
+import com.example.drdisplay.navigation.deadReckoning.ImuSample
+import com.example.drdisplay.navigation.deadReckoning.ImuSimulator
 
 /**
  * Kotlin test for DeadReckoning using ImuSimulator.
