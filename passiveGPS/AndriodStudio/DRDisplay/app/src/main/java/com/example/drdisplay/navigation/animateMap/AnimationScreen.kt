@@ -6,6 +6,15 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import android.net.Uri
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Box
+import androidx.compose.ui.Alignment
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.OutlinedTextField
+import org.osmdroid.events.MapEventsReceiver
+import org.osmdroid.views.overlay.MapEventsOverlay
 import androidx.compose.foundation.layout.padding
 import androidx.compose.ui.unit.dp
 import android.util.Log
@@ -32,9 +41,14 @@ fun AnimationScreen(
     gpsLon: Double,
     currentLat: Double,
     currentLon: Double,
-    selectedHomeBase: HomeBase?
+    selectedHomeBase: HomeBase?,
+    onPinSelected: (Double, Double, String) -> Unit
 ) {
     val context = LocalContext.current
+    var choosingPin by remember { mutableStateOf(false) }
+    var pendingPin by remember { mutableStateOf<GeoPoint?>(null) }
+    var pinEvents by remember { mutableStateOf<MapEventsOverlay?>(null) }
+    var pinName by remember { mutableStateOf("") }
 
     var nodeCount by remember { mutableStateOf(0) }
     var edgeCount by remember { mutableStateOf(0) }
@@ -54,6 +68,13 @@ fun AnimationScreen(
     }
     var graph by remember {
         mutableStateOf<RoadGraph?>(null)
+    }
+    val pinHandler by rememberUpdatedState<(GeoPoint) -> Boolean> { point ->
+        if (!choosingPin) false else {
+            pendingPin = point
+            pinName = "Pinned home base"
+            true
+        }
     }
 
     var poiList by remember {
@@ -232,6 +253,26 @@ fun AnimationScreen(
     }
 
 
+    if (pendingPin != null) {
+        AlertDialog(
+            onDismissRequest = { pendingPin = null },
+            title = { Text("Save home base") },
+            text = {
+                androidx.compose.foundation.layout.Column {
+                    Text("${"%.6f".format(java.util.Locale.US, pendingPin!!.latitude)}, ${"%.6f".format(java.util.Locale.US, pendingPin!!.longitude)}")
+                    OutlinedTextField(value = pinName, onValueChange = { pinName = it }, label = { Text("Name") }, singleLine = true)
+                }
+            },
+            confirmButton = { TextButton(enabled = pinName.isNotBlank(), onClick = {
+                pendingPin?.let { onPinSelected(it.latitude, it.longitude, pinName.trim()) }
+                pendingPin = null
+                choosingPin = false
+            }) { Text("Save and select") } },
+            dismissButton = { TextButton(onClick = { pendingPin = null }) { Text("Cancel") } }
+        )
+    }
+
+    Box(Modifier.fillMaxSize()) {
     AndroidView(
         modifier = Modifier
             .fillMaxSize().clipToBounds(),
@@ -247,6 +288,11 @@ fun AnimationScreen(
                 )
 
                 setMultiTouchControls(true)
+                pinEvents = MapEventsOverlay(object : MapEventsReceiver {
+                    override fun singleTapConfirmedHelper(p: GeoPoint): Boolean = pinHandler(p)
+                    override fun longPressHelper(p: GeoPoint): Boolean = false
+                })
+                overlays.add(pinEvents)
 
                 /*
                 controller.setCenter(
@@ -529,9 +575,17 @@ fun AnimationScreen(
                 poiMarkersAdded = true
             }
 
+            pinEvents?.let { overlay ->
+                mapView.overlays.remove(overlay)
+                mapView.overlays.add(overlay)
+            }
             mapView.invalidate()
 
             Log.d("POI", "Loaded ${poiList.size} POIs")
         }
     )
+    Button(onClick = { choosingPin = !choosingPin }, modifier = Modifier.align(Alignment.TopCenter).padding(12.dp)) {
+        Text(if (choosingPin) "Tap map to place pin · Cancel" else "Choose home on map")
+    }
+    }
 }

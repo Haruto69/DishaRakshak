@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat
 import androidx.core.view.WindowCompat
 import com.example.drdisplay.ui.theme.DRDisplayTheme
-import com.google.android.gms.location.*
 import org.xmlpull.v1.XmlPullParser
 import org.xmlpull.v1.XmlPullParserFactory
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -57,11 +56,15 @@ import java.util.Collections.list
 
 class MainActivity : ComponentActivity() {
 
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var permissionVersion by mutableIntStateOf(0)
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        permissionVersion++
+    }
+
+    override fun onResume() {
+        super.onResume()
         permissionVersion++
     }
 
@@ -71,6 +74,7 @@ class MainActivity : ComponentActivity() {
         ActivityCompat.requestPermissions(
             this,
             arrayOf(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
                 Manifest.permission.ACCESS_FINE_LOCATION,
                 Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.BLUETOOTH_SCAN,
@@ -78,8 +82,6 @@ class MainActivity : ComponentActivity() {
             ),
             1
         )
-
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
 
         setContent {
             val appearanceFlow = remember { homeBaseDataStore.data.map { it[AppearancePrefs.MODE] ?: "system" } }
@@ -101,7 +103,7 @@ class MainActivity : ComponentActivity() {
                 window.navigationBarColor = if (darkTheme) android.graphics.Color.rgb(18, 20, 24) else android.graphics.Color.WHITE
             }
             DRDisplayTheme(darkTheme = darkTheme) {
-                AppLayout(fusedLocationClient, permissionVersion, appearance) { mode ->
+                AppLayout(permissionVersion, appearance) { mode ->
                     scope.launch { homeBaseDataStore.edit { it[AppearancePrefs.MODE] = mode } }
                 }
             }
@@ -146,7 +148,6 @@ object NavPrefs {
 
 @Composable
 fun AppLayout(
-    fusedLocationClient: FusedLocationProviderClient,
     permissionVersion: Int,
     appearance: String,
     onAppearanceChange: (String) -> Unit
@@ -158,6 +159,8 @@ fun AppLayout(
         mutableStateOf<Uri?>(null)
     }
     var gpsText by remember { mutableStateOf("Waiting for GPS...") }
+    var gpsAccuracy by remember { mutableStateOf<Float?>(null) }
+    var gpsFixElapsedNs by remember { mutableStateOf<Long?>(null) }
     var gpsLat by remember {
         mutableDoubleStateOf(0.0)
     }
@@ -177,10 +180,6 @@ fun AppLayout(
         mutableDoubleStateOf(0.0)
     }
 
-    var lastGpsRecovery by remember {
-        mutableLongStateOf(0L)
-    }
-
     var selectedHomeBase by remember {
         mutableStateOf<HomeBase?>(null)
     }
@@ -191,161 +190,113 @@ fun AppLayout(
         com.example.drdisplay.ble.BleManager(context)
     }
     val bleState by bleManager.state
-
-    LaunchedEffect(
-        bleState.posX,
-        bleState.posY,
-        gpsLat,
-        gpsLon
-    ) {
-        if (originLat == 0.0 || originLon == 0.0)
-            return@LaunchedEffect
-        navLat =
-            originLat +
-                    bleState.posY /
-                    111111.0
-        navLon =
-            originLon +
-                    bleState.posX /
-                    (
-                            111111.0 *
-                                    kotlin.math.cos(
-                                        Math.toRadians(originLat)
-                                    )
-                            )
-        Log.d(
-            "NAV_POSITION",
-            "lat=$navLat lon=$navLon"
-        )
-        Log.d(
-            "NAV_POSITION",
-            "nav=$navLat,$navLon origin=$originLat,$originLon"
+    SideEffect {
+        bleManager.packetLogger.navigationSnapshot = com.example.drdisplay.ble.NavigationSnapshot(
+            if (gpsFixElapsedNs != null) gpsLat else null, if (gpsFixElapsedNs != null) gpsLon else null,
+            gpsAccuracy, gpsFixElapsedNs,
+            if (navLat != 0.0 && navLon != 0.0) navLat else null,
+            if (navLat != 0.0 && navLon != 0.0) navLon else null,
+            selectedHomeBase?.lat, selectedHomeBase?.lon
         )
     }
 
-    // Start again when the runtime permission result arrives.
-    LaunchedEffect(permissionVersion) {
-        Log.d(
-            "ANIMATION_SCREEN",
-            "ENTERED"
-        )
+    val locationManager = remember { context.getSystemService(Context.LOCATION_SERVICE) as android.location.LocationManager }
+    var baseX by remember { mutableFloatStateOf(0f) }
+    var baseY by remember { mutableFloatStateOf(0f) }
+    var gpsHealthy by remember { mutableStateOf(false) }
+    var providerEnabled by remember { mutableStateOf(false) }
+    var satellitesUsed by remember { mutableIntStateOf(0) }
+    var locationError by remember { mutableStateOf<String?>(null) }
 
-        if (ActivityCompat.checkSelfPermission(
-                context,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) == PackageManager.PERMISSION_GRANTED
-        ) {
-            val locationRequest = LocationRequest.Builder(
-                Priority.PRIORITY_HIGH_ACCURACY, 5000
-            ).build()
-
-            fusedLocationClient.requestLocationUpdates(
-                locationRequest,
-                object : LocationCallback() {
-                    override fun onLocationResult(locationResult: LocationResult) {
-                        for (location in locationResult.locations) {
-                            gpsLat = location.latitude
-                            gpsLon = location.longitude
-                            CoroutineScope(Dispatchers.IO).launch {
-
-                                context.homeBaseDataStore.edit { prefs ->
-
-                                    prefs[NavPrefs.LAST_GPS_LAT] =
-                                        gpsLat.toString()
-
-                                    prefs[NavPrefs.LAST_GPS_LON] =
-                                        gpsLon.toString()
-                                }
-                            }
-                            if (
-                                originLat != 0.0 && originLon != 0.0 && location.accuracy < 10f
-                            ) {
-
-                                val now =
-                                    System.currentTimeMillis()
-
-                                if (
-                                    now - lastGpsRecovery >
-                                    10000
-                                ) {
-
-                                    lastGpsRecovery = now
-
-                                    originLat =
-                                        originLat * 0.8 +
-                                                gpsLat * 0.2
-
-                                    originLon =
-                                        originLon * 0.8 +
-                                                gpsLon * 0.2
-
-                                    Log.d(
-                                        "GPS_RECOVERY",
-                                        "ORIGIN RESET"
-                                    )
-                                }
-                            }
-                            if (originLat == 0.0 && originLon == 0.0) {
-
-                                originLat = gpsLat
-                                originLon = gpsLon
-
-                                navLat = gpsLat
-                                navLon = gpsLon
-                            }
-
-                            gpsText =
-                                "Lat: ${location.latitude}, " +
-                                        "Lon: ${location.longitude}, " +
-                                        "Acc: ${location.accuracy}m"
+    DisposableEffect(permissionVersion) {
+        val listener = object : android.location.LocationListener {
+            override fun onLocationChanged(location: android.location.Location) {
+                gpsLat = location.latitude
+                gpsLon = location.longitude
+                gpsAccuracy = if (location.hasAccuracy()) location.accuracy else null
+                gpsFixElapsedNs = location.elapsedRealtimeNanos
+                providerEnabled = true
+                val ageNs = android.os.SystemClock.elapsedRealtimeNanos() - location.elapsedRealtimeNanos
+                if (location.hasAccuracy() && location.accuracy <= 20f && ageNs in 0..15_000_000_000L) {
+                    originLat = location.latitude
+                    originLon = location.longitude
+                    baseX = bleManager.state.value.posX
+                    baseY = bleManager.state.value.posY
+                    navLat = originLat
+                    navLon = originLon
+                    gpsHealthy = true
+                    CoroutineScope(Dispatchers.IO).launch {
+                        context.homeBaseDataStore.edit { prefs ->
+                            prefs[NavPrefs.LAST_GPS_LAT] = location.latitude.toString()
+                            prefs[NavPrefs.LAST_GPS_LON] = location.longitude.toString()
                         }
                     }
-
-                    override fun onLocationAvailability(availability: LocationAvailability) {
-                        if (!availability.isLocationAvailable) {
-                            gpsText = "GPS signal lost"
-                        }
-                    }
-                },
-                Looper.getMainLooper()
-            )
-        } else {
-            gpsText = "GPS permission not granted"
+                }
+            }
+            override fun onProviderEnabled(provider: String) { providerEnabled = true }
+            override fun onProviderDisabled(provider: String) { providerEnabled = false; gpsHealthy = false }
+        }
+        val gnssCallback = object : android.location.GnssStatus.Callback() {
+            override fun onSatelliteStatusChanged(status: android.location.GnssStatus) {
+                satellitesUsed = (0 until status.satelliteCount).count { status.usedInFix(it) }
+            }
+            override fun onStopped() { satellitesUsed = 0 }
+        }
+        providerEnabled = locationManager.isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)
+        locationError = null
+        if (ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            try {
+                locationManager.requestLocationUpdates(android.location.LocationManager.GPS_PROVIDER, 1000L, 0f, listener, Looper.getMainLooper())
+                locationManager.registerGnssStatusCallback(gnssCallback, android.os.Handler(Looper.getMainLooper()))
+                locationManager.getLastKnownLocation(android.location.LocationManager.GPS_PROVIDER)?.let { cached ->
+                    val age = android.os.SystemClock.elapsedRealtimeNanos() - cached.elapsedRealtimeNanos
+                    if (age in 0..15_000_000_000L) listener.onLocationChanged(cached)
+                }
+            } catch (e: Exception) {
+                locationError = "GPS unavailable: ${e.message}"
+            }
+        } else gpsText = "Precise location permission required"
+        onDispose {
+            locationManager.removeUpdates(listener)
+            locationManager.unregisterGnssStatusCallback(gnssCallback)
         }
     }
 
     LaunchedEffect(Unit) {
-        Log.d(
-            "ANIMATION_SCREEN",
-            "ENTERED"
-        )
-
-        val prefs =
-            context.homeBaseDataStore.data.first()
-
-        val savedLat =
-            prefs[NavPrefs.LAST_GPS_LAT]
-                ?.toDoubleOrNull()
-
-        val savedLon =
-            prefs[NavPrefs.LAST_GPS_LON]
-                ?.toDoubleOrNull()
-
-        if (
-            savedLat != null &&
-            savedLon != null
-        ) {
-
+        val prefs = context.homeBaseDataStore.data.first()
+        val savedLat = prefs[NavPrefs.LAST_GPS_LAT]?.toDoubleOrNull()
+        val savedLon = prefs[NavPrefs.LAST_GPS_LON]?.toDoubleOrNull()
+        if (!gpsHealthy && originLat == 0.0 && savedLat != null && savedLon != null) {
             originLat = savedLat
             originLon = savedLon
+            baseX = bleState.posX
+            baseY = bleState.posY
+        }
+    }
 
-            navLat = savedLat
-            navLon = savedLon
+    LaunchedEffect(gpsFixElapsedNs, gpsAccuracy, providerEnabled, permissionVersion, bleState.connected, satellitesUsed, locationError) {
+        while (true) {
+            val age = gpsFixElapsedNs?.let { android.os.SystemClock.elapsedRealtimeNanos() - it }
+            gpsHealthy = providerEnabled && age != null && age in 0..15_000_000_000L && (gpsAccuracy ?: Float.MAX_VALUE) <= 20f
+            val permission = ActivityCompat.checkSelfPermission(context, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
+            gpsText = when {
+                !permission -> "Precise location permission required"
+                locationError != null -> locationError!!
+                gpsHealthy -> "GPS · ${"%.6f".format(java.util.Locale.US, gpsLat)}, ${"%.6f".format(java.util.Locale.US, gpsLon)} · ±${gpsAccuracy} m"
+                providerEnabled && age != null && age in 0..15_000_000_000L && originLat == 0.0 -> "GPS fix too weak (±${gpsAccuracy ?: "?"} m) · $satellitesUsed satellites used"
+                originLat != 0.0 && bleState.connected -> "GPS weak or off · belt estimate"
+                originLat != 0.0 -> "GPS weak or off · last position (belt disconnected)"
+                !providerEnabled -> "GPS is off · enable location"
+                else -> "Waiting for GPS fix · $satellitesUsed satellites used"
+            }
+            kotlinx.coroutines.delay(1000)
+        }
+    }
 
-            Log.d(
-                "NAV_RESTORE",
-                "Recovered GPS anchor"
-            )
+    LaunchedEffect(bleState.posX, bleState.posY, gpsHealthy, originLat, originLon, baseX, baseY) {
+        if (!gpsHealthy && originLat != 0.0 && originLon != 0.0) {
+            navLat = originLat + (bleState.posY - baseY) / 111111.0
+            navLon = originLon + (bleState.posX - baseX) / (111111.0 * kotlin.math.cos(Math.toRadians(originLat)))
         }
     }
 
@@ -428,7 +379,23 @@ fun AppLayout(
                         gpsLon = gpsLon,
                         currentLat = navLat,
                         currentLon = navLon,
-                        selectedHomeBase = selectedHomeBase
+                        selectedHomeBase = selectedHomeBase,
+                        onPinSelected = { lat, lon, name ->
+                            val mapId = activeOsmUri?.let { getFileName(context, it) } ?: "default"
+                            val base = HomeBase(name = name, lat = lat, lon = lon, mapId = mapId, isSelected = true)
+                            CoroutineScope(Dispatchers.IO).launch {
+                                context.homeBaseDataStore.edit { prefs ->
+                                    val type = object : TypeToken<Map<String, List<HomeBase>>>() {}.type
+                                    val existing: Map<String, List<HomeBase>> = Gson().fromJson(prefs[HomeBasePrefs.HOME_BASES] ?: "{}", type)
+                                    val updated = existing.toMutableMap()
+                                    val entries = existing[mapId].orEmpty().map { it.copy(isSelected = false) }.toMutableList()
+                                    entries.add(base)
+                                    updated[mapId] = entries
+                                    prefs[HomeBasePrefs.HOME_BASES] = Gson().toJson(updated)
+                                }
+                                kotlinx.coroutines.withContext(Dispatchers.Main) { selectedHomeBase = base }
+                            }
+                        }
                     ) }
 
                 "BLE" ->

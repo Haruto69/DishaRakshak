@@ -45,8 +45,7 @@ class BleManager(
 
     private val DR_SCALE = 0.02
 
-    private var previousTime =
-        System.currentTimeMillis()
+    private var previousTime = 0L
 
     private val SERVICE_UUID =
         UUID.fromString(
@@ -100,6 +99,7 @@ class BleManager(
                 ) {
 
                     beltDevice = null
+                    previousTime = 0L
 
                     state.value =
                         state.value.copy(
@@ -223,6 +223,7 @@ class BleManager(
             private fun handlePacket(uuid: UUID, value: ByteArray) {
                 packetLogger.record(value, uuid.toString())
                 if (uuid != CHARACTERISTIC_UUID) return
+                if (value.size == 20 && (value[0].toInt() and 0xff) == 0xD1) return
                 Log.d(
                     "BLE_DEBUG",
                     "NEW_PARSER_RUNNING"
@@ -287,10 +288,9 @@ class BleManager(
                     "vx=$velocityX vy=$velocityY vz=$velocityZ"
                 )
 
-                val now =
-                    System.currentTimeMillis()
-                val dt =
-                    (now - previousTime) / 1000.0
+                val now = android.os.SystemClock.elapsedRealtime()
+                val interval = now - previousTime
+                val dt = if (previousTime != 0L && interval in 1..2000) interval / 1000.0 else 0.0
                 previousTime = now
 
                 /*
