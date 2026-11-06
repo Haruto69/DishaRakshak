@@ -392,10 +392,10 @@ class BleManager(
                 callbackType: Int,
                 result: ScanResult
             ) {
-                val name =
-                    result.device.name ?: return
-                discovered.add(name)
-                if (name == "DishaRakshak-Belt") {
+                val name = result.scanRecord?.deviceName ?: result.device.name
+                val hasService = result.scanRecord?.serviceUuids?.any { it.uuid == SERVICE_UUID } == true
+                if (name != null) discovered.add(name)
+                if (name == "DishaRakshak-Belt" || hasService) {
                     beltDevice = result.device
                     if (!state.value.connected) {
                         stopScan()
@@ -410,6 +410,12 @@ class BleManager(
                             beltDevice != null
                     )
             }
+
+            override fun onScanFailed(errorCode: Int) {
+                Handler(Looper.getMainLooper()).post {
+                    state.value = state.value.copy(isScanning = false, scanError = "Bluetooth scan failed (code $errorCode). Try again.")
+                }
+            }
         }
 
 
@@ -418,7 +424,7 @@ class BleManager(
     }
 
     fun isBluetoothEnabled(): Boolean {
-        return bluetoothAdapter?.isEnabled == true
+        return try { bluetoothAdapter?.isEnabled == true } catch (_: SecurityException) { false }
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_CONNECT)
@@ -445,21 +451,36 @@ class BleManager(
     }
 
     fun startScan() {
-        discovered.clear()
-        bluetoothScanner?.startScan(
-            scanCallback
-        )
-        state.value =
-            state.value.copy(
-                isScanning = true
-            )
+        if (state.value.isScanning) return
+        if (android.os.Build.VERSION.SDK_INT >= 31 &&
+            (androidx.core.content.ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_SCAN) != android.content.pm.PackageManager.PERMISSION_GRANTED ||
+             androidx.core.content.ContextCompat.checkSelfPermission(context, Manifest.permission.BLUETOOTH_CONNECT) != android.content.pm.PackageManager.PERMISSION_GRANTED)) {
+            state.value = state.value.copy(scanError = "Allow Nearby devices permission in app settings.")
+            return
+        }
+        if (android.os.Build.VERSION.SDK_INT < 31 && !(context.getSystemService(Context.LOCATION_SERVICE) as android.location.LocationManager).isProviderEnabled(android.location.LocationManager.GPS_PROVIDER)) {
+            state.value = state.value.copy(scanError = "This Android version requires Location to be on for Bluetooth scanning.")
+            return
+        }
+        try {
+            val scanner = bluetoothScanner
+            if (scanner == null) {
+                state.value = state.value.copy(scanError = "Turn on Bluetooth before scanning.")
+                return
+            }
+            discovered.clear()
+            state.value = state.value.copy(isScanning = true, scanError = null, discoveredDevices = emptyList())
+            scanner.startScan(scanCallback)
+        } catch (e: SecurityException) {
+            state.value = state.value.copy(isScanning = false, scanError = "Bluetooth permission is missing. Check app settings.")
+        } catch (e: IllegalStateException) {
+            state.value = state.value.copy(isScanning = false, scanError = "Bluetooth is unavailable. Turn it on and try again.")
+        }
     }
 
     @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN)
     fun stopScan() {
-        bluetoothScanner?.stopScan(
-            scanCallback
-        )
+        try { bluetoothScanner?.stopScan(scanCallback) } catch (_: SecurityException) { }
         state.value =
             state.value.copy(
                 isScanning = false

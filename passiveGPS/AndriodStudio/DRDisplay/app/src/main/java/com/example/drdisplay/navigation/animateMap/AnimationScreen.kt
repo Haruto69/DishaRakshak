@@ -42,6 +42,7 @@ fun AnimationScreen(
     currentLat: Double,
     currentLon: Double,
     selectedHomeBase: HomeBase?,
+    recordedPath: List<GeoPoint>,
     onPinSelected: (Double, Double, String) -> Unit
 ) {
     val context = LocalContext.current
@@ -52,17 +53,7 @@ fun AnimationScreen(
 
     var nodeCount by remember { mutableStateOf(0) }
     var edgeCount by remember { mutableStateOf(0) }
-    var startNode by remember { mutableLongStateOf(-1L) }
-    var routeLength by remember { mutableIntStateOf(0) }
-    var routePreview by remember { mutableStateOf("") }
-
-    var staticRouteNodes by remember {
-        mutableStateOf<List<Long>>(emptyList())
-    }
-
-    var dynamicRouteNodes by remember {
-        mutableStateOf<List<Long>>(emptyList())
-    }
+    var routePoints by remember { mutableStateOf<List<GeoPoint>>(emptyList()) }
     var roadsDrawn by remember {
         mutableStateOf(false)
     }
@@ -93,13 +84,10 @@ fun AnimationScreen(
         mutableStateOf<Marker?>(null)
     }
 
-    var staticRouteOverlay by remember {
-        mutableStateOf<Polyline?>(null)
-    }
-
     var dynamicRouteOverlay by remember {
         mutableStateOf<Polyline?>(null)
     }
+    var walkedPathOverlay by remember { mutableStateOf<Polyline?>(null) }
 
     var mapCentered by remember {
         mutableStateOf(false)
@@ -107,10 +95,6 @@ fun AnimationScreen(
 
     var poiMarkersAdded by remember {
         mutableStateOf(false)
-    }
-
-    var lastRerouteTime by remember {
-        mutableLongStateOf(0L)
     }
 
     LaunchedEffect(mapUri) {
@@ -157,101 +141,24 @@ fun AnimationScreen(
         }
     }
 
-    LaunchedEffect(
-        graph,
-        selectedHomeBase,
-        currentLat != 0.0 && currentLon != 0.0
-    )
-    {
-        Log.d(
-            "ROUTE_ONCE",
-            "Generating route"
-        )
-        Log.d(
-            "ANIMATION",
-            "HomeBase = $selectedHomeBase"
-        )
-        staticRouteNodes = emptyList()
-        dynamicRouteNodes = emptyList()
+    val latestLat by rememberUpdatedState(currentLat)
+    val latestLon by rememberUpdatedState(currentLon)
+    LaunchedEffect(graph, selectedHomeBase) {
+        routePoints = emptyList()
         val g = graph ?: return@LaunchedEffect
-        Log.d("ROUTE", "Entered Route Calculation")
-        val goalNode =
-            selectedHomeBase?.let {
-                RouteFinder.nearestNode(
-                    g,
-                    it.lat,
-                    it.lon
-                )
-            } ?: return@LaunchedEffect
-        Log.d(
-            "ROUTE",
-            "Goal node = $goalNode"
-        )
-        if (
-            currentLat == 0.0 ||
-            currentLon == 0.0
-        ) {
-            return@LaunchedEffect
-        }
-
-        startNode =
-            RouteFinder.nearestNode(
-                g,
-                currentLat,
-                currentLon
-            )
-
-        Log.d(
-            "ROUTE",
-            "Start node = $startNode"
-        )
-        val staticRoute =
-            RouteFinder.shortestPath(
-                g,
-                startNode,
-                goalNode
-            )
-
-        staticRouteNodes = staticRoute
-        dynamicRouteNodes = staticRoute
-
-        Log.d(
-            "ROUTE",
-            "Start coords = $currentLat,$currentLon"
-        )
-        Log.d(
-            "ROUTE",
-            "Goal coords = ${selectedHomeBase?.lat},${selectedHomeBase?.lon}"
-        )
-
-        Log.d(
-            "ROUTE",
-            "Goal snapped to = ${g.nodes[goalNode]}"
-        )
-        Log.d(
-            "ROUTE",
-            "Start snapped to = ${g.nodes[startNode]}"
-        )
-
-        try {
-            routeLength = staticRoute.size
-            routePreview =
-                staticRoute.take(5)
-                    .mapNotNull {
-                        g.nodes[it]
-                    }
-                    .joinToString("\n") {
-                        "${it.lat}, ${it.lon}"
-                    }
-            Log.d(
-                "ROUTE",
-                "start=$startNode goal=$goalNode length=$routeLength"
-            )
-        } catch (e: Exception) {
-            e.printStackTrace()
+        val home = selectedHomeBase ?: return@LaunchedEffect
+        while (true) {
+            val lat = latestLat
+            val lon = latestLon
+            if (lat != 0.0 && lon != 0.0) {
+                val calculated = kotlinx.coroutines.withContext(kotlinx.coroutines.Dispatchers.Default) {
+                    SegmentRouter.route(g, SegmentRouter.Point(lat, lon), SegmentRouter.Point(home.lat, home.lon))
+                }
+                routePoints = calculated.map { GeoPoint(it.lat, it.lon) }
+            }
+            kotlinx.coroutines.delay(2000)
         }
     }
-
 
     if (pendingPin != null) {
         AlertDialog(
@@ -353,81 +260,6 @@ fun AnimationScreen(
                     currentLon
                 )
 
-            val dynamicRoutePoints =
-                dynamicRouteNodes.mapNotNull {
-                    graph?.nodes?.get(it)?.let {
-                        GeoPoint(
-                            it.lat,
-                            it.lon
-                        )
-                    }
-                }
-
-            fun isOffRoute(
-                position: GeoPoint,
-                route: List<GeoPoint>
-            ): Boolean {
-
-                if (route.isEmpty()) {
-                    return false
-                }
-
-                val nearest =
-                    route.minOf {
-                        position.distanceToAsDouble(it)
-                    }
-
-                return nearest > 12.0
-            }
-
-            val offRoute =
-                isOffRoute(
-                    GeoPoint(
-                        currentLat,
-                        currentLon
-                    ),
-                    dynamicRoutePoints
-                )
-            if (offRoute) {
-
-                val now = System.currentTimeMillis()
-
-                if (now - lastRerouteTime > 5000) {
-
-                    lastRerouteTime = now
-
-                    val g = graph ?: return@AndroidView
-
-                    val goalNode =
-                        selectedHomeBase?.let {
-                            RouteFinder.nearestNode(
-                                g,
-                                it.lat,
-                                it.lon
-                            )
-                        } ?: return@AndroidView
-
-                    val imuStartNode =
-                        RouteFinder.nearestNode(
-                            g,
-                            currentLat,
-                            currentLon
-                        )
-
-                    Log.d(
-                        "NAV_REROUTE",
-                        "REROUTING NOW"
-                    )
-
-                    dynamicRouteNodes =
-                        RouteFinder.shortestPath(
-                            g,
-                            imuStartNode,
-                            goalNode
-                        )
-                }
-            }
-
             if (
                 gpsLat != 0.0 &&
                 gpsLon != 0.0
@@ -488,62 +320,23 @@ fun AnimationScreen(
                 roadsDrawn = true
             }
 
-            if (staticRouteOverlay == null) {
-
-                staticRouteOverlay = Polyline()
-
-                staticRouteOverlay!!
-                    .outlinePaint.color =
-                    android.graphics.Color.RED
-
-                staticRouteOverlay!!
-                    .outlinePaint.strokeWidth = 8f
-
-                mapView.overlays.add(
-                    staticRouteOverlay!!
-                )
-            }
-            graph?.let { g ->
-
-                staticRouteOverlay?.setPoints(
-                    staticRouteNodes.mapNotNull { nodeId ->
-                        g.nodes[nodeId]?.let { node ->
-                            GeoPoint(
-                                node.lat,
-                                node.lon
-                            )
-                        }
-                    }
-                )
-            }
             if (dynamicRouteOverlay == null) {
-
-                dynamicRouteOverlay = Polyline()
-
-                dynamicRouteOverlay!!
-                    .outlinePaint.color =
-                    android.graphics.Color.BLUE
-
-                dynamicRouteOverlay!!
-                    .outlinePaint.strokeWidth = 6f
-
-                mapView.overlays.add(
-                    dynamicRouteOverlay!!
-                )
+                dynamicRouteOverlay = Polyline().apply {
+                    outlinePaint.color = android.graphics.Color.BLUE
+                    outlinePaint.strokeWidth = 8f
+                }
+                mapView.overlays.add(dynamicRouteOverlay!!)
             }
-            graph?.let { g ->
+            dynamicRouteOverlay?.setPoints(routePoints)
 
-                dynamicRouteOverlay?.setPoints(
-                    dynamicRouteNodes.mapNotNull {
-                        g.nodes[it]?.let { node ->
-                            GeoPoint(
-                                node.lat,
-                                node.lon
-                            )
-                        }
-                    }
-                )
+            if (walkedPathOverlay == null) {
+                walkedPathOverlay = Polyline().apply {
+                    outlinePaint.color = android.graphics.Color.rgb(155, 39, 176)
+                    outlinePaint.strokeWidth = 8f
+                }
+                mapView.overlays.add(walkedPathOverlay!!)
             }
+            walkedPathOverlay?.setPoints(recordedPath)
 
             if (!poiMarkersAdded && graph != null) {
 
@@ -584,8 +377,15 @@ fun AnimationScreen(
             Log.d("POI", "Loaded ${poiList.size} POIs")
         }
     )
-    Button(onClick = { choosingPin = !choosingPin }, modifier = Modifier.align(Alignment.TopCenter).padding(12.dp)) {
-        Text(if (choosingPin) "Tap map to place pin · Cancel" else "Choose home on map")
+    androidx.compose.foundation.layout.Column(modifier = Modifier.align(Alignment.TopCenter).padding(12.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Button(onClick = { choosingPin = !choosingPin }) {
+            Text(if (choosingPin) "Tap map to place pin · Cancel" else "Choose home on map")
+        }
+        if (recordedPath.isNotEmpty()) {
+            androidx.compose.material3.Surface(shape = androidx.compose.material3.MaterialTheme.shapes.small, tonalElevation = 3.dp) {
+                Text("Purple: recorded position estimate", modifier = Modifier.padding(8.dp), style = androidx.compose.material3.MaterialTheme.typography.labelMedium)
+            }
+        }
     }
     }
 }

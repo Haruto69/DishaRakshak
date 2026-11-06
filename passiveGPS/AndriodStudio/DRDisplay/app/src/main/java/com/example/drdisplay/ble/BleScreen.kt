@@ -43,6 +43,7 @@ fun BleScreen(bleManager: BleManager) {
                         else -> "Not connected"
                     })
                     Text("Bluetooth: " + if (!bleManager.isBluetoothAvailable()) "unavailable" else if (bleManager.isBluetoothEnabled()) "on" else "off")
+                    state.scanError?.let { Text(it, color = MaterialTheme.colorScheme.error) }
                     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                         Button(onClick = { bleManager.startScan() }, enabled = !state.isScanning && !state.connected) { Text("Start scan") }
                         OutlinedButton(onClick = @RequiresPermission(Manifest.permission.BLUETOOTH_SCAN) { bleManager.stopScan() }, enabled = state.isScanning) { Text("Stop scan") }

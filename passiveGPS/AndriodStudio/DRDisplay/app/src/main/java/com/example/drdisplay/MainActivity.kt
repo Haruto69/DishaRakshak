@@ -190,6 +190,17 @@ fun AppLayout(
         com.example.drdisplay.ble.BleManager(context)
     }
     val bleState by bleManager.state
+    val packetLog by bleManager.packetLogger.state
+    val recordedPath = remember { mutableStateListOf<org.osmdroid.util.GeoPoint>() }
+    LaunchedEffect(packetLog.filePath) {
+        if (packetLog.recording) recordedPath.clear()
+    }
+    LaunchedEffect(packetLog.recording, navLat, navLon) {
+        if (packetLog.recording && navLat != 0.0 && navLon != 0.0) {
+            val point = org.osmdroid.util.GeoPoint(navLat, navLon)
+            if (recordedPath.lastOrNull()?.distanceToAsDouble(point)?.let { it >= 0.25 } != false) recordedPath.add(point)
+        }
+    }
     SideEffect {
         bleManager.packetLogger.navigationSnapshot = com.example.drdisplay.ble.NavigationSnapshot(
             if (gpsFixElapsedNs != null) gpsLat else null, if (gpsFixElapsedNs != null) gpsLon else null,
@@ -380,6 +391,7 @@ fun AppLayout(
                         currentLat = navLat,
                         currentLon = navLon,
                         selectedHomeBase = selectedHomeBase,
+                        recordedPath = recordedPath.toList(),
                         onPinSelected = { lat, lon, name ->
                             val mapId = activeOsmUri?.let { getFileName(context, it) } ?: "default"
                             val base = HomeBase(name = name, lat = lat, lon = lon, mapId = mapId, isSelected = true)

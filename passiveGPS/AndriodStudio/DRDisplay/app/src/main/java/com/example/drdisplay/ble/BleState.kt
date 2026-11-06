@@ -18,6 +18,7 @@ data class BleState(
     val velocityZ: Float = 0f,
 
     val isScanning: Boolean = false,
+    val scanError: String? = null,
     val discoveredDevices: List<String> = emptyList(),
     val beltFound: Boolean = false,
 
