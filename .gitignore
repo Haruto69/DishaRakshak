@@ -40,6 +40,16 @@ env/
 
 .vscode/
 
+# IntelliJ IDEA / Android Studio local project state
+
+.idea/
+**/.gradle/
+**/local.properties
+
+# Local firmware trial workspace
+
+passiveGPS/AndriodStudio/DRDisplay/test_firmware/
+
 # Arduino IDE generated folders
 
 .cache/
